@@ -1,0 +1,66 @@
+	  /* video header and call to action */
+ #video-header{
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#000000+0,000000+100&0+0,0.65+100 */
+     background: -moz-linear-gradient(right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%);
+     background: -webkit-linear-gradient(right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%);
+     background: linear-gradient(to left, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%);
+     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=1 );
+     width:100%;
+     height:100%;
+}
+
+
+ .video-section .video_content {
+    position:relative;
+    z-index:99;
+}
+
+
+	    /* icon style2*/
+         .feature-with-icon.feature2 i{
+         font-size:60px;
+         width:100px;
+         margin-bottom: 20px;
+         }
+		 /*fixed header*/
+		 .fixed-header{ 
+		 padding:150px 0;
+		 margin-top: 80px;
+
+        }
+         /* header 3*/
+         #header3{
+         padding: 250px 0;
+         background-image: url(../img/fixedheader/header3.jpg);
+         background-position: top center;
+         background-size: cover;
+         background-repeat: no-repeat;
+         }
+		 /* testimonials*/
+         #testimonials-section{
+         background-image: url(../img/testimonials.jpg);
+         background-position:center;
+         background-size: cover;
+         background-repeat: no-repeat;
+         }
+		 /*Paw icon header*/
+		 .paw-icon-header{font-size: 70px;
+    text-align: center;
+    margin-top: -55px;
+	text-shadow: white -1px -1px 20px;
+    display: block;}
+	
+         @media (max-width: 767px) {
+         .fixed-header{
+         padding: 50px;
+		 		 margin-top: 50px;
+
+         }
+		  /* header 3*/
+         #header3{
+         padding: 50px;
+         }
+         }
+         @media (min-width: 991px) {
+         .intro-row-boxes{margin-top:-160px;}
+         }
