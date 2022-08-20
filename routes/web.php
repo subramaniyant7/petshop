@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\frontend\FrontendController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,33 @@ use App\Http\Controllers\admin\AdminController;
 |
 */
 
-Route::get('/', function () { return view('frontend.home');});
+Route::get('/', [FrontendController::class, 'Home']);
+
+Route::middleware(['frontenduserauthorise'])->group(function () {
+    Route::get('/register', [FrontendController::class, 'Register']);
+    Route::post('/register', [FrontendController::class, 'RegisterProcess']);
+    Route::get('/email_otp_verify', [FrontendController::class, 'OTPVerification']);
+    Route::post('/verify_otp_verify', [FrontendController::class, 'VerifyOTP']);
+    Route::get('/login', [FrontendController::class, 'Login']);
+    Route::post('/loginvalidate', [FrontendController::class, 'LoginValidate']);
+});
+
+Route::middleware(['frontendloggedin'])->group(function () {
+    Route::get('/dashboard', [FrontendController::class, 'Dashboard']);
+    Route::get('/addshippingaddress', [FrontendController::class, 'AddShippingAddress']);
+    Route::get('/editshippingaddress/{id}', [FrontendController::class, 'EditShippingAddress']);
+    Route::post('/saveshippingaddress', [FrontendController::class, 'SaveShippingAddress']);
+    Route::get('/myorders', [FrontendController::class, 'MyOrders']);
+    Route::get('/change_password', [FrontendController::class, 'ChangePassword']);
+    Route::post('/save_password', [FrontendController::class, 'UpdateUserPassword']);
+    Route::get('/logout', [FrontendController::class, 'UserLogout']);
+
+});
 
 Route::prefix(ADMINURL)->group(function () {
-    Route::get('/', function () { return view('admin.login'); })->middleware('adminloginvalidate');
+    Route::get('/', function () {
+        return view('admin.login');
+    })->middleware('adminloginvalidate');
     Route::post('/login', [AdminController::class, 'AdminLogin'])->middleware('adminloginvalidate');
 
     Route::middleware(['adminauth'])->group(function () {

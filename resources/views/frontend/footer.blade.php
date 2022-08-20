@@ -29,22 +29,21 @@
                 <!--divider -->
                 <hr class="small-divider left" />
                 <ul class="list-unstyled mt-3">
-                    <li class="mb-1"><i class="fas fa-phone margin-icon "></i>(123) 456-789</li>
+                    <li class="mb-1"><i class="fas fa-phone margin-icon "></i>+91 9150529991</li>
                     <li class="mb-1"><i class="fas fa-envelope margin-icon"></i><a
-                            href="mailto:email@yoursite.com">email@yoursite.com</a></li>
-                    <li><i class="fas fa-map-marker margin-icon"></i>Pet Street 123 - New York </li>
+                            href="mailto:woof@untame.pet">woof@untame.pet</a></li>
+                    <li><i class="fas fa-map-marker margin-icon"></i>Chennai </li>
                 </ul>
                 <!--/ul -->
             </div>
             <!--/ col-lg -->
             <div class="col-lg-3">
-                <h5>Working Hours</h5>
+                <h5>Links</h5>
                 <!--divider -->
                 <hr class="small-divider left" />
                 <ul class="list-unstyled mt-3">
-                    <li class="mb-1">Open from 9am - 6pm</li>
-                    <li class="mb-1">Holidays - Closed</li>
-                    <li>Weekends - Closed</li>
+                    <li class="mb-1"><a href="#">Privacy Policy</a></li>
+                    <li class="mb-1"><a href="#">Contact Us</a></li>
                 </ul>
                 <!--/ul -->
             </div>

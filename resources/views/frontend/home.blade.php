@@ -1,6 +1,7 @@
 @extends('frontend.layout')
 
 @section('content')
+    @include('admin.notification')
     <!-- ==== Slider ==== -->
     <div class="container-fluid p-0">
         <div id="slider" class="overlay-parallax-slider"

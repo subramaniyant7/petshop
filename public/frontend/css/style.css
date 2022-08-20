@@ -2142,6 +2142,10 @@ Last change:12th February 2019
      border: 1px solid #fff;
 }
 
+.page.container{
+    padding-top: 180px;
+}
+
 /*=========================== Media queries ============================ */
 /* Small devices (landscape phones, 544px) */
  @media (max-width: 544px) {

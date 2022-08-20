@@ -72,9 +72,22 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Privacy Policy</a>
                         </li>
+                        @if(session('frontenduserid'))
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Contact Us</a>
+                            <a class="nav-link" href="{{ url(FRONTENDURL.'dashboard') }}">Dashboard</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url(FRONTENDURL.'dashboard') }}">Cart(0)</a>
+                        </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url(FRONTENDURL.'register') }}">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url(FRONTENDURL.'login') }}">Login</a>
+                            </li>
+                        @endif
+
                     </ul>
                     <!--/ul -->
                 </div>
