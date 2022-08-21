@@ -8,6 +8,18 @@ function admintype(){
     return array('Root Admin','Super Admin','Sub Admin');
 }
 
+function productFor(){
+    return array('Dogs','Pets');
+}
+
+function productType(){
+    return array('KG','Gram');
+}
+
+function productDefault(){
+    return array('Yes','No');
+}
+
 function userGender(){
     return array('Male','Female','Others');
 }

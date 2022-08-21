@@ -89,6 +89,56 @@ class AdminController extends Controller
         return redirect(ADMINURL.'/viewadmin')->with($notify['type'], $notify['msg']);
     }
 
+    public function ViewProduct(){
+        $productDetails = HelperController::getProductDetails();
+        return view('admin.viewproduct',compact('productDetails'));
+    }
+
+
+    public function ManageProduct(){
+        return view('admin.actionproduct');
+    }
+
+    public function ActionProduct($option,$id){
+        $actionId = decryption($id);
+        $productData = HelperController::getProductDetails($actionId);
+        if(count($productData) == 0) return redirect(ADMINURL.'/viewproduct');
+
+        if($option == 'delete'){
+            $delete = deleteQuery($actionId,'products','product_id');
+            $notify = notification($delete);
+            return redirect(ADMINURL.'/viewproduct')->with($notify['type'], 'Data Deleted Successfully');
+        }
+        return view('admin.actionproduct',['action'=>$option,'data'=>$productData]);
+    }
+
+    public function SaveProductDetails(Request $req){
+        $formData =  $req->except(['_token','product_id','edit_productimage']);
+        if ($req->hasFile('product_image')) {
+            $file = $req->file('product_image');
+            $destinationPath = public_path('uploads/products');
+            $fileName = $file->getClientOriginalName();
+            $fileExtension = explode('.', $fileName);
+            if (
+                strtolower(end($fileExtension)) != 'png' && strtolower(end($fileExtension)) != 'jpeg' &&  strtolower(end($fileExtension)) != 'jpg'
+                && strtolower(end($fileExtension)) != 'webp'
+            ) {
+                return redirect()->back()->withInput()->with('error', 'Please upload the valid image!');
+            }
+            $file->move($destinationPath, $fileName);
+            $formData['product_image'] = $fileName;
+        } else {
+            $formData['product_image'] =  $req->input('edit_productimage');
+        }
+        if($req->input('product_id') == ''){
+            $saveData = insertQuery('products',$formData);
+        }else{
+            $saveData = updateQuery('products','product_id',decryption($req->input('product_id')),$formData);
+        }
+        $notify = notification($saveData);
+        return redirect(ADMINURL.'/viewproduct')->with($notify['type'], $notify['msg']);
+    }
+
 
     public function AdminLogout(Request $req){
         $req->session()->forget('admin_name');

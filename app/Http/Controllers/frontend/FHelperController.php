@@ -65,6 +65,8 @@ class FHelperController extends Controller
 
 
 
+
+
     static function getClientGalleryAssets($galleryId)
     {
         $data['images'] = DB::table("clients_gallery_images")->where('clients_gallery_images_galleryid', $galleryId)->get();

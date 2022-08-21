@@ -38,13 +38,13 @@ $('#delete_record').on('click', function(e) {
     e.preventDefault();
     let action = $(this).attr('href');
     swal({
-        title: "Êtes-vous sûr?",
-        text: "Vous ne pourrez pas récupérer ces données!",
+        title: "Are you sure want to delete?",
+        text: "",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#f8b32d",
-        confirmButtonText: "Oui, supprimez-le!",
-        cancelButtonText: "Non, annulez-le !",
+        confirmButtonText: "Confirm!",
+        cancelButtonText: "Cancel !",
         closeOnConfirm: true,
         closeOnCancel: true
     }, function(isConfirm) {
@@ -285,7 +285,7 @@ const updateSubCateId = () => {
 const addRow = () => {
    let row = '';
     if (url.indexOf('actionblproduct') != -1) {
-        let subImageCount = $("input[name=sub_imagecount]").val(); 
+        let subImageCount = $("input[name=sub_imagecount]").val();
         if(subImageCount == 4){
             toast('error', 'Maximum Limit Reached', 'You Cannot add more than 4 sub images')
             return false;

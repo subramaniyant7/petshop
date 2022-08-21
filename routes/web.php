@@ -54,6 +54,11 @@ Route::prefix(ADMINURL)->group(function () {
         Route::get('/actionadmin/{option}/{id}', [AdminController::class, 'ActionAdmin']);
         Route::post('/saveadmindetails', [AdminController::class, 'SaveAdminDetails']);
 
+        Route::get('/viewproduct', [AdminController::class, 'ViewProduct']);
+        Route::get('/manageproduct', [AdminController::class, 'ManageProduct']);
+        Route::get('/actionproduct/{option}/{id}', [AdminController::class, 'ActionProduct']);
+        Route::post('/saveproductdetails', [AdminController::class, 'SaveProductDetails']);
+
         Route::get('/logout', [AdminController::class, 'AdminLogout'])->name('logout');
     });
 });
