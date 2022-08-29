@@ -108,6 +108,7 @@ class FrontendController extends Controller
         if(count($isValid)){
             $formData = ['user_verified' => 1];
             updateQuery('user_details','user_email',$email,$formData);
+            deleteQuery($email,'user_otp','user_email');
             return redirect(FRONTENDURL.'login');
         }
         return back()->with('error', 'Please enter valid OTP');

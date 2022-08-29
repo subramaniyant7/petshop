@@ -8,21 +8,21 @@ jQuery(function($) {
 
 //----------------------------------- Document ready -----------------------------------//
 
-       $(document).ready(function() {	
-				
-			// get current URL path and assign 'active' class
-			
-			 $.each($('.navbar-nav').find('li,ul'), function() {
-					$(this).toggleClass('active', 
-						window.location.pathname.indexOf($(this).find('a').attr('href')) > -1);
-			 }); 
-			
-			//baguette lightbox 
-			
-			baguetteBox.run('.tz-gallery');
-		
+       $(document).ready(function() {
 
-			//Scrolling feature 
+			// get current URL path and assign 'active' class
+
+			 $.each($('.navbar-nav').find('li,ul'), function() {
+					$(this).toggleClass('active',
+						window.location.pathname.indexOf($(this).find('a').attr('href')) > -1);
+			 });
+
+			//baguette lightbox
+
+			baguetteBox.run('.tz-gallery');
+
+
+			//Scrolling feature
 
 			$('.page-scroll a').on('click', function(event) {
 				var $anchor = $(this);
@@ -33,18 +33,18 @@ jQuery(function($) {
 			});
 
 			//Dropdown on hover
-			if ($(window).width() > 1200) {				
+			if ($(window).width() > 1200) {
 			$(".navbar .dropdown").on({
 				mouseenter: function () {
 				$(this).find('.dropdown-menu').first().stop(true, true).delay(50).slideDown();
 
-				},  
+				},
 				mouseleave: function () {
 				$(this).find('.dropdown-menu').first().stop(true, true).delay(100).fadeOut();
 				}
 			});
 			}
-			
+
 
 			//	Back Top Link
 
@@ -60,7 +60,7 @@ jQuery(function($) {
 
 
 			//Owl-carousels
-			
+
 			$('.owl-stage').owlCarousel({
 				loop: true,
 				margin: 0,
@@ -83,7 +83,7 @@ jQuery(function($) {
 					},
 				}
 			});
-			
+
 			$(".carousel-4items").owlCarousel({
 				nav: true,
 				navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
@@ -152,12 +152,12 @@ jQuery(function($) {
 				responsive: {
 					0: {
 						items: 1,
-					},									
+					},
 				}
 			});
-			
+
 			 // Magnific Popup
-				 
+
 			$('.magnific-popup').magnificPopup({
 				delegate: 'a', // child items selector, by clicking on it popup will open
 				type: 'image',
@@ -171,30 +171,30 @@ jQuery(function($) {
 				},
 
 				callbacks: {open: function() {$('.fixed-top').css('margin-right', '17px');},close: function() {$('.fixed-top').css('margin-right', '0px');}}
-			});	
+			});
 
-			
+
 			// Contact form
 
 			$("#submit_btn").on("click", function() {
 
 			var proceed = true;
 			//simple validation at client's end
-			//loop through each field and we simply change border color to red for invalid fields		
+			//loop through each field and we simply change border color to red for invalid fields
 			$("#contact_form input[required], #contact_form textarea[required]").each(function() {
 			$(this).css('border-color', '');
-			if (!$.trim($(this).val())) { //if this field is empty 
+			if (!$.trim($(this).val())) { //if this field is empty
 			  $(this).css('border-color', '#e44747');
 			  $("#contact_results").html('<br><div class="alert alert-danger">Please fill out the required fields.</div>').show();
-			  
+
 			  proceed = false; //set do not proceed flag
 			}
 			//check invalid email
 			var email_reg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 			if ($(this).attr("type") === "email" && !email_reg.test($.trim($(this).val()))) {
-				$(this).css('border-color', '#e44747'); 
+				$(this).css('border-color', '#e44747');
 				$("#contact_results").html('<br><div class="alert alert-danger">Please enter an valid email address.</div>').show();
-				proceed = false; //set do not proceed flag				
+				proceed = false; //set do not proceed flag
 			}
 			});
 
@@ -210,7 +210,7 @@ jQuery(function($) {
 
 			//Ajax post data to server
 			$.post('php/sendmail.php', post_data, function(response) {
-				if (response.type === 'error') { //load json data from server and output message     
+				if (response.type === 'error') { //load json data from server and output message
 					var output = '<br><div class="alert">' + response.text + '</div>';
 				} else {
 					var output = '<br><div class="success">' + response.text + '</div>';
@@ -230,13 +230,13 @@ jQuery(function($) {
 			$(this).css('background-color', '');
 			$("#result").slideUp();
 			});
-			
-			
+
+
 			 //------- Window scroll function -------//
 				$(window).scroll(function() {
 
 					//Collapse the top bar on scroll
-					
+
 					if ($("#main-nav").offset().top > 60) {
 						$('.top-bar').slideUp({
 							duration: 250,
@@ -248,16 +248,16 @@ jQuery(function($) {
 							easing: "easeInOutSine"
 						}).fadeIn(120);
 					}
-			
+
 				}); // end window scroll
-			
-            //------- on click function -------//			
+
+            //------- on click function -------//
 			$(document).on('click',function(){
 				if ($(window).width() < 1200) {
 				//close navbar if clicking outside menu
 				$('.navbar .collapse').collapse('hide');
 				}
-				
+
 			})
 			// end on click
 
@@ -269,20 +269,20 @@ jQuery(function($) {
 
 	$(window).load(function() {
 
-			// Page Preloader 	
+			// Page Preloader
 
 			$("#preloader").fadeOut("slow");
-			
+
 			//Effects on scroll
-			
+
 			AOS.init({
 				disable: 'mobile',
 				duration: 1500,
 				once: true
 			});
-			
+
 			//initialize skrollr
-			
+
 			skrollr.init({
 				forceHeight: false
 			});
@@ -292,7 +292,7 @@ jQuery(function($) {
 				skrollr.init().destroy();
 			}
 
-			//Isotope 
+			//Isotope
 
 			var $container = $('#gallery-isotope');
 			$container.isotope({
@@ -331,5 +331,6 @@ jQuery(function($) {
 			});
 
 		}); // end window load function
-	
+
+
 }); // end jquery function

@@ -3,21 +3,18 @@
 @section('content')
     @include('admin.notification')
     <!-- ==== Slider ==== -->
-    <div class="container-fluid p-0">
+    {{-- <div class="container-fluid p-0">
         <div id="slider" class="overlay-parallax-slider"
             style="width:1200px;height:650px;margin:0 auto;margin-bottom: 0px;">
-            <!-- Slide 1 -->
             <div class="ls-slide overlay2" data-ls="duration:4000; transition2d:7;">
-                <!-- bg image  -->
                 <img src="{{ URL::asset(FRONTEND . '/img/slider/slide1-parallax.jpg') }}" class="ls-bg"
                     alt="" />
-                <!-- ls-l  -->
                 <img width="1200" height="376" src="{{ URL::asset(FRONTEND . '/img/slider/slide1-element.png') }}"
                     class="ls-l" alt="" style="top:296px; right:0
 			 %;"
                     data-ls="offsetxin:10; offsetyin:120; durationin:1100; rotatein:5; transformoriginin:59.3% 80.3% 0; offsetxout:-80; durationout:400; parallax:true; parallaxlevel:-4;">
 
-                <!-- text  -->
+
                 <div class="ls-l header-wrapper"
                     data-ls="offsetyin:150; durationin:700; delayin:200; easingin:easeOutQuint; rotatexin:20; scalexin:1.4; offsetyout:600; durationout:400; parallax:true; parallaxlevel:2;">
                     <div class="header-text full-width text-light">
@@ -28,19 +25,23 @@
                                 service</p>
 
                         </div>
-                        <!--/d-none  -->
+
                     </div>
-                    <!-- header-text  -->
+
                 </div>
             </div>
-            <!-- ls-slide -->
+
 
         </div>
-        <!-- /slider -->
-    </div>
+
+    </div> --}}
     <!-- /container-fluid -->
     <!-- ==== Page Content ==== -->
     <!-- section -->
+
+    <video loop autoplay muted id="videoId"  class="custom_video">
+        <source src="{{ URL::asset('frontend/video/file.mp4') }}" type="video/mp4">
+    </video>
     <section id="intro-home" class="container-fluid bg-light pattern4-right">
         <div class="container">
             <!-- row -->
@@ -76,12 +77,17 @@
             <div class="row">
                 <div class="col-lg-7">
 
-                    <span class="h7 mt-0">U N T A M E  is a pet food delivery service. We provide the best nutritionally balanced home
-                        cooked fresh meal for your furry friends, delivered at your doorstep all across Chennai. Our mission is to
-                        break the barrier between fresh nutrition and packaged nutrition that's forced down on us and our pets in
-                        this globally commercialized world. We understand that it's not possible for everyone to take on more things
-                        in your already busy lives just so you can provide the best for your furmily. So, please allow us to do that
-                        for you and help us in our efforts to  <br/> U N T A M E the tamed. </span>
+                    <span class="h7 mt-0">U N T A M E is a pet food delivery service. We provide the best nutritionally
+                        balanced home
+                        cooked fresh meal for your furry friends, delivered at your doorstep all across Chennai. Our mission
+                        is to
+                        break the barrier between fresh nutrition and packaged nutrition that's forced down on us and our
+                        pets in
+                        this globally commercialized world. We understand that it's not possible for everyone to take on
+                        more things
+                        in your already busy lives just so you can provide the best for your furmily. So, please allow us to
+                        do that
+                        for you and help us in our efforts to <br /> U N T A M E the tamed. </span>
 
                 </div>
                 <!-- /col-lg-7-->
@@ -106,7 +112,8 @@
             <div class="row">
                 <!-- Tabs -->
                 <div class="col-md-12">
-                   <img style="width:100%;" src="{{ URL::asset(FRONTEND.'/img/How_it_works_Edited.webp')}}" alt="How it's works">
+                    <img style="width:100%;" src="{{ URL::asset(FRONTEND . '/img/How_it_works_Edited.webp') }}"
+                        alt="How it's works">
                 </div>
                 <!-- col-md-12 -->
             </div>
@@ -248,7 +255,7 @@
                     <!--divider-->
                     <hr class="mt-2">
                     <!-- map-->
-                    <div id="map-canvas" class="mt-5"></div>
+
                 </div>
             </div>
             <!-- /row-->
@@ -257,4 +264,6 @@
     </section>
     <!-- /section -->
 
-   @stop
+@stop
+
+
