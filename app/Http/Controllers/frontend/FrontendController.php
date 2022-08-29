@@ -27,6 +27,14 @@ class FrontendController extends Controller
         echo 'Email sent';
     }
 
+    public function AboutUs(Request $request){
+        return view('frontend.aboutus');
+    }
+
+    public function PrivacyPolicy(Request $request){
+        return view('frontend.privacy_policy');
+    }
+
 
     public function Register()
     {

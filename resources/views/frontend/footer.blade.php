@@ -42,8 +42,8 @@
                 <!--divider -->
                 <hr class="small-divider left" />
                 <ul class="list-unstyled mt-3">
-                    <li class="mb-1"><a href="#">Privacy Policy</a></li>
-                    <li class="mb-1"><a href="#">Contact Us</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL.'privacy_policy') }}">Privacy Policy</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL.'about_us') }}">About Us</a></li>
                 </ul>
                 <!--/ul -->
             </div>

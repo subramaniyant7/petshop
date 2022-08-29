@@ -124,7 +124,7 @@
     <!-- /section ends -->
 
     <!-- section -->
-    <section id="gallery-home" class="container-fluid pl-0 pr-0">
+    {{-- <section id="gallery-home" class="container-fluid pl-0 pr-0">
         <div class="container">
             <!-- section heading -->
             <div class="section-heading text-center">
@@ -180,7 +180,7 @@
             <!-- /col-md-12 -->
         </div>
         <!-- /owl-carousel -->
-    </section>
+    </section> --}}
     <!-- /section ends -->
 
     <!-- section-->
@@ -193,9 +193,7 @@
         <!-- /section-heading -->
         <div class="container">
             <div class="row">
-                <!-- image -->
-                <img src="{{ URL::asset(FRONTEND . '/img/about-img.png') }}"
-                    class="img-fluid contact-home-img hidden-medium-small" alt="">
+
                 <!-- contact box -->
                 <div class="col-lg-5 offset-lg-2 h-100">
                     <div class="contact-form3 bg-secondary" data-aos="flip-right">
@@ -257,6 +255,10 @@
                     <!-- map-->
 
                 </div>
+
+                  <!-- image -->
+                  <img src="{{ URL::asset(FRONTEND . '/img/about-img.png') }}"
+                  class="img-fluid contact-home-img hidden-medium-small" alt="">
             </div>
             <!-- /row-->
         </div>
