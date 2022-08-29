@@ -15,6 +15,19 @@ class FrontendController extends Controller
         return view('frontend.home');
     }
 
+    public function SendEmail(Request $request)
+    {
+        $otp = mt_rand(100000, 999999);
+        $emailContent = ['email' => 'tsubramaniyan2@gmail.com', 'otp' => $otp, 'name' => 'subramaniyan'];
+
+        Mail::send('frontend.email.registration_otp', $emailContent, function ($message) use ($emailContent) {
+            $message->to($emailContent['email'], 'Regitration - OTP Email')->subject('Regitration - OTP Email');
+            $message->from(getenv('MAIL_USERNAME'), 'Admin');
+        });
+        echo 'Email sent';
+    }
+
+
     public function Register()
     {
         return view('frontend.registration');

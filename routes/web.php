@@ -17,6 +17,7 @@ use App\Http\Controllers\frontend\FrontendController;
 
 Route::get('/', [FrontendController::class, 'Home']);
 
+Route::get('/sendemail', [FrontendController::class, 'SendEmail']);
 Route::middleware(['frontenduserauthorise'])->group(function () {
     Route::get('/register', [FrontendController::class, 'Register']);
     Route::post('/register', [FrontendController::class, 'RegisterProcess']);
