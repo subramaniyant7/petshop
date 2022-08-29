@@ -4,10 +4,13 @@
 @section('content')
     <div class="page container">
         <div class="row">
+
             <!-- page with sidebar starts -->
             <div class="col-lg-9 page-with-sidebar">
                 <div class="row">
+
                     <div class="col-lg-12">
+                        @include('admin.notification')
                         <h2>Email Verification </h2>
                     </div>
                     <!-- /col-lg-->

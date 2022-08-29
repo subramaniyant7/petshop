@@ -42,7 +42,7 @@ class FrontendController extends Controller
             try {
                 $emailContent = ['email' => $formData['user_email'], 'name' => $formData['user_firstname'], 'otp' => $otp];
                 Mail::send('frontend.email.registration_otp', $emailContent, function ($message) use ($emailContent) {
-                    $message->to($emailContent['email'], 'Regitration - OTP Email')->subject('Admin');
+                    $message->to($emailContent['email'], 'Regitration - OTP Email')->subject('Regitration - OTP Email');
                     $message->from(getenv('MAIL_USERNAME'), 'Admin');
                 });
             } catch (\Exception $e) {
@@ -79,7 +79,6 @@ class FrontendController extends Controller
     {
         if ($request->input('action') == '') return redirect('/')->with('error', 'Invalid action');
         $email = decryption($request->input('action'));
-        echo $email;
         $isValid = FHelperController::getUserOTPByEmail($email);
         if(count($isValid)){
             return view('frontend.email_otp_verification');
@@ -92,7 +91,6 @@ class FrontendController extends Controller
         $formData = $request->except('_token');
         if ($request->input('user_otp') == '') return back()->with('error', 'Please enter OTP');
         $email = decryption($request->input('user_id'));
-        echo $email;
         $isValid = FHelperController::getUserOTPVerifyByEmail($email,$request->input('user_otp'));
         if(count($isValid)){
             $formData = ['user_verified' => 1];

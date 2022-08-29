@@ -3,6 +3,7 @@
 
 @section('content')
     <div class="page container">
+        @include('admin.notification')
         <div class="row">
             <!-- page with sidebar starts -->
             <div class="col-lg-9 page-with-sidebar">
@@ -11,7 +12,6 @@
                         <h2>Register</h2>
                     </div>
                     <!-- /col-lg-->
-                    @include('admin.notification')
                     <div class="contact-info col-lg-12 mt-5 res-margin">
                         <!-- Form Starts -->
                         <div id="contact_form">
