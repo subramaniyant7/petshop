@@ -55,7 +55,7 @@ class FrontendController extends Controller
             try {
                 $emailContent = ['email' => $formData['user_email'], 'name' => $formData['user_firstname'], 'otp' => $otp];
                 Mail::send('frontend.email.registration_otp', $emailContent, function ($message) use ($emailContent) {
-                    $message->to($emailContent['email'], 'Regitration - OTP Email')->subject('Regitration - OTP Email');
+                    $message->to($emailContent['email'], 'Registration - OTP Email')->subject('Regitration - OTP Email');
                     $message->from(getenv('MAIL_USERNAME'), 'Admin');
                 });
             } catch (\Exception $e) {
