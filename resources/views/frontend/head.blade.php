@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ URL::asset(FRONTEND.'/img/favicon.png')}}">
     <!-- page title -->
     <title>Fresh Pet Food | Untame Pets | Chennai</title>
@@ -59,4 +60,8 @@
     <link rel="alternate stylesheet" type="text/css" href="{{ URL::asset(FRONTEND.'/styles/mymascot.css')}}" title="mymascot" media="all" />
     <link rel="alternate stylesheet" type="text/css" href="{{ URL::asset(FRONTEND.'/switcher/css/boxed.css')}}" title="boxed" media="all" />
     <link rel="alternate stylesheet" type="text/css" href="{{ URL::asset(FRONTEND.'/switcher/css/full.css')}}" title="full" media="all" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+    <script>
+        let siteurl = "{{ FRONTENDURL }}";
+    </script>
 </head>

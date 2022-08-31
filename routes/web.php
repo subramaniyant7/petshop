@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\frontend\FrontendController;
+use App\Http\Controllers\AjaxController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,10 @@ Route::middleware(['frontenduserauthorise'])->group(function () {
 
 Route::middleware(['frontendloggedin'])->group(function () {
     Route::get('/dashboard', [FrontendController::class, 'Dashboard']);
+    Route::get('/pets_master', [FrontendController::class, 'PetsMasterDetails']);
+    Route::post('/getbreed', [AjaxController::class, 'GetBreeds']);
+    Route::post('/savepetsmaster', [FrontendController::class, 'SavePetsMaster']);
+
     Route::get('/addshippingaddress', [FrontendController::class, 'AddShippingAddress']);
     Route::get('/editshippingaddress/{id}', [FrontendController::class, 'EditShippingAddress']);
     Route::post('/saveshippingaddress', [FrontendController::class, 'SaveShippingAddress']);

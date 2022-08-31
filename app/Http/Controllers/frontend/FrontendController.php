@@ -127,6 +127,23 @@ class FrontendController extends Controller
         return view('frontend.dashboard', compact('address'));
     }
 
+
+    public function PetsMasterDetails(Request $request){
+        $breeds = [];
+        $type = '';
+        if($request->input('type') != ''){
+            $type = decryption($request->input('type'));
+            $breeds = FHelperController::GetBreeds($type);
+        }
+        return view('frontend.petsmasterdetails', compact('breeds','type'));
+    }
+
+    public function SavePetsMaster(Request $request){
+        $formData = $request->except('_token');
+        // insertQuery();
+    }
+
+
     public function AddShippingAddress(Request $request){
         return view('frontend.actionshippingaddress');
     }

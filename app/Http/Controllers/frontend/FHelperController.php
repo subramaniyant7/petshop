@@ -50,6 +50,10 @@ class FHelperController extends Controller
         return DB::table("user_details")->where([['user_id',$id],['user_password', $password]])->get();
     }
 
+    static function GetBreeds($breedType){
+        return DB::table("breeds_info")->where([['breed_type', $breedType], ['status', 1]])->get();
+    }
+
 
 
 

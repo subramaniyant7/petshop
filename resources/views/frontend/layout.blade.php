@@ -40,6 +40,7 @@
     <script src="{{ URL::asset(FRONTEND . '/vendor/layerslider/js/layerslider.transitions.js') }}"></script>
     <script src="{{ URL::asset(FRONTEND . '/vendor/layerslider/js/layerslider.kreaturamedia.jquery.js') }}"></script>
     <script src="{{ URL::asset(FRONTEND . '/vendor/layerslider/js/layerslider.load.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
     <script src="{{ URL::asset(FRONTEND . '/js/own.js') }}"></script>
 
 </body>
