@@ -64,3 +64,37 @@ const breedNursing = (allergyValue) => {
     $('#breed_nursing').html(html);
 }
 
+
+
+$('#order_proceed').submit(function(e){
+    e.preventDefault();
+    console.log('submit')
+
+    $.ajax({
+        type: 'post',
+        url: `${siteurl}getorderproducts`,
+        data: $('#order_proceed').serialize(),
+        dataType: 'json',
+        success: function (response) {
+            console.log(response)
+            return false
+            if (response.status) {
+                // if (response.data.length) {
+                //     window.location.href = response.action;
+                // } else {
+                //     toastr.error('No Breed found. Please choose some other Breed Type');
+                // }
+            } else {
+                toastr.error('Something went wrong. Please try again');
+            }
+        },
+        error: function (data) {
+            toastr.error('Something went wrong. Please try again');
+        },
+        complete: function () {
+            $('#preloader').hide();
+        }
+    });
+
+})
+

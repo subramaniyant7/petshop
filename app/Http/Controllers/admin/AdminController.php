@@ -114,6 +114,9 @@ class AdminController extends Controller
 
     public function SaveProductDetails(Request $req){
         $formData =  $req->except(['_token','product_id','edit_productimage']);
+
+
+
         if ($req->hasFile('product_image')) {
             $file = $req->file('product_image');
             $destinationPath = public_path('uploads/products');
@@ -131,9 +134,18 @@ class AdminController extends Controller
             $formData['product_image'] =  $req->input('edit_productimage');
         }
         if($req->input('product_id') == ''){
+            if($formData['product_default'] == 1){
+                $checkDefaultExist = HelperController::getDefaultExist($formData['product_for']);
+                if(count($checkDefaultExist)) return back()->with('error','Already default option mapped with some other product');
+            }
             $saveData = insertQuery('products',$formData);
         }else{
-            $saveData = updateQuery('products','product_id',decryption($req->input('product_id')),$formData);
+            $productId = decryption($req->input('product_id'));
+            if($formData['product_default'] == 1){
+                $checkDefaultExist = HelperController::getDefaultExist($formData['product_for'],$productId);
+                if(count($checkDefaultExist)) return back()->with('error','Already default option mapped with some other product');
+            }
+            $saveData = updateQuery('products','product_id',$productId,$formData);
         }
         $notify = notification($saveData);
         return redirect(ADMINURL.'/viewproduct')->with($notify['type'], $notify['msg']);

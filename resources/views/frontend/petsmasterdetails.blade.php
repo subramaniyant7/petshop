@@ -13,10 +13,9 @@
                     </div>
                     <!-- /col-lg-->
 
-                    @include('admin.notification')
                     <div class="col-lg-12 col-md-12">
                         <div id="contact_form">
-                            <form method="post" action="{{ url(FRONTENDURL . 'save_password') }}" autocomplete="off">
+                            <form method="post" action="{{ url(FRONTENDURL . 'savepetsmaster') }}" autocomplete="off">
                                 @csrf
                                 <div class="form-group">
                                     <div class="row">
@@ -38,8 +37,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <label>Breed Name <span class="required">*</span></label>
-                                                <select name="breed_name" id="breed_name" class="form-control"
-                                                    required>
+                                                <select name="breed_name" id="breed_name" class="form-control" required>
                                                     <option value="">Select</option>
                                                     @foreach ($breeds as $breed)
                                                         <option value="{{ $breed->breed_id }}">{{ $breed->breed_name }}
@@ -77,29 +75,30 @@
                                             </div>
                                         </div>
 
-
-
-                                        @if ($type == '1')
-                                            <div class="row dog">
-                                                <div class="col-md-12">
-                                                    <label>What’s their activity level? <span
-                                                            class="required">*</span></label>
-                                                    <select name="breed_activity_level" class="form-control" required>
-                                                        <option value="">Select</option>
+                                        <div class="row dog">
+                                            <div class="col-md-12">
+                                                <label>What’s their activity level? <span class="required">*</span></label>
+                                                <select name="breed_activity_level" class="form-control" required>
+                                                    <option value="">Select</option>
+                                                    @if ($type == '1')
                                                         <option value="1">Sedentary</option>
                                                         <option value="2">Normal</option>
                                                         <option value="3">Active</option>
-                                                    </select>
-                                                </div>
+                                                    @elseif ($type == '2')
+                                                        <option value="1">Indoor Cat</option>
+                                                        <option value="2">Outdoor Cat</option>
+                                                    @endif
+                                                </select>
                                             </div>
-                                        @endif
+                                        </div>
+
 
                                         @if ($type == '2')
                                             <div class="row cat">
                                                 <div class="col-md-12">
                                                     <label>What’s their level of freedom? <span
                                                             class="required">*</span></label>
-                                                    <select name="breed_activity_level" class="form-control" required>
+                                                    <select name="breed_freedom_level" class="form-control" required>
                                                         <option value="">Select</option>
                                                         <option value="1">Indoor Cat</option>
                                                         <option value="2">Outdoor Cat</option>
@@ -180,7 +179,8 @@
 
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <label>Any additional notes you would like to add about your pet?</label>
+                                                <label>Any additional notes you would like to add about your
+                                                    pet?</label>
                                                 <input type="text" name="breed_additional_note"
                                                     class="form-control input-field" value="">
                                             </div>
@@ -189,6 +189,30 @@
                                         <button type="submit" id="submit_btn" value="Submit"
                                             class="btn btn-primary">Submit</button><br /><br />
                                     @endif
+
+
+                                    <div style="margin-top:1em;">
+                                        <h4>Note: </h4>
+                                        <ul>
+                                            <li>If your pet is under the age of 1, pregnant or nursing, their nutritional
+                                                needs
+                                                are different and we need more information before we can cater to them.
+                                                Please fill in the pet
+                                                profile and wait for us to get in touch with you! </li>
+                                            <li>A starter pack gets automatically added for the first week to help your pet
+                                                accustom to the
+                                                change in diet.</li>
+                                            <li>If you choose to get partial portions, please be aware that this is 50% of
+                                                what your pet
+                                                requires and will not be sufficient food for them. Make sure you substitute
+                                                the
+                                                remainder of
+                                                the meal with their old food or something appropriate.</li>
+                                        </ul>
+                                    </div>
+
+
+
                                 </div>
                             </form>
                             <!-- /form-group-->

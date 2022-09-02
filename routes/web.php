@@ -34,13 +34,21 @@ Route::middleware(['frontenduserauthorise'])->group(function () {
 Route::middleware(['frontendloggedin'])->group(function () {
     Route::get('/dashboard', [FrontendController::class, 'Dashboard']);
     Route::get('/pets_master', [FrontendController::class, 'PetsMasterDetails']);
+    Route::get('/pets_master/{id}', [FrontendController::class, 'PetsMasterCalculation']);
+    Route::post('/orderproceed', [FrontendController::class, 'OrderTypeProcess']);
+    Route::get('/payment/{id}', [FrontendController::class, 'PaymentGateway']);
+    Route::post('/paymentsuccess', [FrontendController::class, 'PaymentSuccess']);
+
     Route::post('/getbreed', [AjaxController::class, 'GetBreeds']);
+    Route::post('/getorderproducts', [AjaxController::class, 'GetOrderProducts']);
+
     Route::post('/savepetsmaster', [FrontendController::class, 'SavePetsMaster']);
 
     Route::get('/addshippingaddress', [FrontendController::class, 'AddShippingAddress']);
     Route::get('/editshippingaddress/{id}', [FrontendController::class, 'EditShippingAddress']);
     Route::post('/saveshippingaddress', [FrontendController::class, 'SaveShippingAddress']);
     Route::get('/myorders', [FrontendController::class, 'MyOrders']);
+    Route::get('/myorderproducts/{id}', [FrontendController::class, 'MyOrderProducts']);
     Route::get('/change_password', [FrontendController::class, 'ChangePassword']);
     Route::post('/save_password', [FrontendController::class, 'UpdateUserPassword']);
     Route::get('/logout', [FrontendController::class, 'UserLogout']);

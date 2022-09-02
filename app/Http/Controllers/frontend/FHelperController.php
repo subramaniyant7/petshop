@@ -54,11 +54,32 @@ class FHelperController extends Controller
         return DB::table("breeds_info")->where([['breed_type', $breedType], ['status', 1]])->get();
     }
 
+    static function getPetsMaster($id){
+        return DB::table("pets_master_details")->where([['pets_master_id', $id], ['status', 1]])->get();
+    }
+
+    static function getPetsOrderTemp($id){
+        return DB::table("order_details_temp")->where('order_id', $id)->get();
+    }
+
+    static function getPetsOrderProductsTemp($id){
+        return DB::table("order_details_products_temp")->where('order_id', $id)->get();
+    }
 
 
+    static function getPetsOrder($id=''){
+        $data = DB::table("order_details");
+        if ($id != '') $data->where('order_id', $id);
+        return $data->orderBy('order_id', 'desc')->get();
+    }
 
+    static function getMyOrders($userid){
+        return DB::table("order_details")->where('user_id', $userid)->orderBy('order_id', 'desc')->get();
+    }
 
-
+    static function getMyOrderProducts($orderId){
+        return DB::table("order_details_products")->where('order_id', $orderId)->orderBy('order_product_id', 'desc')->get();
+    }
 
 
 

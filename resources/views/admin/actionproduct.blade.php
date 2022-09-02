@@ -18,6 +18,7 @@
                         </div>
                         <div class="clearfix"></div>
                     </div>
+                    @include('admin.notification')
                     <div class="panel-wrapper collapse in">
                         <div class="panel-body">
                             <div class="form-wrap mt-40">
@@ -77,7 +78,7 @@
                                                 <div class="form-group">
                                                     <label class="col-md-4 control-label mb-10 text-left">Product Price<span class="help"> *</span></label>
                                                     <div class="col-md-5">
-                                                        <input type="text" class="form-control mb-10" name="product_price" required
+                                                        <input type="number" step="any" class="form-control mb-10" name="product_price" required
                                                          value ="{{ isset($action) && $action=='edit' ? $data[0]->product_price : old('product_price') }}"  >
                                                     </div>
                                                     <div class="col-md-3">

@@ -17,16 +17,31 @@
                             <thead>
                                 <tr>
                                     <th>S.No</th>
-                                    <th>Item Name</th>
-                                    <th>Qty</th>
-                                    <th>Price</th>
+                                    <th>Order ID</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Payment Status</th>
+                                    <th>Delivery Date</th>
+                                    <th>View Products</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colspan="4" class="text-center">No Records found</td>
-                                </tr>
+                                @forelse ($getOrders as $k => $orders)
+                                    <tr>
+                                        <td>{{ $k + 1 }}</td>
+                                        <td>{{ $orders->order_inc_id }}</td>
+                                        <td>{{ $orders->totalGram }} Gram</td>
+                                        <td>Rs.{{ number_format($orders->totalPrice, 2) }}</td>
+                                        <td>{{ $orders->paymentId != '' ? 'Paid' : 'In-Progress' }}</td>
+                                        <td>{{ $orders->delivery_date }}</td>
+                                        <td><a href="{{ FRONTENDURL.'myorderproducts/'.encryption($orders->order_id)}}">View</a></td>
 
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">No Records found</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

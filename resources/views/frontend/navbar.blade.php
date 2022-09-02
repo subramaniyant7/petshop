@@ -79,9 +79,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url(FRONTENDURL.'dashboard') }}">Dashboard</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL.'dashboard') }}">Cart(0)</a>
-                        </li>
                         @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url(FRONTENDURL.'register') }}">Register</a>

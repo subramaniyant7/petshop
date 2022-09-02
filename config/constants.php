@@ -9,10 +9,10 @@
     define('ADMINIMAGE','admin/img');
     define('ADMINUPLOAD','admin/uploads');
     if(isset($_SERVER["SERVER_PROTOCOL"])){
-        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https'?'https':'https';
+        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https'?'https':'http';
         define('SITEURL',$protocol.'://'.$_SERVER['HTTP_HOST'].'/');
     }
-    $siteUrl = $protocol.'://www.websitedesignservices.in/';
+    $siteUrl = $protocol.'://127.0.0.1:8000/';
     define('FRONTENDURL',$siteUrl);
     define('ADMINURL','/petsadmin');
 ?>

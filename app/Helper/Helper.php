@@ -9,11 +9,11 @@ function admintype(){
 }
 
 function productFor(){
-    return array('Dogs','Pets');
+    return array('Dog','Cat');
 }
 
 function productType(){
-    return array('KG','Gram');
+    return array('Gram');
 }
 
 function productDefault(){
@@ -130,6 +130,18 @@ function notification($type= false){
 
 function getAdminInfo($id){
     return DB::table('admin_details')->where('admin_id',$id)->get();
+}
+
+function breedInfoById($id){
+    return DB::table('breeds_info')->where('breed_id',$id)->get();
+}
+
+function getProducts($id){
+    return DB::table('products')->where('product_id',$id)->get();
+}
+
+function deliveryDays(){
+    return ['Monday','Friday'];
 }
 
 ?>
