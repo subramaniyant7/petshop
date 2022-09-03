@@ -7,8 +7,9 @@
 
             <div class="col-lg-9 page-with-sidebar">
                 <div class="row">
-                    @include('admin.notification')
+
                     <div class="col-lg-12">
+                        @include('admin.notification')
                         <h2>Shipping Address </h2>
                     </div>
                     <!-- /col-lg-->

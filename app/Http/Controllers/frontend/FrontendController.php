@@ -5,8 +5,11 @@ namespace App\Http\Controllers\frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\frontend\FHelperController;
+use App\Http\Controllers\admin\HelperController;
 use Mail;
 use DB;
+use PDF;
+use Storage;
 
 class FrontendController extends Controller
 {
@@ -204,6 +207,8 @@ class FrontendController extends Controller
     {
         $formData = $request->except('_token');
         $formData['user_id'] = $request->session()->get('frontenduserid');
+        $userAddress = FHelperController::getUserAddressDetails($formData['user_id']);
+        if(!count($userAddress)) return redirect(FRONTENDURL.'dashboard')->with('error','Please add shipping address');
         $create = insertQueryId('pets_master_details', $formData);
         $dob = strtotime($formData['breed_dob']);
         $datediff = strtotime(date('Y-m-d')) - $dob;
@@ -245,7 +250,13 @@ class FrontendController extends Controller
                 $returnData['remainingGramToBuy'] = $remainingGramToBuy;
                 $returnData['remainingDays'] = $returnData['totalDays'] - 5;
                 $returnData['order_type'] = $request->input('order_type');
+
+
             }
+
+            // echo '<pre>';
+            // print_r($returnData);
+            // exit;
             return view('frontend.petmastercalculation', $returnData);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -263,10 +274,10 @@ class FrontendController extends Controller
                 $totalquantity += $qty;
             }
             if ($totalquantity < $formData['totalGramNeedtoBuy']) {
-                return back()->with('error', 'Please order complete products in gram');
+                return back()->with('error', 'Added quantity not suffient with estimated quantity');
             }
             if ($totalquantity > $formData['totalGramNeedtoBuy']) {
-                return back()->with('error', 'Should not exceed estimated total products in gram');
+                return back()->with('error', 'Quantity should not exceed the estimated quantity');
             }
             try {
                 if ($totalquantity == $formData['totalGramNeedtoBuy']) {
@@ -276,13 +287,13 @@ class FrontendController extends Controller
                         'pets_master_id' => decryption($formData['pets_master_id']), 'totalGramNeedtoBuy' => $formData['totalGramNeedtoBuy'],
                         'defaultProductCalc' => $formData['defaultProductCalc'], 'remainingGramToBuy' => $formData['remainingGramToBuy'],
                         'remainingDays' => $formData['remainingDays'], 'totalGram' => $formData['totalGram'], 'totalDays' => $formData['totalDays'],
-                        'totalPrice' => $totalPrice, 'delivery_date' => $formData['delivery_date']
+                        'totalPrice' => round($totalPrice), 'delivery_date' => $formData['delivery_date']
                     ];
                     $createTempOrder = insertQueryId('order_details_temp', $orderInfo);
                     foreach ($products as $product) {
                         $getproduct =  DB::table("products")->where([['product_id', decryption($product['id'])], ['status', 1]])->get();
                         if (!count($getproduct))  return redirect(FRONTENDURL . 'pets_master/' . $formData['pets_master_id'])->with('error', 'Product not active');
-                        $totalPrice += $getproduct[0]->product_price * $product['qty'];
+                        $totalPrice += round($getproduct[0]->product_price * $product['qty']);
                         $orderProducts = [
                             'order_id' => $createTempOrder, 'user_id' => $request->session()->get('frontenduserid'),
                             'product_id' => decryption($product['id']), 'product_name' => $getproduct[0]->product_name,
@@ -328,7 +339,7 @@ class FrontendController extends Controller
                 'user_id' => $request->session()->get('frontenduserid'), 'order_inc_id' => $orderId, 'order_type' => $orderInfo[0]->order_type,
                 'pets_master_id' => $orderInfo[0]->pets_master_id, 'totalGramNeedtoBuy' => $orderInfo[0]->totalGramNeedtoBuy,
                 'defaultProductCalc' => $orderInfo[0]->defaultProductCalc, 'remainingGramToBuy' => $orderInfo[0]->remainingGramToBuy, 'remainingDays' => $orderInfo[0]->remainingDays,
-                'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => $orderInfo[0]->totalPrice,
+                'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice),
                 'paymentId' => $formData['razorpay_payment_id'], 'delivery_date' => $orderInfo[0]->delivery_date
             ];
 
@@ -343,6 +354,35 @@ class FrontendController extends Controller
                 insertQuery('order_details_products', $orderProducts);
             }
 
+
+            $invoiceName = 'invoice_' . $createOrder;
+            $pdfName = 'public/order/' . $invoiceName . '.pdf';
+
+            $orders = HelperController::getAllOrders($createOrder);
+            $orderProducts = HelperController::getOrderProducts($createOrder);
+            $address = getAddress($orders[0]->user_id);
+
+            $userInfo = HelperController::getUsers($orders[0]->user_id);
+
+            $data = ['address' => $address, 'orders' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email ];
+
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', ['data' => $data])->setPaper('a4', 'potrait');
+
+            Storage::put($pdfName, $pdf->output());
+
+            // $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix().$pdfName;
+
+            try {
+                Mail::send('frontend.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
+                    $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
+                    // $message->cc(['sales@at2-team.fr','amalautpavathas@gmail.com']);
+                    $message->attach($pdfName);
+                    $message->from(getenv('MAIL_USERNAME'), 'Sales');
+                });
+            } catch (\Exception $e) {
+                $response = ['url' => '', 'status' => false, 'msg' => $e->getMessage()];
+            }
+
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_temp', 'user_id');
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_products_temp', 'user_id');
 
@@ -352,6 +392,22 @@ class FrontendController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function OrderInvoiceDownload($id)
+    {
+        $invoiceName = 'invoice_' . decryption($id);
+        $pdfName = 'public/order/' . $invoiceName . '.pdf';
+        // $fileName = Storage::disk('local')->getDriver()->getPathPrefix() . $pdfName;
+        $newName = $invoiceName . '.pdf';
+
+        $headers = [
+            'Content-type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="Invoice.pdf"',
+        ];
+
+        return Storage::download($pdfName, $newName, $headers);
+        // return response()->download($fileName, $newName, $headers);
     }
 
 

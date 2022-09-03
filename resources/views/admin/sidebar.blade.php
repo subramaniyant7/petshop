@@ -106,10 +106,32 @@
         </li>
 
         <li>
+            <a class="{{ $title == 'Manage User' ? 'active' :'' }}" href="{{ url(ADMINURL.'/viewuser') }}">
+                <div class="pull-left">
+                    <i class="fa fa-users mr-20"></i>
+                    <span class="right-nav-text">Users</span>
+                </div>
+                <div class="clearfix"></div>
+            </a>
+        </li>
+
+
+
+        <li>
             <a class="{{ $title == 'Manage Products' ? 'active' :'' }}" href="{{ url(ADMINURL.'/viewproduct') }}">
                 <div class="pull-left">
                     <i class="fa fa-briefcase mr-20"></i>
                     <span class="right-nav-text">Products</span>
+                </div>
+                <div class="clearfix"></div>
+            </a>
+        </li>
+
+        <li>
+            <a class="{{ $title == 'Manage Orders' ? 'active' :'' }}" href="{{ url(ADMINURL.'/vieworder') }}">
+                <div class="pull-left">
+                    <i class="fa fa-shopping-cart mr-20"></i>
+                    <span class="right-nav-text">Orders</span>
                 </div>
                 <div class="clearfix"></div>
             </a>

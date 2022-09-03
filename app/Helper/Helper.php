@@ -144,4 +144,12 @@ function deliveryDays(){
     return ['Monday','Friday'];
 }
 
+function getUser($id){
+    return DB::table('user_details')->where('user_id',$id)->get();
+}
+
+function getAddress($id){
+    return DB::table('user_address')->where('user_id',$id)->get();
+}
+
 ?>

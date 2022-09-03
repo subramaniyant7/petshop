@@ -1,6 +1,6 @@
 <form method="POST" action="{{ url(FRONTENDURL . 'orderproceed') }}">
     @csrf
-    <p style="text-align:right;font-weight:bold;">Remaining Quantity to Add : {{ $remainingGramToBuy }} Gram</p>
+    <p style="text-align:right;font-weight:bold;color:red;">Remaining Quantity to Add : {{ $remainingGramToBuy }} Gram</p>
     <table class="table table-striped">
         <thead>
             <tr>

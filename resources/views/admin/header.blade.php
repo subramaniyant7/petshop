@@ -6,7 +6,7 @@
 	<meta name="description" content="Untame Cpanel" />
 	<meta name="keywords" content="admin" />
 	<meta name="author" content="untame"/>
-
+    <link rel="icon" type="image/x-icon" href="{{ URL::asset(FRONTEND.'/img/favicon.png')}}">
 	<!-- Favicon -->
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="icon" href="favicon.ico" type="image/x-icon">

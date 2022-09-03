@@ -22,7 +22,8 @@
                                         <p>Breed Type: {{ productFor()[$petsInfo->breed_type - 1] }}</p>
                                         <p>Breed Name: {{ breedInfoById($petsInfo->breed_name)[0]->breed_name }}</p>
                                         <p>Breed Weight: {{ $petsInfo->breed_weight }} KG</p>
-                                        <p>Total Food need to feed (in Gram) : {{ request()->order_type ? $totalGramNeedtoBuy : $totalGram }} gram</p>
+                                        <p>Per Day Meal : {{ $perDayMeal }} Gram</p>
+                                        <p>Total Food need to feed for Month  : {{ request()->order_type ? $totalGramNeedtoBuy : $totalGram }} Gram</p>
                                     </div>
                                     @if (request()->order_type)
                                     @include('frontend.masterproducts')

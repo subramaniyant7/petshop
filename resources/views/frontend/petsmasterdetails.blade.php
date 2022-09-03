@@ -19,7 +19,7 @@
                                 @csrf
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <label>Breed Type <span class="required">*</span></label>
                                             <select name="breed_type" class="form-control" required
                                                 onchange="getBreeds(this.value)">
@@ -31,11 +31,8 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
-
-                                    @if ($type != '')
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                        @if ($type != '')
+                                            <div class="col-md-6">
                                                 <label>Breed Name <span class="required">*</span></label>
                                                 <select name="breed_name" id="breed_name" class="form-control" required>
                                                     <option value="">Select</option>
@@ -45,10 +42,25 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
+                                        @endif
+                                    </div>
+
+                                    @if ($type != '')
+                                        {{-- <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Breed Name <span class="required">*</span></label>
+                                                <select name="breed_name" id="breed_name" class="form-control" required>
+                                                    <option value="">Select</option>
+                                                    @foreach ($breeds as $breed)
+                                                        <option value="{{ $breed->breed_id }}">{{ $breed->breed_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div> --}}
 
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <label>Gender <span class="required">*</span></label>
                                                 <select name="breed_gender" class="form-control" required>
                                                     <option value="">Select</option>
@@ -56,27 +68,23 @@
                                                     <option value="2">Female</option>
                                                 </select>
                                             </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <label>Date of Birth <span class="required">*</span></label>
                                                 <input type="date" name="breed_dob" class="form-control input-field"
                                                     required value="">
                                             </div>
-                                        </div>
+                                            </div>
 
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <label>How much does your pet weight? <span
                                                         class="required">*</span></label>
-                                                <input type="text" name="breed_weight" class="form-control input-field"
+                                                <input type="number" name="breed_weight" class="form-control input-field"
                                                     required value="">
                                             </div>
-                                        </div>
 
-                                        <div class="row dog">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <label>What’s their activity level? <span class="required">*</span></label>
                                                 <select name="breed_activity_level" class="form-control" required>
                                                     <option value="">Select</option>
@@ -91,6 +99,23 @@
                                                 </select>
                                             </div>
                                         </div>
+
+                                        {{-- <div class="row dog">
+                                            <div class="col-md-6">
+                                                <label>What’s their activity level? <span class="required">*</span></label>
+                                                <select name="breed_activity_level" class="form-control" required>
+                                                    <option value="">Select</option>
+                                                    @if ($type == '1')
+                                                        <option value="1">Sedentary</option>
+                                                        <option value="2">Normal</option>
+                                                        <option value="3">Active</option>
+                                                    @elseif ($type == '2')
+                                                        <option value="1">Indoor Cat</option>
+                                                        <option value="2">Outdoor Cat</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div> --}}
 
 
                                         @if ($type == '2')
@@ -108,7 +133,7 @@
                                         @endif
 
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <label>Is your pet neutered/spayed? <span class="required">*</span></label>
                                                 <select name="breed_neutered" class="form-control" required>
                                                     <option value="">Select</option>
@@ -116,10 +141,10 @@
                                                     <option value="2">No</option>
                                                 </select>
                                             </div>
-                                        </div>
+                                        {{-- </div>
 
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                        <div class="row"> --}}
+                                            <div class="col-md-6">
                                                 <label>What do you want to achieve with their weight? <span
                                                         class="required">*</span></label>
                                                 <select name="breed_weight_motive" class="form-control" required>
@@ -144,9 +169,9 @@
                                             </div>
 
                                             <div class="col-md-6" id="allergyinfo"></div>
-                                        </div>
+                                            </div>
 
-                                        <div class="row">
+                                            <div class="row">
                                             <div class="col-md-6">
                                                 <label>Does your pet have any ongoing health conditions? <span
                                                         class="required">*</span></label>
@@ -191,23 +216,23 @@
                                     @endif
 
 
-                                    <div style="margin-top:1em;">
+                                    <div style="margin-top:2em;">
                                         <h4>Note: </h4>
                                         <ul>
                                             <li>If your pet is under the age of 1, pregnant or nursing, their nutritional
                                                 needs
                                                 are different and we need more information before we can cater to them.
                                                 Please fill in the pet
-                                                profile and wait for us to get in touch with you! </li>
+                                                profile and wait for us to get in touch with you! <br /><br /></li>
                                             <li>A starter pack gets automatically added for the first week to help your pet
                                                 accustom to the
-                                                change in diet.</li>
+                                                change in diet. <br /><br /></li>
                                             <li>If you choose to get partial portions, please be aware that this is 50% of
                                                 what your pet
                                                 requires and will not be sufficient food for them. Make sure you substitute
                                                 the
                                                 remainder of
-                                                the meal with their old food or something appropriate.</li>
+                                                the meal with their old food or something appropriate. </li>
                                         </ul>
                                     </div>
 

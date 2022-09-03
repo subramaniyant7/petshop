@@ -4,8 +4,11 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\admin\HelperController;
+use App\Http\Controllers\frontend\FHelperController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDF;
+use Storage;
 
 class AdminController extends Controller
 {
@@ -88,6 +91,56 @@ class AdminController extends Controller
         $notify = notification($saveData);
         return redirect(ADMINURL.'/viewadmin')->with($notify['type'], $notify['msg']);
     }
+
+    public function ViewUser(){
+        $userDetails = HelperController::getAllusers();
+        return view('admin.viewuser',compact('userDetails'));
+    }
+
+    public function ViewOrder(){
+        $orders = HelperController::getAllOrders();
+        return view('admin.vieworders',compact('orders'));
+    }
+
+    public function ViewOrderDetails($id){
+        $orderId = decryption($id);
+        $orders = HelperController::getAllOrders($orderId);
+        $orderProducts = HelperController::getOrderProducts($orderId);
+        return view('admin.vieworderdetails',compact('orders','orderProducts'));
+    }
+
+
+    public function OrderSuccessEmail()
+    {
+        $orders = HelperController::getAllOrders(2);
+        $orderProducts = HelperController::getOrderProducts(2);
+        $address = getAddress($orders[0]->user_id);
+        $data = ['address' => $address, 'orders' => $orders, 'orderProducts' => $orderProducts];
+
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', ['data' => $data])->setPaper('a4', 'landscape');
+
+        return $pdf->stream();
+    }
+
+
+    public function OrderInvoiceDownload($id)
+    {
+        $invoiceName = 'invoice_' . decryption($id);
+        $pdfName = 'public/order/' . $invoiceName . '.pdf';
+        $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $pdfName;
+        $newName = $invoiceName . '.pdf';
+
+        $headers = [
+            'Content-type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="test.pdf"',
+        ];
+        return response()->download($fileName, $newName, $headers);
+    }
+
+
+
+
+
 
     public function ViewProduct(){
         $productDetails = HelperController::getProductDetails();

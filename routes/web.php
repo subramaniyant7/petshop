@@ -44,10 +44,12 @@ Route::middleware(['frontendloggedin'])->group(function () {
 
     Route::post('/savepetsmaster', [FrontendController::class, 'SavePetsMaster']);
 
+
     Route::get('/addshippingaddress', [FrontendController::class, 'AddShippingAddress']);
     Route::get('/editshippingaddress/{id}', [FrontendController::class, 'EditShippingAddress']);
     Route::post('/saveshippingaddress', [FrontendController::class, 'SaveShippingAddress']);
     Route::get('/myorders', [FrontendController::class, 'MyOrders']);
+    Route::get('/orderinvoice/{id}', [FrontendController::class, 'OrderInvoiceDownload']);
     Route::get('/myorderproducts/{id}', [FrontendController::class, 'MyOrderProducts']);
     Route::get('/change_password', [FrontendController::class, 'ChangePassword']);
     Route::post('/save_password', [FrontendController::class, 'UpdateUserPassword']);
@@ -70,6 +72,13 @@ Route::prefix(ADMINURL)->group(function () {
         Route::get('/manageadmin', [AdminController::class, 'ManageAdmin']);
         Route::get('/actionadmin/{option}/{id}', [AdminController::class, 'ActionAdmin']);
         Route::post('/saveadmindetails', [AdminController::class, 'SaveAdminDetails']);
+
+        Route::get('/viewpdf', [AdminController::class, 'OrderSuccessEmail']);
+        Route::get('/viewuser', [AdminController::class, 'ViewUser']);
+        Route::get('/vieworder', [AdminController::class, 'ViewOrder']);
+        Route::get('/vieworderdetails/{id}', [AdminController::class, 'ViewOrderDetails']);
+        Route::get('/orderinvoice/{id}', [AdminController::class, 'OrderInvoiceDownload']);
+
 
         Route::get('/viewproduct', [AdminController::class, 'ViewProduct']);
         Route::get('/manageproduct', [AdminController::class, 'ManageProduct']);

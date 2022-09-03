@@ -17,7 +17,7 @@
                                             <tr>
                                                 <th>S.No</th>
                                                 <th>Product</th>
-                                                <th>Price</th>
+                                                <th>Price(Gram)</th>
                                                 <th>Quantity</th>
                                                 <th>Total</th>
                                             </tr>
@@ -52,10 +52,10 @@
                     <script>
                         let total = document.getElementById('total').value;
                         let orderId = document.getElementById('order_id').value;
+                        // alert(total * 100)
                         var options = {
                             "key": "rzp_test_UUVQTAWGGCty5D", // Enter the Key ID generated from the Dashboard
-                            "amount": total *
-                                100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "amount": total * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                             "currency": "INR",
                             "is_test_mode": true,
                             "name": "Untame Pet",
@@ -69,7 +69,7 @@
                                 "branding_variant": "control",
                                 "asterix_variant": "control"
                             },
-                            "image": "https://example.com/your_logo",
+                            "image": `${siteurl}frontend/img/Final_Logo_UntamePets_01.webp`,
                             // "order_id": "123243", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                             "handler": function(response) {
                                 console.log(response)
@@ -95,7 +95,7 @@
                                             console.log(e)
                                             $('#preloader').hide();
                                             toastr.error('Something went wrong. Please try again');
-                                            location.reload();
+                                            // location.reload();
                                         }
                                     });
                                 } else {

@@ -29,8 +29,7 @@ class HelperController extends Controller
 
     static function getUsers($id = '')
     {
-        $data =  DB::table("user_detail")
-            ->select("user_detail.*", DB::raw("(SELECT admin_name FROM admin_details WHERE user_created_by = admin_details.admin_id) as created_name"));
+        $data =  DB::table("user_details");
         if ($id != '') $data->where('user_id', $id);
         return $data->orderBy('user_id', 'desc')->get();
     }
@@ -54,5 +53,26 @@ class HelperController extends Controller
         $admin = DB::table("admin_details")->where('admin_name', $name)->count();
         if ($admin) return true;
         return false;
+    }
+
+    static function getAllusers($id = '')
+    {
+        $data = DB::table("user_details");
+        if ($id != '') $data->where('user_id', $id);
+        return $data->orderBy('user_id', 'desc')->get();
+    }
+
+    static function getAllOrders($id = '')
+    {
+        $data = DB::table("order_details");
+        if ($id != '') $data->where('order_id', $id);
+        return $data->orderBy('order_id', 'desc')->get();
+    }
+
+    static function getOrderProducts($id = '')
+    {
+        $data = DB::table("order_details_products");
+        if ($id != '') $data->where('order_id', $id);
+        return $data->orderBy('order_id', 'desc')->get();
     }
 }

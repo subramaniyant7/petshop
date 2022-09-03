@@ -1,0 +1,166 @@
+<div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
+    <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+        <tr class="top">
+
+            <td style="vertical-align: top;">
+                <table style="width: 100%;line-height: inherit;text-align: left;font-size: 15px">
+                    <tr style="text-align: right">
+                        <td style="padding: 5px;vertical-align: top; text-align: right">
+                            <strong>Order ID </strong> : {{ $data['orders'][0]->order_inc_id }}
+                        </td>
+
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 5px;vertical-align: top;">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="padding: 1px;vertical-align: top;">
+                            <span style="font-weight: 600"><strong>Shipping Address</strong></span><br/>
+                            <address>
+                                {{ $data['address'][0]->first_name }} {{ $data['address'][0]->last_name }},<br>
+                                {{ $data['address'][0]->address1 }},<br>
+
+                                @if($data['address'][0]->address2 !='')
+                                    {{ $data['address'][0]->address2 }},<br>
+                                @endif
+                                @php
+                                    $city = $data['address'][0]->city == 1 ? 'Chennai' : '';
+                                    $state = $data['address'][0]->state == 1 ? 'Tamilnadu' : '';
+                                    $country = $data['address'][0]->country == 1 ? 'India' : '';
+                                @endphp
+                                {{ $city }},
+                                {{ $state }},
+                                {{ $country }},<br>
+                                @if($data['address'][0]->landmark !='')
+                                    {{ $data['address'][0]->landmark }},<br>
+                                @endif
+                                {{ $data['address'][0]->zipcode }}.<br>
+                            </address>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+
+        </tr>
+        <tr>
+            <td colspan="2" style="padding: 5px;vertical-align: top;margin-left:20%">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="padding: 5px;vertical-align: top;">
+                            <strong>Order Items</strong>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding: 5px;vertical-align: top;margin-left:20%;border: 1px solid #000;">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="padding: 5px;vertical-align: top;width:40%;">
+                            Items
+                        </td>
+                        <td style="padding: 5px;vertical-align: top;width:15%;">
+                            Price
+                        </td>
+                        <td style="padding: 5px;vertical-align: top;width:10%;">
+                            Qty
+                        </td>
+                        <td style="padding: 5px;vertical-align: top;width:15%;">
+                            Total
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        @php
+            $total = 0;
+        @endphp
+        @foreach($data['orderProducts'] as $product)
+        <tr>
+            <td colspan="2" style="padding: 5px;vertical-align: top;margin-left:20%;border: 1px solid #000;border-top: none;">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="padding: 5px;vertical-align: top;width:40%;">
+                            <span>{{ $product->product_name }}</span>
+                        </td>
+                        <td style="padding: 5px;vertical-align: top;width:15%;">
+                            Rs. {{ number_format($product->product_price,2) }}
+                        </td>
+                        <td style="padding: 5px;vertical-align: top;width:10%;">
+                            {{ $product->product_qty }} G
+                        </td>
+                        <td style="padding: 5px;vertical-align: top;width:15%;">
+                            Rs. {{ number_format($product->product_qty * $product->product_price,2) }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        @endforeach
+
+        <tr>
+            <td colspan="2" style="vertical-align: top;margin-left:20%;padding-top: 10px">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="vertical-align: top;width:77%;text-align: right">
+                            <strong>Grand-Total</strong>
+                        </td>
+                        <td style="vertical-align: top;width:23%;text-align: center">
+                            Rs. {{ number_format($data['orders'][0]->totalPrice,2) }}
+                        </td>
+
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="padding: 5px;vertical-align: top;margin-left:20%">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="padding: 5px;vertical-align: top;">
+                            <br/><br/><br/>
+                            <strong>Order Details</strong>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="padding: 5px;vertical-align: top;margin-left:20%">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="padding: 5px;vertical-align: top;">
+                            <strong>Order Type</strong> : {{ $data['orders'][0]->order_type == 1 ? 'Partial' : 'Complete' }}
+                            <br/>
+                            <strong>Delivery Date</strong> : {{ $data['orders'][0]->delivery_date }}
+                            <br/>
+                            <strong>Payment Id</strong> : {{ $data['orders'][0]->paymentId }}
+                            <br/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="padding: 5px;vertical-align: top;margin-left:20%">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="padding: 5px;vertical-align: top;">
+                            <strong>This Invoice is system generated</strong>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+    </table>
+
+
+</div>
