@@ -410,9 +410,9 @@ class FrontendController extends Controller
 
             $userInfo = HelperController::getUsers($orders[0]->user_id);
 
-            $data = ['address' => $address, 'orders' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email];
+            $data = ['address' => $address, 'order' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email];
 
-            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', ['data' => $data])->setPaper('a4', 'potrait');
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', $data)->setPaper('a4', 'potrait');
 
             Storage::put($pdfName, $pdf->output());
 

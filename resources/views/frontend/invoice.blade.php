@@ -6,7 +6,7 @@
                 <table style="width: 100%;line-height: inherit;text-align: left;font-size: 15px">
                     <tr style="text-align: right">
                         <td style="padding: 5px;vertical-align: top; text-align: right">
-                            <strong>Order ID </strong> : {{ $orders[0]->order_inc_id }}
+                            <strong>Order ID </strong> : {{ $order[0]->order_inc_id }}
                         </td>
 
                     </tr>
@@ -110,7 +110,7 @@
                             <strong>Grand-Total</strong>
                         </td>
                         <td style="vertical-align: top;width:23%;text-align: center">
-                            Rs. {{ number_format($orders[0]->totalPrice,2) }}
+                            Rs. {{ number_format($order[0]->totalPrice,2) }}
                         </td>
 
                     </tr>
@@ -136,11 +136,11 @@
                 <table style="width: 100%;line-height: inherit;text-align: left;">
                     <tr>
                         <td style="padding: 5px;vertical-align: top;">
-                            <strong>Order Type</strong> : {{ $orders[0]->order_type == 1 ? 'Partial' : 'Complete' }}
+                            <strong>Order Type</strong> : {{ $order[0]->order_type == 1 ? 'Partial' : 'Complete' }}
                             <br/>
-                            <strong>Delivery Date</strong> : {{ $orders[0]->delivery_date }}
+                            <strong>Delivery Date</strong> : {{ $order[0]->delivery_date }}
                             <br/>
-                            <strong>Payment Id</strong> : {{ $orders[0]->paymentId }}
+                            <strong>Payment Id</strong> : {{ $order[0]->paymentId }}
                             <br/>
                         </td>
                     </tr>
