@@ -240,12 +240,35 @@ class FrontendController extends Controller
         $dob = strtotime($formData['breed_dob']);
         $datediff = strtotime(date('Y-m-d')) - $dob;
         $totalDays = abs(round($datediff / (60 * 60 * 24)));
-
         if (
             $totalDays < 365 || $formData['breed_neutered'] == 2 || $formData['breed_allergies'] == 1 || $formData['breed_health_condition'] == 1 ||
             (array_key_exists('breed_nursing', $formData) && $formData['breed_nursing'] == 1)
         ) {
-            return redirect(FRONTENDURL . 'pets_master')->with('success', 'Thank you for submitting your pet information. We will contact you soon');
+            try {
+                $userInfo =  getUser($request->session()->get('frontenduserid'));
+                $formData['breed_type'] = productFor()[$formData['breed_type']-1];
+                $formData['breed_name'] = breedInfoById($formData['breed_name'])[0]->breed_name;
+                $formData['breed_gender'] = petGender()[$formData['breed_gender']-1];
+                $formData['breed_activity_level'] = $formData['breed_activity_level'] == 1 ? dogActivity()[$formData['breed_activity_level']-1] : catActivity()[$formData['breed_activity_level']-1];
+                $formData['breed_freedom_level'] = isset($formData['breed_freedom_level']) ? catActivity()[$formData['breed_freedom_level']-1] : '';
+                $formData['breed_neutered'] = YesNo()[$formData['breed_neutered']-1];
+                $formData['breed_weight_motive'] = acheiveWeight()[$formData['breed_weight_motive']-1];
+                $formData['breed_allergies'] = YesNo()[$formData['breed_allergies']-1];
+                $formData['breed_allergies_info'] = isset($formData['breed_allergies_info']) ? $formData['breed_allergies_info'] : '';
+                $formData['breed_health_condition'] = YesNo()[$formData['breed_health_condition']-1];
+                $formData['breed_health_condition_info'] = isset($formData['breed_health_condition_info']) ? $formData['breed_health_condition_info'] : '';
+                $formData['breed_nursing'] = isset($formData['breed_nursing']) ? YesNo()[$formData['breed_nursing']-1] : '';
+                $formData['breed_nursing_info'] = isset($formData['breed_nursing_info']) ? $formData['breed_nursing_info'] : '';
+                $formData['user_email'] = $userInfo[0]->user_email . ' / '.$userInfo[0]->user_mobile;
+
+                Mail::send('frontend.email.petsmastercontact', $formData, function ($message){
+                    $message->to('woof@untame.pet', 'Admin')->subject('Pet Master Contact Info');
+                    $message->from(getenv('MAIL_USERNAME'), 'Admin');
+                });
+                return redirect(FRONTENDURL . 'pets_master')->with('success', 'Thank you for submitting your pet information. We will contact you soon');
+            } catch (\Exception $e) {
+                return redirect(FRONTENDURL . 'pets_master')->with('error', $e->getMessage());
+            }
         } else {
             return redirect(FRONTENDURL . 'pets_master/' . encryption($create));
         }
@@ -389,22 +412,20 @@ class FrontendController extends Controller
 
             $data = ['address' => $address, 'orders' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email];
 
-            // $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', ['data' => $data])->setPaper('a4', 'potrait');
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', ['data' => $data])->setPaper('a4', 'potrait');
 
-            // Storage::put($pdfName, $pdf->output());
+            Storage::put($pdfName, $pdf->output());
 
-            // // $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix().$pdfName;
-
-            // try {
-            //     Mail::send('frontend.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
-            //         $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-            //         // $message->cc(['sales@at2-team.fr','amalautpavathas@gmail.com']);
-            //         $message->attach($pdfName);
-            //         $message->from(getenv('MAIL_USERNAME'), 'Sales');
-            //     });
-            // } catch (\Exception $e) {
-            //     $response = ['url' => '', 'status' => false, 'msg' => $e->getMessage()];
-            // }
+            try {
+                Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
+                    $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
+                    $message->cc(['woof@untame.pet']);
+                    $message->attach(storage_path('app/'.$pdfName));
+                    $message->from(getenv('MAIL_USERNAME'), 'Sales');
+                });
+            } catch (\Exception $e) {
+                $response = ['url' => '', 'status' => false, 'msg' => $e->getMessage()];
+            }
 
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_temp', 'user_id');
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_products_temp', 'user_id');
@@ -421,7 +442,6 @@ class FrontendController extends Controller
     {
         $invoiceName = 'invoice_' . decryption($id);
         $pdfName = 'public/order/' . $invoiceName . '.pdf';
-        // $fileName = Storage::disk('local')->getDriver()->getPathPrefix() . $pdfName;
         $newName = $invoiceName . '.pdf';
 
         $headers = [
@@ -430,7 +450,6 @@ class FrontendController extends Controller
         ];
 
         return Storage::download($pdfName, $newName, $headers);
-        // return response()->download($fileName, $newName, $headers);
     }
 
 

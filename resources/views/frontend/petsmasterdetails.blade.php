@@ -46,26 +46,16 @@
                                     </div>
 
                                     @if ($type != '')
-                                        {{-- <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Breed Name <span class="required">*</span></label>
-                                                <select name="breed_name" id="breed_name" class="form-control" required>
-                                                    <option value="">Select</option>
-                                                    @foreach ($breeds as $breed)
-                                                        <option value="{{ $breed->breed_id }}">{{ $breed->breed_name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div> --}}
 
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label>Gender <span class="required">*</span></label>
                                                 <select name="breed_gender" class="form-control" required>
                                                     <option value="">Select</option>
-                                                    <option value="1">Male</option>
-                                                    <option value="2">Female</option>
+                                                    @foreach (petGender() as $k => $gender)
+                                                        <option value="{{ $k + 1 }}">{{ $gender }}</option>
+                                                    @endforeach
+
                                                 </select>
                                             </div>
 
@@ -74,7 +64,7 @@
                                                 <input type="date" name="breed_dob" class="form-control input-field"
                                                     required value="">
                                             </div>
-                                            </div>
+                                        </div>
 
                                         <div class="row">
                                             <div class="col-md-6">
@@ -89,33 +79,18 @@
                                                 <select name="breed_activity_level" class="form-control" required>
                                                     <option value="">Select</option>
                                                     @if ($type == '1')
-                                                        <option value="1">Sedentary</option>
-                                                        <option value="2">Normal</option>
-                                                        <option value="3">Active</option>
+                                                        @foreach (dogActivity() as $k => $activity)
+                                                            <option value="{{ $k + 1 }}">{{ $activity }}</option>
+                                                        @endforeach
                                                     @elseif ($type == '2')
-                                                        <option value="1">Indoor Cat</option>
-                                                        <option value="2">Outdoor Cat</option>
+                                                        @foreach (catActivity() as $k => $activity)
+                                                            <option value="{{ $k + 1 }}">{{ $activity }}
+                                                            </option>
+                                                        @endforeach
                                                     @endif
                                                 </select>
                                             </div>
                                         </div>
-
-                                        {{-- <div class="row dog">
-                                            <div class="col-md-6">
-                                                <label>What’s their activity level? <span class="required">*</span></label>
-                                                <select name="breed_activity_level" class="form-control" required>
-                                                    <option value="">Select</option>
-                                                    @if ($type == '1')
-                                                        <option value="1">Sedentary</option>
-                                                        <option value="2">Normal</option>
-                                                        <option value="3">Active</option>
-                                                    @elseif ($type == '2')
-                                                        <option value="1">Indoor Cat</option>
-                                                        <option value="2">Outdoor Cat</option>
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </div> --}}
 
 
                                         @if ($type == '2')
@@ -125,8 +100,10 @@
                                                             class="required">*</span></label>
                                                     <select name="breed_freedom_level" class="form-control" required>
                                                         <option value="">Select</option>
-                                                        <option value="1">Indoor Cat</option>
-                                                        <option value="2">Outdoor Cat</option>
+                                                        @foreach (catActivity() as $k => $activity)
+                                                            <option value="{{ $k + 1 }}">{{ $activity }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
@@ -137,11 +114,12 @@
                                                 <label>Is your pet neutered/spayed? <span class="required">*</span></label>
                                                 <select name="breed_neutered" class="form-control" required>
                                                     <option value="">Select</option>
-                                                    <option value="1">Yes</option>
-                                                    <option value="2">No</option>
+                                                    @foreach (YesNo() as $k => $activity)
+                                                        <option value="{{ $k + 1 }}">{{ $activity }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
-                                        {{-- </div>
+                                            {{-- </div>
 
                                         <div class="row"> --}}
                                             <div class="col-md-6">
@@ -149,9 +127,9 @@
                                                         class="required">*</span></label>
                                                 <select name="breed_weight_motive" class="form-control" required>
                                                     <option value="">Select</option>
-                                                    <option value="1">Reduce Weight</option>
-                                                    <option value="2">Maintain Weight</option>
-                                                    <option value="3">Gain Weight</option>
+                                                    @foreach (acheiveWeight() as $k => $activity)
+                                                        <option value="{{ $k + 1 }}">{{ $activity }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
@@ -163,23 +141,25 @@
                                                 <select name="breed_allergies" class="form-control" required
                                                     onchange="breedAllergy(this.value)">
                                                     <option value="">Select</option>
-                                                    <option value="1">Yes</option>
-                                                    <option value="2">No</option>
+                                                    @foreach (YesNo() as $k => $activity)
+                                                        <option value="{{ $k + 1 }}">{{ $activity }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
 
                                             <div class="col-md-6" id="allergyinfo"></div>
-                                            </div>
+                                        </div>
 
-                                            <div class="row">
+                                        <div class="row">
                                             <div class="col-md-6">
                                                 <label>Does your pet have any ongoing health conditions? <span
                                                         class="required">*</span></label>
                                                 <select name="breed_health_condition" class="form-control" required
                                                     onchange="healthInfo(this.value)">
                                                     <option value="">Select</option>
-                                                    <option value="1">Yes</option>
-                                                    <option value="2">No</option>
+                                                    @foreach (YesNo() as $k => $activity)
+                                                        <option value="{{ $k + 1 }}">{{ $activity }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-md-6" id="healthcondition"></div>
@@ -194,8 +174,10 @@
                                                     <select name="breed_nursing" class="form-control" required
                                                         onchange="breedNursing(this.value)">
                                                         <option value="">Select</option>
-                                                        <option value="1">Yes</option>
-                                                        <option value="2">No</option>
+                                                        @foreach (YesNo() as $k => $activity)
+                                                            <option value="{{ $k + 1 }}">{{ $activity }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                                 <div class="col-md-6" id="breed_nursing"></div>

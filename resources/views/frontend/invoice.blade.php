@@ -6,7 +6,7 @@
                 <table style="width: 100%;line-height: inherit;text-align: left;font-size: 15px">
                     <tr style="text-align: right">
                         <td style="padding: 5px;vertical-align: top; text-align: right">
-                            <strong>Order ID </strong> : {{ $data['orders'][0]->order_inc_id }}
+                            <strong>Order ID </strong> : {{ $orders[0]->order_inc_id }}
                         </td>
 
                     </tr>
@@ -20,24 +20,24 @@
                         <td style="padding: 1px;vertical-align: top;">
                             <span style="font-weight: 600"><strong>Shipping Address</strong></span><br/>
                             <address>
-                                {{ $data['address'][0]->first_name }} {{ $data['address'][0]->last_name }},<br>
-                                {{ $data['address'][0]->address1 }},<br>
+                                {{ $address[0]->first_name }} {{ $address[0]->last_name }},<br>
+                                {{ $address[0]->address1 }},<br>
 
-                                @if($data['address'][0]->address2 !='')
-                                    {{ $data['address'][0]->address2 }},<br>
+                                @if($address[0]->address2 !='')
+                                    {{ $address[0]->address2 }},<br>
                                 @endif
                                 @php
-                                    $city = $data['address'][0]->city == 1 ? 'Chennai' : '';
-                                    $state = $data['address'][0]->state == 1 ? 'Tamilnadu' : '';
-                                    $country = $data['address'][0]->country == 1 ? 'India' : '';
+                                    $city = $address[0]->city == 1 ? 'Chennai' : '';
+                                    $state = $address[0]->state == 1 ? 'Tamilnadu' : '';
+                                    $country = $address[0]->country == 1 ? 'India' : '';
                                 @endphp
                                 {{ $city }},
                                 {{ $state }},
                                 {{ $country }},<br>
-                                @if($data['address'][0]->landmark !='')
-                                    {{ $data['address'][0]->landmark }},<br>
+                                @if($address[0]->landmark !='')
+                                    {{ $address[0]->landmark }},<br>
                                 @endif
-                                {{ $data['address'][0]->zipcode }}.<br>
+                                {{ $address[0]->zipcode }}.<br>
                             </address>
                         </td>
                     </tr>
@@ -79,7 +79,7 @@
         @php
             $total = 0;
         @endphp
-        @foreach($data['orderProducts'] as $product)
+        @foreach($orderProducts as $product)
         <tr>
             <td colspan="2" style="padding: 5px;vertical-align: top;margin-left:20%;border: 1px solid #000;border-top: none;">
                 <table style="width: 100%;line-height: inherit;text-align: left;">
@@ -110,7 +110,7 @@
                             <strong>Grand-Total</strong>
                         </td>
                         <td style="vertical-align: top;width:23%;text-align: center">
-                            Rs. {{ number_format($data['orders'][0]->totalPrice,2) }}
+                            Rs. {{ number_format($orders[0]->totalPrice,2) }}
                         </td>
 
                     </tr>
@@ -136,11 +136,11 @@
                 <table style="width: 100%;line-height: inherit;text-align: left;">
                     <tr>
                         <td style="padding: 5px;vertical-align: top;">
-                            <strong>Order Type</strong> : {{ $data['orders'][0]->order_type == 1 ? 'Partial' : 'Complete' }}
+                            <strong>Order Type</strong> : {{ $orders[0]->order_type == 1 ? 'Partial' : 'Complete' }}
                             <br/>
-                            <strong>Delivery Date</strong> : {{ $data['orders'][0]->delivery_date }}
+                            <strong>Delivery Date</strong> : {{ $orders[0]->delivery_date }}
                             <br/>
-                            <strong>Payment Id</strong> : {{ $data['orders'][0]->paymentId }}
+                            <strong>Payment Id</strong> : {{ $orders[0]->paymentId }}
                             <br/>
                         </td>
                     </tr>

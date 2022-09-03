@@ -24,6 +24,26 @@ function userGender(){
     return array('Male','Female','Others');
 }
 
+function petGender(){
+    return array('Male','Female');
+}
+
+function YesNo(){
+    return array('Yes','No');
+}
+
+function acheiveWeight(){
+    return array('Reduce Weight','Maintain Weight','Gain Weight');
+}
+
+function dogActivity(){
+    return array('Sedentary','Normal','Active');
+}
+
+function catActivity(){
+    return array('Indoor Cat','Outdoor Cat');
+}
+
 function userCity(){
     return array('Chennai');
 }
