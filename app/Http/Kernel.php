@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'adminauth' => \App\Http\Middleware\AdminAuthenticate::class,
         'frontendloggedin' => \App\Http\Middleware\FrontendUserLogin::class,
         'frontenduserauthorise' => \App\Http\Middleware\FrontendAuthorization::class,
+        'globalvalidate' => \App\Http\Middleware\GlobalMiddleware::class,
     ];
 }
