@@ -17,7 +17,7 @@ class GlobalMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (FRONTENDURL != SITEURL) {
-            abort(404, 'Unauthorized Access');
+            abort(500, 'Server Error');
         }
         return $next($request);
     }
