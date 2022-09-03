@@ -14,7 +14,8 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
-/config/constants.php
 .htaccess
 composer.lock
 composer.json
+
+config/constants.php
