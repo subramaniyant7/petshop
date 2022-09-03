@@ -20,6 +20,10 @@ Route::get('/', [FrontendController::class, 'Home']);
 
 Route::get('/sendemail', [FrontendController::class, 'SendEmail']);
 Route::get('/about_us', [FrontendController::class, 'AboutUs']);
+Route::get('/products', [FrontendController::class, 'Products']);
+Route::get('/faq', [FrontendController::class, 'FAQ']);
+Route::post('/contactus', [FrontendController::class, 'ContactUs']);
+
 Route::get('/privacy_policy', [FrontendController::class, 'PrivacyPolicy']);
 
 Route::middleware(['frontenduserauthorise'])->group(function () {

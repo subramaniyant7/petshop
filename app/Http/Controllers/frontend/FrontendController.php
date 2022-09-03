@@ -31,10 +31,37 @@ class FrontendController extends Controller
         echo 'Email sent';
     }
 
+    public function ContactUs(Request $request)
+    {
+        $formData = $request->except('_token');
+        if ($formData['name'] == '' || $formData['email'] == '' || $formData['subject'] == '' || $formData['content'] == '') return back()->with('error', 'Please enter all mandatory fields');
+        try {
+            Mail::send('frontend.email.contactus', $formData, function ($message) use ($formData) {
+                $message->to('leadgen@untame.pet', 'Admin')->subject('Contact Us');
+                $message->from(getenv('MAIL_USERNAME'), 'Admin');
+            });
+            return redirect(FRONTENDURL)->with('success','Thanks for Contacting Us. We will contact you soon.');
+        } catch (\Exception $e) {
+            return redirect(FRONTENDURL)->with('error', $e->getMessage());
+        }
+    }
+
     public function AboutUs(Request $request)
     {
         return view('frontend.aboutus');
     }
+
+    public function Products(Request $request)
+    {
+        return view('frontend.products');
+    }
+
+    public function FAQ(Request $request)
+    {
+        return view('frontend.faq');
+    }
+
+
 
     public function PrivacyPolicy(Request $request)
     {
@@ -50,8 +77,8 @@ class FrontendController extends Controller
     {
         $formData = $request->except('_token');
         if (
-            $formData['user_firstname'] == '' || $formData['user_last_name'] == '' || $formData['user_email'] == '' || $formData['user_password'] == ''
-            || $formData['user_mobile'] == '' || $formData['user_gender'] == ''
+            $formData['user_firstname'] == '' || $formData['user_email'] == '' || $formData['user_password'] == ''
+            || $formData['user_mobile'] == ''
         ) return back()->with('error', 'Please enter mandatory fields');
 
         $otp = mt_rand(100000, 999999);
@@ -208,15 +235,17 @@ class FrontendController extends Controller
         $formData = $request->except('_token');
         $formData['user_id'] = $request->session()->get('frontenduserid');
         $userAddress = FHelperController::getUserAddressDetails($formData['user_id']);
-        if(!count($userAddress)) return redirect(FRONTENDURL.'dashboard')->with('error','Please add shipping address');
+        if (!count($userAddress)) return redirect(FRONTENDURL . 'dashboard')->with('error', 'Please add shipping address');
         $create = insertQueryId('pets_master_details', $formData);
         $dob = strtotime($formData['breed_dob']);
         $datediff = strtotime(date('Y-m-d')) - $dob;
         $totalDays = abs(round($datediff / (60 * 60 * 24)));
 
-        if ($totalDays < 365 || $formData['breed_neutered'] == 2 || $formData['breed_allergies'] == 1 || $formData['breed_health_condition'] == 1 ||
-            (array_key_exists('breed_nursing', $formData) && $formData['breed_nursing'] == 1) ) {
-            return redirect(FRONTENDURL.'pets_master')->with('success','Thank you for submitting your pet information. We will contact you soon');
+        if (
+            $totalDays < 365 || $formData['breed_neutered'] == 2 || $formData['breed_allergies'] == 1 || $formData['breed_health_condition'] == 1 ||
+            (array_key_exists('breed_nursing', $formData) && $formData['breed_nursing'] == 1)
+        ) {
+            return redirect(FRONTENDURL . 'pets_master')->with('success', 'Thank you for submitting your pet information. We will contact you soon');
         } else {
             return redirect(FRONTENDURL . 'pets_master/' . encryption($create));
         }
@@ -250,13 +279,7 @@ class FrontendController extends Controller
                 $returnData['remainingGramToBuy'] = $remainingGramToBuy;
                 $returnData['remainingDays'] = $returnData['totalDays'] - 5;
                 $returnData['order_type'] = $request->input('order_type');
-
-
             }
-
-            // echo '<pre>';
-            // print_r($returnData);
-            // exit;
             return view('frontend.petmastercalculation', $returnData);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -364,24 +387,24 @@ class FrontendController extends Controller
 
             $userInfo = HelperController::getUsers($orders[0]->user_id);
 
-            $data = ['address' => $address, 'orders' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email ];
+            $data = ['address' => $address, 'orders' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email];
 
-            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', ['data' => $data])->setPaper('a4', 'potrait');
+            // $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', ['data' => $data])->setPaper('a4', 'potrait');
 
-            Storage::put($pdfName, $pdf->output());
+            // Storage::put($pdfName, $pdf->output());
 
-            // $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix().$pdfName;
+            // // $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix().$pdfName;
 
-            try {
-                Mail::send('frontend.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
-                    $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    // $message->cc(['sales@at2-team.fr','amalautpavathas@gmail.com']);
-                    $message->attach($pdfName);
-                    $message->from(getenv('MAIL_USERNAME'), 'Sales');
-                });
-            } catch (\Exception $e) {
-                $response = ['url' => '', 'status' => false, 'msg' => $e->getMessage()];
-            }
+            // try {
+            //     Mail::send('frontend.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
+            //         $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
+            //         // $message->cc(['sales@at2-team.fr','amalautpavathas@gmail.com']);
+            //         $message->attach($pdfName);
+            //         $message->from(getenv('MAIL_USERNAME'), 'Sales');
+            //     });
+            // } catch (\Exception $e) {
+            //     $response = ['url' => '', 'status' => false, 'msg' => $e->getMessage()];
+            // }
 
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_temp', 'user_id');
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_products_temp', 'user_id');

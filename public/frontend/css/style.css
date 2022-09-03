@@ -1108,6 +1108,7 @@ Last change:12th February 2019
 .contact-home-img{
      position:absolute;
      margin-left: -400px;
+     right:0;
 }
 
 /*=========================== Blog Pages ============================ */

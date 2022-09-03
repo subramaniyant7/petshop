@@ -67,13 +67,16 @@
                             <a class="nav-link" href="{{ url(FRONTENDURL) }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Products</a>
+                            <a class="nav-link" href="{{ url(FRONTENDURL.'products') }}">Products</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url(FRONTENDURL.'about_us') }}">About Us</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url(FRONTENDURL.'privacy_policy') }}">Privacy Policy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url(FRONTENDURL.'faq') }}">FAQ</a>
                         </li>
                         @if(session('frontenduserid'))
                         <li class="nav-item">
