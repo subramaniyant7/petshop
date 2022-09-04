@@ -176,41 +176,7 @@
         <!-- /container -->
     </section>
 
-    <!-- section -->
-    <section id="services-home" class="container">
-        <div class="container">
-            <!-- section heading -->
-            <div class="section-heading text-center">
-                {{-- <p class="subtitle">what we offer</p> --}}
-                <h2>Why Us</h2>
-            </div>
-            <!-- /section heading -->
-            <div class="row">
-                <div class="col-lg-7">
 
-                    <span class="h7 mt-0">U N T A M E is a pet food delivery service. We provide the best nutritionally
-                        balanced home
-                        cooked fresh meal for your furry friends, delivered at your doorstep all across Chennai. Our mission
-                        is to
-                        break the barrier between fresh nutrition and packaged nutrition that's forced down on us and our
-                        pets in
-                        this globally commercialized world. We understand that it's not possible for everyone to take on
-                        more things
-                        in your already busy lives just so you can provide the best for your furmily. So, please allow us to
-                        do that
-                        for you and help us in our efforts to <br /> U N T A M E the tamed. </span>
-
-                </div>
-                <!-- /col-lg-7-->
-                <div class="col-lg-5">
-                    <img src="{{ URL::asset(FRONTEND . '/img/Whoarewe.webp') }}" class="img-fluid" alt="" />
-                </div>
-            </div>
-            <!-- /row -->
-        </div>
-        <!-- /container -->
-    </section>
-    <!-- /section ends -->
     <!-- section -->
     <section id="about-home" class="overlay-light">
         <div class="container">
