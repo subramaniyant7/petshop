@@ -165,24 +165,22 @@
                                             <div class="col-md-6" id="healthcondition"></div>
                                         </div>
 
-
-                                        @if ($type == '2')
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <label>Is your pet pregnant or nursing? <span
-                                                            class="required">*</span></label>
-                                                    <select name="breed_nursing" class="form-control" required
-                                                        onchange="breedNursing(this.value)">
-                                                        <option value="">Select</option>
-                                                        @foreach (YesNo() as $k => $activity)
-                                                            <option value="{{ $k + 1 }}">{{ $activity }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-6" id="breed_nursing"></div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Is your pet pregnant or nursing? <span
+                                                        class="required">*</span></label>
+                                                <select name="breed_nursing" class="form-control" required
+                                                    onchange="breedNursing(this.value)">
+                                                    <option value="">Select</option>
+                                                    @foreach (YesNo() as $k => $activity)
+                                                        <option value="{{ $k + 1 }}">{{ $activity }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                        @endif
+                                            <div class="col-md-6" id="breed_nursing"></div>
+                                        </div>
+
 
                                         <div class="row">
                                             <div class="col-md-12">

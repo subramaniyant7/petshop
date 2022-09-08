@@ -30,7 +30,7 @@
                                     @else
                                         <form id="order_proceed1" method="GET">
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-3">
                                                     <label>Order Type <span class="required">*</span></label>
                                                     <select name="order_type" class="form-control" required>
                                                         <option value="">Select</option>

@@ -81,6 +81,10 @@ class FHelperController extends Controller
         return DB::table("order_details_products")->where('order_id', $orderId)->orderBy('order_product_id', 'desc')->get();
     }
 
+    static function getMyOrderProductsAsc($orderId){
+        return DB::table("order_details_products")->where('order_id', $orderId)->get();
+    }
+
 
 
 

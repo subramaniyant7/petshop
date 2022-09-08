@@ -40,7 +40,7 @@ class FrontendController extends Controller
                 $message->to('leadgen@untame.pet', 'Admin')->subject('Contact Us');
                 $message->from(getenv('MAIL_USERNAME'), 'Admin');
             });
-            return redirect(FRONTENDURL)->with('success','Thanks for Contacting Us. We will contact you soon.');
+            return redirect(FRONTENDURL)->with('success', 'Thanks for Contacting Us. We will contact you soon.');
         } catch (\Exception $e) {
             return redirect(FRONTENDURL)->with('error', $e->getMessage());
         }
@@ -61,12 +61,17 @@ class FrontendController extends Controller
         return view('frontend.faq');
     }
 
-
-
     public function PrivacyPolicy(Request $request)
     {
         return view('frontend.privacy_policy');
     }
+
+    public function Disclaimer(Request $request)
+    {
+        return view('frontend.disclaimer');
+    }
+
+
 
     public function Register()
     {
@@ -177,6 +182,8 @@ class FrontendController extends Controller
         if ($day > 1 && $day < 5) {
             $diff = 5 - $day;
         }
+        // echo 'Days:'.$day.'<br>';
+        // echo 'Diff:'.$diff.'<br>';
         $deliveryDate = date('Y-m-d', strtotime('+' . $diff . ' day', strtotime($date)));
         $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
         return ['deliveryDate' => $deliveryDate, 'deliveryMonthLastDate' => $deliveryMonthLastDate];
@@ -196,7 +203,13 @@ class FrontendController extends Controller
         $petsInfo = FHelperController::getPetsMaster($id);
         $date = date('Y-m-d');
         $days = $this->FindDays($date);
+
+        // echo '<pre>';
+        // echo $date.'<br>';
+        // print_r($days);
+        // exit;
         $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']);
+
         if ($totalDays <= 5) {
             $nextMonthDate = date('Y-m-d', strtotime('+1 months', strtotime($days['deliveryMonthLastDate'])));
             $startDate = date("Y-m-01", strtotime($nextMonthDate));
@@ -217,6 +230,294 @@ class FrontendController extends Controller
             'perDayMeal' => $perDayMeal, 'totalGram' => $totalGram, 'totalDays' => $totalDays, 'deliveryDate' => $days['deliveryDate']
         ];
         return $returnData;
+    }
+
+    public function UpcomingDelivery(Request $request)
+    {
+        $userId = $request->session()->get('frontenduserid');
+        $userOrders = FHelperController::getMyOrders($userId);
+        $totalDelivery = [];
+        if (count($userOrders)) {
+            foreach ($userOrders as $order) {
+                $deliveryDate = $order->delivery_date;
+                $deliveryMonth = date('m', strtotime($deliveryDate));
+                if (date('m') == $deliveryMonth) {
+                    $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
+                    $perDay = $order->totalGramNeedtoBuy / $order->totalDays;
+                    $validate = $this->DateDifference(date('Y-m-d'), $deliveryDate);
+                    if ($validate != 1) {
+                        $updateStamp = strtotime($deliveryDate);
+                        $day = date('w', $updateStamp);
+                        $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
+                        array_push($totalDelivery, [
+                            'delivery' => $deliveryDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
+                            'order_inc_id' => $order->order_inc_id
+                        ]);
+                    }
+                    for ($l = 1; $l <= $order->totalDays; $l++) {
+                        $updateDate = date('Y-m-d', strtotime('+' . $l . ' day', strtotime($deliveryDate)));
+                        if ($this->DateDifference($updateDate, $deliveryMonthLastDate) != 1) {
+                            $updateStamp = strtotime($updateDate);
+                            $day = date('w', $updateStamp);
+                            if ($day == 1 || $day == 5) {
+                                $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
+                                array_push($totalDelivery, [
+                                    'delivery' => $updateDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
+                                    'order_inc_id' => $order->order_inc_id
+                                ]);
+                            }
+                        }
+                    }
+
+                    // echo '<pre>';
+                    // print_r($totalDelivery);
+                    // echo $perDay . '<br>';
+                    // echo $order->totalGram . '<br>';
+                    // echo 'diffff:'.$this->DateDifference('2022-09-30', '2022-09-30').'<br>';
+
+                    // $diff = 0;
+                    // if ($day == 1) {
+                    //     $diff = 3;
+                    // }
+                    // if ($day == 6) {
+                    //     $diff = 2;
+                    // }
+                    // if ($day > 1 && $day < 5) {
+                    //     $diff = 5 - $day;
+                    // }
+
+                    // $deliveryDate = date('Y-m-d', strtotime('+' . $diff . ' day', strtotime($date)));
+
+                    // echo $day.'<br>';
+
+                    // $deliveryMonth = date('m', strtotime($deliveryDate));
+                    // if (date('m') == $deliveryMonth) {
+                    //     $today = date('Y-m-d');
+                    //     // echo $today . '<br>';
+                    // }
+                    // echo date('m', strtotime($deliveryDate)) . '<br>';
+                    // echo date('m');
+                }
+            }
+        }
+
+        // echo '<pre>';
+        // print_r($totalDelivery);
+        // exit;
+        return view('frontend.mydelivery', compact('totalDelivery'));
+    }
+
+    private function CurrentMonthAllDelivery()
+    {
+        $currentMonthStartDate = date('Y-m-01');
+        $deliveryMonthLastDate = date("Y-m-t", strtotime($currentMonthStartDate));
+        $limit = date('t');
+        $totalDeliveryofMonth = [];
+        for ($t = 0; $t < $limit; $t++) {
+            $updateDate = date('Y-m-d', strtotime('+' . $t . ' day', strtotime($currentMonthStartDate)));
+
+
+            if ($this->DateDifference($updateDate, $deliveryMonthLastDate) > 4) {
+                $updateStamp = strtotime($updateDate);
+                $day = date('w', $updateStamp);
+                if ($day == 1 || $day == 5) {
+                    array_push($totalDeliveryofMonth, $updateDate);
+                }
+            }
+        }
+        return $totalDeliveryofMonth;
+    }
+
+    private function CurrentMonthDelivery($deliveryDate)
+    {
+        $currentMonthStartDate = date('Y-m-01');
+        $deliveryMonthLastDate = date("Y-m-t", strtotime($currentMonthStartDate));
+        $limit = date('t');
+        $totalDeliveryofMonthFromDelivery = [];
+        $totalDeliveryofMonth = [];
+        for ($t = 0; $t < $limit; $t++) {
+            $updateDate = date('Y-m-d', strtotime('+' . $t . ' day', strtotime($currentMonthStartDate)));
+            if (strtotime($updateDate) >= strtotime($deliveryDate)) {
+                $updateStamp = strtotime($updateDate);
+                $day = date('w', $updateStamp);
+                if ($day == 1 || $day == 5) {
+                    array_push($totalDeliveryofMonthFromDelivery, $updateDate);
+                }
+            }
+            if (strtotime($updateDate) >= strtotime(date('Y-m-d'))) {
+                $updateStamp = strtotime($updateDate);
+                $day = date('w', $updateStamp);
+                if ($day == 1 || $day == 5) {
+                    array_push($totalDeliveryofMonth, $updateDate);
+                }
+            }
+        }
+        return ['totaldeliveryfromdeliverydate' => $totalDeliveryofMonthFromDelivery, 'totaldeliveryfromtoday' => $totalDeliveryofMonth];
+    }
+
+    public function UpcomingDeliveryProduct($id)
+    {
+        $orderId = decryption($id);
+        $orderInfo = FHelperController::getPetsOrder($orderId);
+        $orderProducts = FHelperController::getMyOrderProductsAsc($orderId);
+        $thisMonthDeliveryDate = $this->CurrentMonthDelivery($orderInfo[0]->delivery_date);
+
+        echo '<pre>';
+        print_r($orderInfo);
+        // print_r($orderProducts);
+        foreach ($thisMonthDeliveryDate['totaldeliveryfromdeliverydate'] as $k => $totalDelivery) {
+
+            $deliveryInfo = [
+                'order_id' => $orderId, 'user_id' => $orderInfo[0]->order_id, 'perday_meal' => $orderInfo[0]->perDayMeal,
+                'total_days' => $orderInfo[0]->totalDays, 'total_gram' => $orderInfo[0]->totalGram, 'delivery_date' => $totalDelivery
+            ];
+
+            // echo 'Delivery Info:' . '<br>';
+            // print_r($deliveryInfo);
+
+            // $createDeliveryInfo = insertQueryId('deliveryinfo', $deliveryInfo);
+            $createDeliveryInfo = 1;
+
+            echo 'Delivery Date:' . $totalDelivery . '<br>';
+            // foreach ($orderProducts as $products) {
+            $timestamp = strtotime($totalDelivery);
+            $day = date('w', $timestamp);
+
+            echo 'Delivery Day:' . $day . '<br>';
+            if ($k == 0) {
+                // echo 'Loop:---------<br><br>';
+
+                $limit = $day == 1 ? 4 : 3;
+                $start = 1;
+                $totalGram = $actualGram = 0;
+                $percentage = [10, 25, 50, 75, 100];
+                $totalQty = $orderProducts[$k]->product_qty;
+                for ($p = 1; $p <= $limit; $p++) {
+                    $totalQty = $p == 1 ? $totalQty : $totalQty - $totalGram;
+                    // echo 'Qty : '.$totalQty.'<br>';
+                    // echo 'TotalGram : '.$totalGram.'<br>';
+                    // echo 'Diff : '.$totalQty.'<br>';
+                    // echo 'Percentage : '.$percentage[$p - 1].'<br>';
+
+                    $totalGram = ($totalQty * $percentage[$p - 1]) / 100;
+                    $actualGram += $totalGram;
+                    // echo 'AterGram : '.$totalGram.'<br>';
+                    // echo 'ActualGram : '.$actualGram.'<br><br>';
+
+                }
+                $deliveryInfoProducts = [
+                    'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                    'product_id' => $orderProducts[$k]->product_id, 'product_name' => $orderProducts[$k]->product_name,
+                    'product_gram' => round($actualGram), 'total_product_gram' => $orderProducts[$k]->product_qty
+                ];
+
+                echo 'Delivery Info Products Loop: ' . $k . ':' . '<br>';
+                print_r($deliveryInfoProducts);
+                // insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+                // break;
+            }
+            if ($k == 1) {
+                $days = $day == 1 ? 4 : 3;
+                $limit = $day != 1 ? 3 : 4;
+                $other = $day == 1 ? 3 : 4;
+                $processDays = 5 - $limit;
+                $remainingDays = $days - $processDays;
+                $totalGram = $actualGram = 0;
+
+                $percentage = [10, 25, 50, 75, 100];
+                $totalQty = $orderProducts[$k - 1]->product_qty - $deliveryInfoProducts['product_gram'];
+                for ($p = $limit; $p <= 5; $p++) {
+
+                    echo 'Looooooooop' . $day . '<br>';
+                    // echo 'Qty : ' . $totalQty . '<br>';
+                    // echo 'Percentage : ' . $percentage[$other-1] . '<br>';
+                    // echo 'Minus : ' . ($orderProducts[$k-1]->product_qty * $percentage[$other-1]) /100 . '<br>';
+                    $totalQty =  $totalQty - $totalGram;
+
+                    echo 'TotalGram : ' . $totalGram . '<br>';
+                    echo 'Diff : ' . $totalQty . '<br>';
+                    echo 'Percentage : ' . $percentage[$p - 1] . '<br>';
+
+                    $percentageCalc = ($totalQty * $percentage[$p - 1]) / 100;
+
+                    $totalGram += $percentageCalc;
+                    //  $actualGram += $totalGram;
+                    // if($p != 5) $actualGram += $totalGram;
+                    // else $actualGram = $totalGram;
+
+                    echo 'percentageCalc: ' . $percentageCalc . '<br>';
+                    echo 'totalGram: ' . $totalGram . '<br>';
+                    echo 'actualGram: ' . $actualGram . '<br><br>';
+
+                    $deliveryInfoProducts1 = [
+                        'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                        'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,
+                        'product_gram' => round($percentageCalc), 'total_product_gram' => $orderProducts[$k - 1]->product_qty
+                    ];
+                    echo 'Delivery Info Products Loop: ' . $k . ':' . '<br>';
+                    print_r($deliveryInfoProducts1);
+                    // insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+
+                }
+
+                echo 'Calc:' . $actualGram . '<br><br>';
+                echo 'Calc:' . $totalGram . '<br><br>';
+                echo 'Remaining:' . $remainingDays.'<br>';
+
+                // for($d=1;$d<=$remainingDays;$d++){
+                $totalArray = [];
+                for ($e = 0; $e < count($orderProducts); $e++) {
+                    if ($e > 0) {
+                        $productGram = $orderProducts[$e]->product_qty;
+                        $productGramPerDay = round($productGram / $orderInfo[0]->remainingDays);
+                        $productGramDays = $remainingDays * $productGramPerDay;
+                        echo 'Gram:' . $productGram . '<br>';
+                        echo 'PerDay:' . $productGramPerDay . '<br>';
+                        echo 'PerDay1:' . $productGramDays . '<br>';
+                        // $deliveryInfoProducts2 = [
+                        //     'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                        //     'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                        //     'product_gram' => $totalGram, 'total_product_gram' => $orderProducts[$e]->product_qty
+                        // ];
+
+                        // array_push($totalArray, $deliveryInfoProducts2);
+
+                        // echo 'Delivery Info Products Loope-------: ' . $e . ':' . '<br>';
+                        // print_r($deliveryInfoProducts2);
+                    }
+                }
+
+                // echo 'Total Array_-------------';
+                // print_r($totalArray);
+                // }
+
+                // break;
+            }
+
+            if ($k > 1) {
+            }
+            // }
+        }
+
+
+        // $deliveryDifference = count($thisMonthDeliveryDate['totaldeliveryfromdeliverydate']) - count($thisMonthDeliveryDate['totaldeliveryfromtoday']);
+
+        // $products = [];
+
+        // if($deliveryDifference == 0){
+        //     $percentage = [10, 25, 50, 75, 100];
+        //     // for ($p = 1; $p <= 5; $p++) {
+        //     //     $defaultProductCalc = ($returnData['perDayMeal'] / 100) * $percentage[$p - 1];
+        //     // }
+        //     $products = ['product_name' => $orderProducts[0]->product_name.'(Starter Pack)'];
+        // }
+
+
+        // echo '<pre>';
+        // // echo $orderId . '<br>';
+        // print_r($thisMonthDeliveryDate);
+        // print_r($orderInfo);
+        // print_r($orderProducts);
     }
 
     public function PetsMasterDetails(Request $request)
@@ -240,28 +541,29 @@ class FrontendController extends Controller
         $dob = strtotime($formData['breed_dob']);
         $datediff = strtotime(date('Y-m-d')) - $dob;
         $totalDays = abs(round($datediff / (60 * 60 * 24)));
+        // $formData['breed_neutered'] == 2
         if (
-            $totalDays < 365 || $formData['breed_neutered'] == 2 || $formData['breed_allergies'] == 1 || $formData['breed_health_condition'] == 1 ||
+            $totalDays < 365 ||  $formData['breed_allergies'] == 1 || $formData['breed_health_condition'] == 1 ||
             (array_key_exists('breed_nursing', $formData) && $formData['breed_nursing'] == 1)
         ) {
             try {
                 $userInfo =  getUser($request->session()->get('frontenduserid'));
-                $formData['breed_type'] = productFor()[$formData['breed_type']-1];
+                $formData['breed_type'] = productFor()[$formData['breed_type'] - 1];
                 $formData['breed_name'] = breedInfoById($formData['breed_name'])[0]->breed_name;
-                $formData['breed_gender'] = petGender()[$formData['breed_gender']-1];
-                $formData['breed_activity_level'] = $formData['breed_activity_level'] == 1 ? dogActivity()[$formData['breed_activity_level']-1] : catActivity()[$formData['breed_activity_level']-1];
-                $formData['breed_freedom_level'] = isset($formData['breed_freedom_level']) ? catActivity()[$formData['breed_freedom_level']-1] : '';
-                $formData['breed_neutered'] = YesNo()[$formData['breed_neutered']-1];
-                $formData['breed_weight_motive'] = acheiveWeight()[$formData['breed_weight_motive']-1];
-                $formData['breed_allergies'] = YesNo()[$formData['breed_allergies']-1];
+                $formData['breed_gender'] = petGender()[$formData['breed_gender'] - 1];
+                $formData['breed_activity_level'] = $formData['breed_activity_level'] == 1 ? dogActivity()[$formData['breed_activity_level'] - 1] : catActivity()[$formData['breed_activity_level'] - 1];
+                $formData['breed_freedom_level'] = isset($formData['breed_freedom_level']) ? catActivity()[$formData['breed_freedom_level'] - 1] : '';
+                $formData['breed_neutered'] = YesNo()[$formData['breed_neutered'] - 1];
+                $formData['breed_weight_motive'] = acheiveWeight()[$formData['breed_weight_motive'] - 1];
+                $formData['breed_allergies'] = YesNo()[$formData['breed_allergies'] - 1];
                 $formData['breed_allergies_info'] = isset($formData['breed_allergies_info']) ? $formData['breed_allergies_info'] : '';
-                $formData['breed_health_condition'] = YesNo()[$formData['breed_health_condition']-1];
+                $formData['breed_health_condition'] = YesNo()[$formData['breed_health_condition'] - 1];
                 $formData['breed_health_condition_info'] = isset($formData['breed_health_condition_info']) ? $formData['breed_health_condition_info'] : '';
-                $formData['breed_nursing'] = isset($formData['breed_nursing']) ? YesNo()[$formData['breed_nursing']-1] : '';
+                $formData['breed_nursing'] = isset($formData['breed_nursing']) ? YesNo()[$formData['breed_nursing'] - 1] : '';
                 $formData['breed_nursing_info'] = isset($formData['breed_nursing_info']) ? $formData['breed_nursing_info'] : '';
-                $formData['user_email'] = $userInfo[0]->user_email . ' / '.$userInfo[0]->user_mobile;
+                $formData['user_email'] = $userInfo[0]->user_email . ' / ' . $userInfo[0]->user_mobile;
 
-                Mail::send('frontend.email.petsmastercontact', $formData, function ($message){
+                Mail::send('frontend.email.petsmastercontact', $formData, function ($message) {
                     $message->to('woof@untame.pet', 'Admin')->subject('Pet Master Contact Info');
                     $message->from(getenv('MAIL_USERNAME'), 'Admin');
                 });
@@ -295,7 +597,8 @@ class FrontendController extends Controller
                 if ($request->input('order_type') == 1) {
                     $totalGramNeedtoBuy = round($totalGramNeedtoBuy / 2);
                 }
-                $remainingGramToBuy = abs($totalGramNeedtoBuy - $defaultProductCalc);
+                $remainingGramToBuy = abs($totalGramNeedtoBuy);
+                // $remainingGramToBuy = abs($totalGramNeedtoBuy - $defaultProductCalc);
 
                 $returnData['totalGramNeedtoBuy'] = $totalGramNeedtoBuy;
                 $returnData['defaultProductCalc'] = $defaultProductCalc;
@@ -316,11 +619,14 @@ class FrontendController extends Controller
             $totalquantity = 0;
             $products = [];
             foreach ($formData['product_qty'] as $k => $qty) {
+
                 if ($qty != '') array_push($products, ['id' => $formData['product_id'][$k], 'qty' => $qty]);
-                $totalquantity += $qty;
+                if ($k != 0) {
+                    $totalquantity += $qty;
+                }
             }
             if ($totalquantity < $formData['totalGramNeedtoBuy']) {
-                return back()->with('error', 'Added quantity not suffient with estimated quantity');
+                return back()->with('error', 'Added quantity not sufficient with estimated quantity');
             }
             if ($totalquantity > $formData['totalGramNeedtoBuy']) {
                 return back()->with('error', 'Quantity should not exceed the estimated quantity');
@@ -333,7 +639,7 @@ class FrontendController extends Controller
                         'pets_master_id' => decryption($formData['pets_master_id']), 'totalGramNeedtoBuy' => $formData['totalGramNeedtoBuy'],
                         'defaultProductCalc' => $formData['defaultProductCalc'], 'remainingGramToBuy' => $formData['remainingGramToBuy'],
                         'remainingDays' => $formData['remainingDays'], 'totalGram' => $formData['totalGram'], 'totalDays' => $formData['totalDays'],
-                        'totalPrice' => round($totalPrice), 'delivery_date' => $formData['delivery_date']
+                        'totalPrice' => round($totalPrice), 'delivery_date' => $formData['delivery_date'], 'perDayMeal' => $formData['perDayMeal']
                     ];
                     $createTempOrder = insertQueryId('order_details_temp', $orderInfo);
                     foreach ($products as $product) {
@@ -379,14 +685,14 @@ class FrontendController extends Controller
 
             $gettotalOrders = FHelperController::getPetsOrder();
             $totalOrderCount = count($gettotalOrders);
-            $orderId = 10000 + $totalOrderCount;
+            $orderId = $totalOrderCount == 0 ? 10001  : 10000 + $totalOrderCount;
 
             $orderCreateInfo = [
                 'user_id' => $request->session()->get('frontenduserid'), 'order_inc_id' => $orderId, 'order_type' => $orderInfo[0]->order_type,
                 'pets_master_id' => $orderInfo[0]->pets_master_id, 'totalGramNeedtoBuy' => $orderInfo[0]->totalGramNeedtoBuy,
                 'defaultProductCalc' => $orderInfo[0]->defaultProductCalc, 'remainingGramToBuy' => $orderInfo[0]->remainingGramToBuy, 'remainingDays' => $orderInfo[0]->remainingDays,
                 'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice),
-                'paymentId' => $formData['razorpay_payment_id'], 'delivery_date' => $orderInfo[0]->delivery_date
+                'paymentId' => $formData['razorpay_payment_id'], 'delivery_date' => $orderInfo[0]->delivery_date, 'perDayMeal' => $orderInfo[0]->perDayMeal
             ];
 
             $createOrder = insertQueryId('order_details', $orderCreateInfo);
@@ -419,8 +725,8 @@ class FrontendController extends Controller
             try {
                 Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    $message->cc(['woof@untame.pet']);
-                    $message->attach(storage_path('app/'.$pdfName));
+                    // $message->cc(['woof@untame.pet']);
+                    $message->attach(storage_path('app/' . $pdfName));
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });
             } catch (\Exception $e) {
@@ -451,7 +757,6 @@ class FrontendController extends Controller
 
         return Storage::download($pdfName, $newName, $headers);
     }
-
 
     public function AddShippingAddress(Request $request)
     {

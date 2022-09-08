@@ -49,6 +49,7 @@
     <input type="hidden" value="{{ $remainingDays }}" name="remainingDays">
     <input type="hidden" value="{{ $totalGram }}" name="totalGram">
     <input type="hidden" value="{{ $totalDays }}" name="totalDays">
+    <input type="hidden" value="{{ $perDayMeal }}" name="perDayMeal">
     <input type="hidden" value="{{ request()->order_type }}" name="order_type">
     <input type="hidden" value="{{ $deliveryDate }}" name="delivery_date">
 

@@ -73,9 +73,6 @@
                             <a class="nav-link" href="{{ url(FRONTENDURL.'about_us') }}">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL.'privacy_policy') }}">Privacy Policy</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ url(FRONTENDURL.'faq') }}">FAQ</a>
                         </li>
                         @if(session('frontenduserid'))

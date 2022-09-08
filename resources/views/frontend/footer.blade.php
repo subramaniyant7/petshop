@@ -44,6 +44,10 @@
                 <ul class="list-unstyled mt-3">
                     <li class="mb-1"><a href="{{ url(FRONTENDURL.'privacy_policy') }}">Privacy Policy</a></li>
                     <li class="mb-1"><a href="{{ url(FRONTENDURL.'about_us') }}">About Us</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL.'disclaimer') }}">Disclaimer</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL.'return_refund') }}">Return and Refund</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL.'shipping_policy') }}">Shipping Policy</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL.'terms_conditions') }}">Terms and Conditions</a></li>
                 </ul>
                 <!--/ul -->
             </div>

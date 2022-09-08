@@ -26,6 +26,10 @@ Route::middleware(['globalvalidate'])->group(function () {
     Route::post('/contactus', [FrontendController::class, 'ContactUs']);
 
     Route::get('/privacy_policy', [FrontendController::class, 'PrivacyPolicy']);
+    Route::get('/disclaimer', [FrontendController::class, 'Disclaimer']);
+    Route::get('/return_refund', function () {return view('frontend.return_refund');});
+    Route::get('/shipping_policy', function () {return view('frontend.shipping_policy');});
+    Route::get('/terms_conditions', function () {return view('frontend.terms_conditions');});
 
     Route::middleware(['frontenduserauthorise'])->group(function () {
         Route::get('/register', [FrontendController::class, 'Register']);
@@ -38,6 +42,8 @@ Route::middleware(['globalvalidate'])->group(function () {
 
     Route::middleware(['frontendloggedin'])->group(function () {
         Route::get('/dashboard', [FrontendController::class, 'Dashboard']);
+        Route::get('/upcoming_delivery', [FrontendController::class, 'UpcomingDelivery']);
+        Route::get('/upcomingdelivery_product/{id}', [FrontendController::class, 'UpcomingDeliveryProduct']);
         Route::get('/pets_master', [FrontendController::class, 'PetsMasterDetails']);
         Route::get('/pets_master/{id}', [FrontendController::class, 'PetsMasterCalculation']);
         Route::post('/orderproceed', [FrontendController::class, 'OrderTypeProcess']);
@@ -78,8 +84,11 @@ Route::middleware(['globalvalidate'])->group(function () {
             Route::post('/saveadmindetails', [AdminController::class, 'SaveAdminDetails']);
 
             Route::get('/viewpdf', [AdminController::class, 'OrderSuccessEmail']);
+
             Route::get('/viewuser', [AdminController::class, 'ViewUser']);
+
             Route::get('/vieworder', [AdminController::class, 'ViewOrder']);
+            Route::get('/vieworderdelivery', [AdminController::class, 'ViewOrderDelivery']);
             Route::get('/vieworderdetails/{id}', [AdminController::class, 'ViewOrderDetails']);
             Route::get('/orderinvoice/{id}', [AdminController::class, 'OrderInvoiceDownload']);
 
@@ -88,6 +97,8 @@ Route::middleware(['globalvalidate'])->group(function () {
             Route::get('/manageproduct', [AdminController::class, 'ManageProduct']);
             Route::get('/actionproduct/{option}/{id}', [AdminController::class, 'ActionProduct']);
             Route::post('/saveproductdetails', [AdminController::class, 'SaveProductDetails']);
+
+
 
             Route::get('/logout', [AdminController::class, 'AdminLogout'])->name('logout');
         });

@@ -118,8 +118,6 @@ function insertQueryId($table,$data){
     try{
         return DB::table($table)->insertGetId($data);
     }catch(Exception $e){
-        print_r($e->getMessage());
-        exit;
         return false;
     }
 }
@@ -130,8 +128,6 @@ function updateQuery($table,$match,$id,$data){
         $update = DB::table($table)->where($match, $id)->update($data);
         return true;
     }catch(Exception $e){
-        print_r($e->getMessage());
-        exit;
         return false;
     }
 }

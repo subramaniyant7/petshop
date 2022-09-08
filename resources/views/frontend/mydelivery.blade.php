@@ -8,7 +8,7 @@
             <div class="col-lg-9 page-with-sidebar">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>My Orders </h2>
+                        <h2>Upcoming Delivery </h2>
                     </div>
                     <!-- /col-lg-->
                     @include('admin.notification')
@@ -17,31 +17,27 @@
                             <thead>
                                 <tr>
                                     <th>S.No</th>
-                                    <th>Order ID</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th>Payment Status</th>
                                     <th>Delivery Date</th>
-                                    <th>Invoice</th>
-                                    <th>View Products</th>
+                                    <th>Quantity</th>
+                                    {{-- <th>View Products</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($getOrders as $k => $orders)
+                                @php
+                                    usort($totalDelivery, function ($a, $b) {
+                                        return strcmp($a['delivery'], $b['delivery']);
+                                    });
+                                @endphp
+                                @forelse ($totalDelivery as $k => $total)
                                     <tr>
                                         <td>{{ $k + 1 }}</td>
-                                        <td>{{ $orders->order_inc_id }}</td>
-                                        <td>{{ $orders->totalGram }} Gram</td>
-                                        <td>Rs.{{ number_format($orders->totalPrice, 2) }}</td>
-                                        <td>{{ $orders->paymentId != '' ? 'Paid' : 'In-Progress' }}</td>
-                                        <td>{{ $orders->delivery_date }}</td>
-                                        <td><a href="{{ FRONTENDURL.'orderinvoice/'.encryption($orders->order_id)}}">Download</a></td>
-                                        <td><a href="{{ FRONTENDURL.'myorderproducts/'.encryption($orders->order_id)}}">View</a></td>
-
+                                        <td>{{ date('d-m-Y', strtotime($total['delivery'])) }}</td>
+                                        <td>{{ $total['gram'] }} Gram</td>
+                                        {{-- <td><a href="{{ FRONTENDURL.'upcomingdelivery_product/'.encryption($total['orderid']) }}">View</a></td> --}}
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center">No Records found</td>
+                                        <td colspan="3" class="text-center">No Delivery found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
