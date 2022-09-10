@@ -42,8 +42,6 @@ Route::middleware(['globalvalidate'])->group(function () {
 
     Route::middleware(['frontendloggedin'])->group(function () {
         Route::get('/dashboard', [FrontendController::class, 'Dashboard']);
-        Route::get('/upcoming_delivery', [FrontendController::class, 'UpcomingDelivery']);
-        Route::get('/upcomingdelivery_product/{id}', [FrontendController::class, 'UpcomingDeliveryProduct']);
         Route::get('/pets_master', [FrontendController::class, 'PetsMasterDetails']);
         Route::get('/pets_master/{id}', [FrontendController::class, 'PetsMasterCalculation']);
         Route::post('/orderproceed', [FrontendController::class, 'OrderTypeProcess']);
@@ -60,7 +58,6 @@ Route::middleware(['globalvalidate'])->group(function () {
         Route::get('/editshippingaddress/{id}', [FrontendController::class, 'EditShippingAddress']);
         Route::post('/saveshippingaddress', [FrontendController::class, 'SaveShippingAddress']);
         Route::get('/myorders', [FrontendController::class, 'MyOrders']);
-        Route::get('/orderinvoice/{id}', [FrontendController::class, 'OrderInvoiceDownload']);
         Route::get('/myorderproducts/{id}', [FrontendController::class, 'MyOrderProducts']);
         Route::get('/change_password', [FrontendController::class, 'ChangePassword']);
         Route::post('/save_password', [FrontendController::class, 'UpdateUserPassword']);

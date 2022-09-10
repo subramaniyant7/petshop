@@ -22,7 +22,6 @@
                                     <th>Total</th>
                                     <th>Payment Status</th>
                                     <th>Delivery Date</th>
-                                    <th>Invoice</th>
                                     <th>View Products</th>
                                 </tr>
                             </thead>
@@ -35,7 +34,6 @@
                                         <td>Rs.{{ number_format($orders->totalPrice, 2) }}</td>
                                         <td>{{ $orders->paymentId != '' ? 'Paid' : 'In-Progress' }}</td>
                                         <td>{{ $orders->delivery_date }}</td>
-                                        <td><a href="{{ FRONTENDURL.'orderinvoice/'.encryption($orders->order_id)}}">Download</a></td>
                                         <td><a href="{{ FRONTENDURL.'myorderproducts/'.encryption($orders->order_id)}}">View</a></td>
 
                                     </tr>
