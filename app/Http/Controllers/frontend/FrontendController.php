@@ -208,7 +208,7 @@ class FrontendController extends Controller
         // echo $date.'<br>';
         // print_r($days);
         // exit;
-        $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']);
+        $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']) - 1;
 
         if ($totalDays <= 5) {
             $nextMonthDate = date('Y-m-d', strtotime('+1 months', strtotime($days['deliveryMonthLastDate'])));
@@ -224,7 +224,7 @@ class FrontendController extends Controller
         $weightToGram = $petsInfo[0]->breed_weight * 1000;
         if (!count($weight)) return [];
         $perDayMeal = ($weightToGram / 100) * $weight[0]->weight;
-        $totalGram = $totalDays * $perDayMeal;
+        $totalGram = ($totalDays - 5) * $perDayMeal;
         $returnData = [
             'petsInfo' => $petsInfo[0], 'calculation' => $weight[0], 'weightToGram' => $weightToGram,
             'perDayMeal' => $perDayMeal, 'totalGram' => $totalGram, 'totalDays' => $totalDays, 'deliveryDate' => $days['deliveryDate']
@@ -337,18 +337,23 @@ class FrontendController extends Controller
         $totalDeliveryofMonth = [];
         for ($t = 0; $t < $limit; $t++) {
             $updateDate = date('Y-m-d', strtotime('+' . $t . ' day', strtotime($currentMonthStartDate)));
-            if (strtotime($updateDate) >= strtotime($deliveryDate)) {
-                $updateStamp = strtotime($updateDate);
-                $day = date('w', $updateStamp);
-                if ($day == 1 || $day == 5) {
-                    array_push($totalDeliveryofMonthFromDelivery, $updateDate);
+            $dateDiff = $this->DateDifference($updateDate, $deliveryMonthLastDate);
+
+            if ($dateDiff > 4) {
+                // echo 'Date-----: ' . $dateDiff . '<br>';
+                if (strtotime($updateDate) >= strtotime($deliveryDate)) {
+                    $updateStamp = strtotime($updateDate);
+                    $day = date('w', $updateStamp);
+                    if ($day == 1 || $day == 5) {
+                        array_push($totalDeliveryofMonthFromDelivery, $updateDate);
+                    }
                 }
-            }
-            if (strtotime($updateDate) >= strtotime(date('Y-m-d'))) {
-                $updateStamp = strtotime($updateDate);
-                $day = date('w', $updateStamp);
-                if ($day == 1 || $day == 5) {
-                    array_push($totalDeliveryofMonth, $updateDate);
+                if (strtotime($updateDate) >= strtotime(date('Y-m-d'))) {
+                    $updateStamp = strtotime($updateDate);
+                    $day = date('w', $updateStamp);
+                    if ($day == 1 || $day == 5) {
+                        array_push($totalDeliveryofMonth, $updateDate);
+                    }
                 }
             }
         }
@@ -364,139 +369,215 @@ class FrontendController extends Controller
 
         echo '<pre>';
         print_r($orderInfo);
-        // print_r($orderProducts);
+        print_r($orderProducts);
+        $staterProduct = $orderProducts[0];
+        $staterProductTotalQty = $staterProduct->product_qty;
+        $percentage = [10, 25, 50, 75, 100];
+        $finalGram = 0;
+        $finalArray = [];
+        for ($e = 0; $e < 5; $e++) {
+            $updatedQty = $staterProductTotalQty - $finalGram;
+            $actualGram = round(($updatedQty * $percentage[$e]) / 100);
+            array_push($finalArray, $actualGram);
+            $finalGram += $actualGram;
+        }
+
+        $productsArray = [];
+        foreach ($orderProducts as $k => $products) {
+            if ($k > 0) {
+                array_push($productsArray, [
+                    'product_id' => $products->product_id, 'actual_qty' => $products->product_qty,
+                    'perday_qty' => round($products->product_qty / $orderInfo[0]->remainingDays)
+                ]);
+            }
+        }
+
+        // print_r($finalGram);
+        print_r($finalArray);
+        // print_r($productsArray);
+        // exit;
+        // print_r($thisMonthDeliveryDate['totaldeliveryfromdeliverydate']);
         foreach ($thisMonthDeliveryDate['totaldeliveryfromdeliverydate'] as $k => $totalDelivery) {
 
-            $deliveryInfo = [
-                'order_id' => $orderId, 'user_id' => $orderInfo[0]->order_id, 'perday_meal' => $orderInfo[0]->perDayMeal,
-                'total_days' => $orderInfo[0]->totalDays, 'total_gram' => $orderInfo[0]->totalGram, 'delivery_date' => $totalDelivery
-            ];
+            // $deliveryInfo = [
+            //     'order_id' => $orderId, 'user_id' => $orderInfo[0]->order_id, 'perday_meal' => $orderInfo[0]->perDayMeal,
+            //     'total_days' => $orderInfo[0]->totalDays, 'total_gram' => $orderInfo[0]->totalGram, 'delivery_date' => $totalDelivery
+            // ];
 
             // echo 'Delivery Info:' . '<br>';
             // print_r($deliveryInfo);
+            // echo '<br>';
 
-            // $createDeliveryInfo = insertQueryId('deliveryinfo', $deliveryInfo);
+            //     // $createDeliveryInfo = insertQueryId('deliveryinfo', $deliveryInfo);
             $createDeliveryInfo = 1;
 
             echo 'Delivery Date:' . $totalDelivery . '<br>';
-            // foreach ($orderProducts as $products) {
+            //     // foreach ($orderProducts as $products) {
             $timestamp = strtotime($totalDelivery);
             $day = date('w', $timestamp);
-
-            echo 'Delivery Day:' . $day . '<br>';
+            $daysInterval = $day == 1 ? 4 : 3;
+            $startupProductProcessedDays = 0;
+            // echo 'Delivery Day:' . $day . '<br>';
             if ($k == 0) {
-                // echo 'Loop:---------<br><br>';
+                //         // echo 'Loop:---------<br><br>';
 
-                $limit = $day == 1 ? 4 : 3;
+
                 $start = 1;
                 $totalGram = $actualGram = 0;
-                $percentage = [10, 25, 50, 75, 100];
-                $totalQty = $orderProducts[$k]->product_qty;
-                for ($p = 1; $p <= $limit; $p++) {
-                    $totalQty = $p == 1 ? $totalQty : $totalQty - $totalGram;
-                    // echo 'Qty : '.$totalQty.'<br>';
-                    // echo 'TotalGram : '.$totalGram.'<br>';
-                    // echo 'Diff : '.$totalQty.'<br>';
-                    // echo 'Percentage : '.$percentage[$p - 1].'<br>';
+                //         $percentage = [10, 25, 50, 75, 100];
+                //         $totalQty = $orderProducts[$k]->product_qty;
+                for ($p = 1; $p <= $daysInterval; $p++) {
 
-                    $totalGram = ($totalQty * $percentage[$p - 1]) / 100;
-                    $actualGram += $totalGram;
-                    // echo 'AterGram : '.$totalGram.'<br>';
-                    // echo 'ActualGram : '.$actualGram.'<br><br>';
+                    $totalGram += $finalArray[$p - 1];
+                    //             $totalQty = $p == 1 ? $totalQty : $totalQty - $totalGram;
+                    //             // echo 'Qty : '.$totalQty.'<br>';
+                    //             // echo 'TotalGram : '.$totalGram.'<br>';
+                    //             // echo 'Diff : '.$totalQty.'<br>';
+                    //             // echo 'Percentage : '.$percentage[$p - 1].'<br>';
+
+                    //             $totalGram = ($totalQty * $percentage[$p - 1]) / 100;
+                    //             $actualGram += $totalGram;
+                    //             // echo 'AterGram : '.$totalGram.'<br>';
+                    //             // echo 'ActualGram : '.$actualGram.'<br><br>';
 
                 }
+                $startupProductProcessedDays = $daysInterval;
+
                 $deliveryInfoProducts = [
                     'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
                     'product_id' => $orderProducts[$k]->product_id, 'product_name' => $orderProducts[$k]->product_name,
-                    'product_gram' => round($actualGram), 'total_product_gram' => $orderProducts[$k]->product_qty
+                    'days_interval' => $daysInterval, 'actual_product_gram' => $orderProducts[$k]->product_qty,
+                    'product_gram' => round($totalGram)
                 ];
 
-                echo 'Delivery Info Products Loop: ' . $k . ':' . '<br>';
+                echo 'Starter Product Start---------------: ' . $k . ':' . '<br>';
                 print_r($deliveryInfoProducts);
-                // insertQuery('deliveryinfo_products', $deliveryInfoProducts);
-                // break;
+                echo 'Starter Product End---------------: ' . $k . ':' . '<br><br>';
+                //         // insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+                //         // break;
             }
             if ($k == 1) {
-                $days = $day == 1 ? 4 : 3;
                 $limit = $day != 1 ? 3 : 4;
+
+                $starterInterval =  $day == 1 ? 4 : 5;
+
                 $other = $day == 1 ? 3 : 4;
-                $processDays = 5 - $limit;
-                $remainingDays = $days - $processDays;
-                $totalGram = $actualGram = 0;
+                $processDays = 5 - $other + 1;
+                $remainingDays =  $starterInterval - $daysInterval;
+                $totalGram1 = $actualGram = 0;
 
-                $percentage = [10, 25, 50, 75, 100];
-                $totalQty = $orderProducts[$k - 1]->product_qty - $deliveryInfoProducts['product_gram'];
-                for ($p = $limit; $p <= 5; $p++) {
+                // echo '$daysInterval' . $daysInterval . '<br>';
+                // echo '$processDays' . $processDays . '<br>';
+                // echo '$other' . $other . '<br>';
+                // echo '$limit' . $limit . '<br>';
+                // echo '$remainingDays' . $remainingDays . '<br>';
+                //         $percentage = [10, 25, 50, 75, 100];
+                //         $totalQty = $orderProducts[$k - 1]->product_qty - $deliveryInfoProducts['product_gram'];
+                for ($p = $starterInterval; $p <= 5; $p++) {
+                    $totalGram1 += $finalArray[$p - 1];
+                    //             echo 'Looooooooop' . $day . '<br>';
+                    //             // echo 'Qty : ' . $totalQty . '<br>';
+                    //             // echo 'Percentage : ' . $percentage[$other-1] . '<br>';
+                    //             // echo 'Minus : ' . ($orderProducts[$k-1]->product_qty * $percentage[$other-1]) /100 . '<br>';
+                    //             $totalQty =  $totalQty - $totalGram;
 
-                    echo 'Looooooooop' . $day . '<br>';
-                    // echo 'Qty : ' . $totalQty . '<br>';
-                    // echo 'Percentage : ' . $percentage[$other-1] . '<br>';
-                    // echo 'Minus : ' . ($orderProducts[$k-1]->product_qty * $percentage[$other-1]) /100 . '<br>';
-                    $totalQty =  $totalQty - $totalGram;
+                    //             echo 'TotalGram : ' . $totalGram . '<br>';
+                    //             echo 'Diff : ' . $totalQty . '<br>';
+                    //             echo 'Percentage : ' . $percentage[$p - 1] . '<br>';
 
-                    echo 'TotalGram : ' . $totalGram . '<br>';
-                    echo 'Diff : ' . $totalQty . '<br>';
-                    echo 'Percentage : ' . $percentage[$p - 1] . '<br>';
+                    //             $percentageCalc = ($totalQty * $percentage[$p - 1]) / 100;
 
-                    $percentageCalc = ($totalQty * $percentage[$p - 1]) / 100;
+                    //             $totalGram += $percentageCalc;
+                    //             //  $actualGram += $totalGram;
+                    //             // if($p != 5) $actualGram += $totalGram;
+                    //             // else $actualGram = $totalGram;
 
-                    $totalGram += $percentageCalc;
-                    //  $actualGram += $totalGram;
-                    // if($p != 5) $actualGram += $totalGram;
-                    // else $actualGram = $totalGram;
+                    //             echo 'percentageCalc: ' . $percentageCalc . '<br>';
+                    //             echo 'totalGram: ' . $totalGram . '<br>';
+                    //             echo 'actualGram: ' . $actualGram . '<br><br>';
 
-                    echo 'percentageCalc: ' . $percentageCalc . '<br>';
-                    echo 'totalGram: ' . $totalGram . '<br>';
-                    echo 'actualGram: ' . $actualGram . '<br><br>';
 
-                    $deliveryInfoProducts1 = [
-                        'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
-                        'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,
-                        'product_gram' => round($percentageCalc), 'total_product_gram' => $orderProducts[$k - 1]->product_qty
-                    ];
-                    echo 'Delivery Info Products Loop: ' . $k . ':' . '<br>';
-                    print_r($deliveryInfoProducts1);
-                    // insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+                    //             // insertQuery('deliveryinfo_products', $deliveryInfoProducts);
 
                 }
 
-                echo 'Calc:' . $actualGram . '<br><br>';
-                echo 'Calc:' . $totalGram . '<br><br>';
-                echo 'Remaining:' . $remainingDays.'<br>';
+                $deliveryInfoProducts1 = [
+                    'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                    'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,'days_interval' => $starterInterval == 5 ? 1 : 5-$starterInterval,
+                    'actual_product_gram' => $orderProducts[$k - 1]->product_qty, 'product_gram' => round($totalGram1)
+                ];
+                //             echo 'Delivery Info Products Loop: ' . $k . ':' . '<br>';
+                echo 'Starter Product Start---------------: ' . $k . ':' . '<br>';
+                print_r($deliveryInfoProducts1);
+                echo 'Starter Product End---------------: ' . $k . ':' . '<br><br>';
+
+                //         echo 'Calc:' . $actualGram . '<br><br>';
+                //         echo 'Calc:' . $totalGram . '<br><br>';
+                //         echo 'Remaining:' . $remainingDays.'<br>';
 
                 // for($d=1;$d<=$remainingDays;$d++){
-                $totalArray = [];
+
+
+                //         $totalArray = [];
                 for ($e = 0; $e < count($orderProducts); $e++) {
                     if ($e > 0) {
-                        $productGram = $orderProducts[$e]->product_qty;
-                        $productGramPerDay = round($productGram / $orderInfo[0]->remainingDays);
-                        $productGramDays = $remainingDays * $productGramPerDay;
-                        echo 'Gram:' . $productGram . '<br>';
-                        echo 'PerDay:' . $productGramPerDay . '<br>';
-                        echo 'PerDay1:' . $productGramDays . '<br>';
-                        // $deliveryInfoProducts2 = [
-                        //     'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
-                        //     'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
-                        //     'product_gram' => $totalGram, 'total_product_gram' => $orderProducts[$e]->product_qty
-                        // ];
+                        //                 $productGram = $orderProducts[$e]->product_qty;
+                        //                 $productGramPerDay = round($productGram / $orderInfo[0]->remainingDays);
+                        //                 $productGramDays = $remainingDays * $productGramPerDay;
+                        //                 echo 'Gram:' . $productGram . '<br>';
+                        //                 echo 'PerDay:' . $productGramPerDay . '<br>';
+                        //                 echo 'PerDay1:' . $productGramDays . '<br>';
+                        $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
+                        $deliveryInfoProducts2 = [
+                            'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                            'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,'days_interval' => $daysInterval-1,
+                            'actual_product_gram' => $orderProducts[$e]->product_qty, 'product_gram' => round($perDayProductQty * $remainingDays)
+                        ];
 
-                        // array_push($totalArray, $deliveryInfoProducts2);
 
-                        // echo 'Delivery Info Products Loope-------: ' . $e . ':' . '<br>';
-                        // print_r($deliveryInfoProducts2);
+                        //                 // array_push($totalArray, $deliveryInfoProducts2);
+
+                        //                 // echo 'Delivery Info Products Loope-------: ' . $e . ':' . '<br>';
+                        echo 'Remaining Product Start---------------: ' . $k . ':' . '<br>';
+                        print_r($deliveryInfoProducts2);
+                        echo 'Remaining Product End---------------: ' . $k . ':' . '<br><br>';
                     }
                 }
 
-                // echo 'Total Array_-------------';
-                // print_r($totalArray);
-                // }
+                //         // echo 'Total Array_-------------';
+                //         // print_r($totalArray);
+                //         // }
 
-                // break;
+                //         // break;
             }
 
-            if ($k > 1) {
-            }
-            // }
+                if ($k > 1) {
+                    for ($e = 0; $e < count($orderProducts); $e++) {
+                        if ($e > 0) {
+                            //                 $productGram = $orderProducts[$e]->product_qty;
+                            //                 $productGramPerDay = round($productGram / $orderInfo[0]->remainingDays);
+                            //                 $productGramDays = $remainingDays * $productGramPerDay;
+                            //                 echo 'Gram:' . $productGram . '<br>';
+                            //                 echo 'PerDay:' . $productGramPerDay . '<br>';
+                            //                 echo 'PerDay1:' . $productGramDays . '<br>';
+                            $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
+                            $deliveryInfoProducts2 = [
+                                'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                                'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                                'actual_product_gram' => $orderProducts[$e]->product_qty, 'product_gram' => round($perDayProductQty * $daysInterval)
+                            ];
+
+
+                            //                 // array_push($totalArray, $deliveryInfoProducts2);
+
+                            //                 // echo 'Delivery Info Products Loope-------: ' . $e . ':' . '<br>';
+                            echo 'Remaining Product Start---------------: ' . $k . ':' . '<br>';
+                            print_r($deliveryInfoProducts2);
+                            echo 'Remaining Product End---------------: ' . $k . ':' . '<br><br>';
+                        }
+                    }
+                }
+            //     // }
         }
 
 

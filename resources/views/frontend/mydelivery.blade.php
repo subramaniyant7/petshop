@@ -19,7 +19,7 @@
                                     <th>S.No</th>
                                     <th>Delivery Date</th>
                                     <th>Quantity</th>
-                                    {{-- <th>View Products</th> --}}
+                                    <th>View Products</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -33,7 +33,7 @@
                                         <td>{{ $k + 1 }}</td>
                                         <td>{{ date('d-m-Y', strtotime($total['delivery'])) }}</td>
                                         <td>{{ $total['gram'] }} Gram</td>
-                                        {{-- <td><a href="{{ FRONTENDURL.'upcomingdelivery_product/'.encryption($total['orderid']) }}">View</a></td> --}}
+                                        <td><a href="{{ FRONTENDURL.'upcomingdelivery_product/'.encryption($total['orderid']) }}">View</a></td>
                                     </tr>
                                 @empty
                                     <tr>
