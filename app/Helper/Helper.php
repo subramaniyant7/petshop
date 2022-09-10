@@ -168,4 +168,8 @@ function getAddress($id){
     return DB::table('user_address')->where('user_id',$id)->get();
 }
 
+function getMyDeliveryProducts($id){
+    return DB::table("deliveryinfo_products")->where('deliveryinfo_id', $id)->get();
+}
+
 ?>

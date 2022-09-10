@@ -72,7 +72,6 @@ class FrontendController extends Controller
     }
 
 
-
     public function Register()
     {
         return view('frontend.registration');
@@ -235,71 +234,76 @@ class FrontendController extends Controller
     public function UpcomingDelivery(Request $request)
     {
         $userId = $request->session()->get('frontenduserid');
-        $userOrders = FHelperController::getMyOrders($userId);
-        $totalDelivery = [];
-        if (count($userOrders)) {
-            foreach ($userOrders as $order) {
-                $deliveryDate = $order->delivery_date;
-                $deliveryMonth = date('m', strtotime($deliveryDate));
-                if (date('m') == $deliveryMonth) {
-                    $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
-                    $perDay = $order->totalGramNeedtoBuy / $order->totalDays;
-                    $validate = $this->DateDifference(date('Y-m-d'), $deliveryDate);
-                    if ($validate != 1) {
-                        $updateStamp = strtotime($deliveryDate);
-                        $day = date('w', $updateStamp);
-                        $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
-                        array_push($totalDelivery, [
-                            'delivery' => $deliveryDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
-                            'order_inc_id' => $order->order_inc_id
-                        ]);
-                    }
-                    for ($l = 1; $l <= $order->totalDays; $l++) {
-                        $updateDate = date('Y-m-d', strtotime('+' . $l . ' day', strtotime($deliveryDate)));
-                        if ($this->DateDifference($updateDate, $deliveryMonthLastDate) != 1) {
-                            $updateStamp = strtotime($updateDate);
-                            $day = date('w', $updateStamp);
-                            if ($day == 1 || $day == 5) {
-                                $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
-                                array_push($totalDelivery, [
-                                    'delivery' => $updateDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
-                                    'order_inc_id' => $order->order_inc_id
-                                ]);
-                            }
-                        }
-                    }
+        $totalDelivery = FHelperController::getMyDelivery($userId);
 
-                    // echo '<pre>';
-                    // print_r($totalDelivery);
-                    // echo $perDay . '<br>';
-                    // echo $order->totalGram . '<br>';
-                    // echo 'diffff:'.$this->DateDifference('2022-09-30', '2022-09-30').'<br>';
+        // echo '<pre>';
+        // print_r($totalDelivery);
+        // exit;
+        // $userOrders = FHelperController::getMyOrders($userId);
+        // $totalDelivery = [];
+        // if (count($userOrders)) {
+        //     foreach ($userOrders as $order) {
+        //         $deliveryDate = $order->delivery_date;
+        //         $deliveryMonth = date('m', strtotime($deliveryDate));
+        //         if (date('m') == $deliveryMonth) {
+        //             $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
+        //             $perDay = $order->totalGramNeedtoBuy / $order->totalDays;
+        //             $validate = $this->DateDifference(date('Y-m-d'), $deliveryDate);
+        //             if ($validate != 1) {
+        //                 $updateStamp = strtotime($deliveryDate);
+        //                 $day = date('w', $updateStamp);
+        //                 $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
+        //                 array_push($totalDelivery, [
+        //                     'delivery' => $deliveryDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
+        //                     'order_inc_id' => $order->order_inc_id
+        //                 ]);
+        //             }
+        //             for ($l = 1; $l <= $order->totalDays; $l++) {
+        //                 $updateDate = date('Y-m-d', strtotime('+' . $l . ' day', strtotime($deliveryDate)));
+        //                 if ($this->DateDifference($updateDate, $deliveryMonthLastDate) != 1) {
+        //                     $updateStamp = strtotime($updateDate);
+        //                     $day = date('w', $updateStamp);
+        //                     if ($day == 1 || $day == 5) {
+        //                         $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
+        //                         array_push($totalDelivery, [
+        //                             'delivery' => $updateDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
+        //                             'order_inc_id' => $order->order_inc_id
+        //                         ]);
+        //                     }
+        //                 }
+        //             }
 
-                    // $diff = 0;
-                    // if ($day == 1) {
-                    //     $diff = 3;
-                    // }
-                    // if ($day == 6) {
-                    //     $diff = 2;
-                    // }
-                    // if ($day > 1 && $day < 5) {
-                    //     $diff = 5 - $day;
-                    // }
+        //             // echo '<pre>';
+        //             // print_r($totalDelivery);
+        //             // echo $perDay . '<br>';
+        //             // echo $order->totalGram . '<br>';
+        //             // echo 'diffff:'.$this->DateDifference('2022-09-30', '2022-09-30').'<br>';
 
-                    // $deliveryDate = date('Y-m-d', strtotime('+' . $diff . ' day', strtotime($date)));
+        //             // $diff = 0;
+        //             // if ($day == 1) {
+        //             //     $diff = 3;
+        //             // }
+        //             // if ($day == 6) {
+        //             //     $diff = 2;
+        //             // }
+        //             // if ($day > 1 && $day < 5) {
+        //             //     $diff = 5 - $day;
+        //             // }
 
-                    // echo $day.'<br>';
+        //             // $deliveryDate = date('Y-m-d', strtotime('+' . $diff . ' day', strtotime($date)));
 
-                    // $deliveryMonth = date('m', strtotime($deliveryDate));
-                    // if (date('m') == $deliveryMonth) {
-                    //     $today = date('Y-m-d');
-                    //     // echo $today . '<br>';
-                    // }
-                    // echo date('m', strtotime($deliveryDate)) . '<br>';
-                    // echo date('m');
-                }
-            }
-        }
+        //             // echo $day.'<br>';
+
+        //             // $deliveryMonth = date('m', strtotime($deliveryDate));
+        //             // if (date('m') == $deliveryMonth) {
+        //             //     $today = date('Y-m-d');
+        //             //     // echo $today . '<br>';
+        //             // }
+        //             // echo date('m', strtotime($deliveryDate)) . '<br>';
+        //             // echo date('m');
+        //         }
+        //     }
+        // }
 
         // echo '<pre>';
         // print_r($totalDelivery);
@@ -363,6 +367,16 @@ class FrontendController extends Controller
     public function UpcomingDeliveryProduct($id)
     {
         $orderId = decryption($id);
+
+        $productInfo = FHelperController::getMyDeliveryProduct($orderId);
+
+        // echo '<pre>';
+        // print_r($productInfo);
+        // exit;
+
+        return view('frontend.mydeliveryproducts',compact('productInfo'));
+
+
         $orderInfo = FHelperController::getPetsOrder($orderId);
         $orderProducts = FHelperController::getMyOrderProductsAsc($orderId);
         $thisMonthDeliveryDate = $this->CurrentMonthDelivery($orderInfo[0]->delivery_date);
@@ -399,17 +413,17 @@ class FrontendController extends Controller
         // print_r($thisMonthDeliveryDate['totaldeliveryfromdeliverydate']);
         foreach ($thisMonthDeliveryDate['totaldeliveryfromdeliverydate'] as $k => $totalDelivery) {
 
-            // $deliveryInfo = [
-            //     'order_id' => $orderId, 'user_id' => $orderInfo[0]->order_id, 'perday_meal' => $orderInfo[0]->perDayMeal,
-            //     'total_days' => $orderInfo[0]->totalDays, 'total_gram' => $orderInfo[0]->totalGram, 'delivery_date' => $totalDelivery
-            // ];
+            $deliveryInfo = [
+                'order_id' => $orderId, 'user_id' => $orderInfo[0]->order_id, 'perday_meal' => $orderInfo[0]->perDayMeal,
+                'total_days' => $orderInfo[0]->totalDays, 'total_gram' => $orderInfo[0]->totalGram, 'delivery_date' => $totalDelivery
+            ];
 
             // echo 'Delivery Info:' . '<br>';
             // print_r($deliveryInfo);
             // echo '<br>';
 
-            //     // $createDeliveryInfo = insertQueryId('deliveryinfo', $deliveryInfo);
-            $createDeliveryInfo = 1;
+            $createDeliveryInfo = insertQueryId('deliveryinfo', $deliveryInfo);
+            // $createDeliveryInfo = 1;
 
             echo 'Delivery Date:' . $totalDelivery . '<br>';
             //     // foreach ($orderProducts as $products) {
@@ -450,10 +464,11 @@ class FrontendController extends Controller
                     'product_gram' => round($totalGram)
                 ];
 
+
                 echo 'Starter Product Start---------------: ' . $k . ':' . '<br>';
                 print_r($deliveryInfoProducts);
                 echo 'Starter Product End---------------: ' . $k . ':' . '<br><br>';
-                //         // insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+                        insertQuery('deliveryinfo_products', $deliveryInfoProducts);
                 //         // break;
             }
             if ($k == 1) {
@@ -503,9 +518,11 @@ class FrontendController extends Controller
 
                 $deliveryInfoProducts1 = [
                     'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
-                    'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,'days_interval' => $starterInterval == 5 ? 1 : 5-$starterInterval,
-                    'actual_product_gram' => $orderProducts[$k - 1]->product_qty, 'product_gram' => round($totalGram1)
+                    'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,
+                    'days_interval' => $starterInterval == 5 ? 1 : 5 - $starterInterval,'actual_product_gram' => $orderProducts[$k - 1]->product_qty,
+                     'product_gram' => round($totalGram1)
                 ];
+                insertQuery('deliveryinfo_products', $deliveryInfoProducts1);
                 //             echo 'Delivery Info Products Loop: ' . $k . ':' . '<br>';
                 echo 'Starter Product Start---------------: ' . $k . ':' . '<br>';
                 print_r($deliveryInfoProducts1);
@@ -530,11 +547,12 @@ class FrontendController extends Controller
                         $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
                         $deliveryInfoProducts2 = [
                             'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
-                            'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,'days_interval' => $daysInterval-1,
-                            'actual_product_gram' => $orderProducts[$e]->product_qty, 'product_gram' => round($perDayProductQty * $remainingDays)
+                            'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                            'days_interval' => $daysInterval - 1, 'actual_product_gram' => $orderProducts[$e]->product_qty,
+                            'product_gram' => round($perDayProductQty * $remainingDays)
                         ];
 
-
+                        insertQuery('deliveryinfo_products', $deliveryInfoProducts2);
                         //                 // array_push($totalArray, $deliveryInfoProducts2);
 
                         //                 // echo 'Delivery Info Products Loope-------: ' . $e . ':' . '<br>';
@@ -551,32 +569,33 @@ class FrontendController extends Controller
                 //         // break;
             }
 
-                if ($k > 1) {
-                    for ($e = 0; $e < count($orderProducts); $e++) {
-                        if ($e > 0) {
-                            //                 $productGram = $orderProducts[$e]->product_qty;
-                            //                 $productGramPerDay = round($productGram / $orderInfo[0]->remainingDays);
-                            //                 $productGramDays = $remainingDays * $productGramPerDay;
-                            //                 echo 'Gram:' . $productGram . '<br>';
-                            //                 echo 'PerDay:' . $productGramPerDay . '<br>';
-                            //                 echo 'PerDay1:' . $productGramDays . '<br>';
-                            $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
-                            $deliveryInfoProducts2 = [
-                                'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
-                                'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
-                                'actual_product_gram' => $orderProducts[$e]->product_qty, 'product_gram' => round($perDayProductQty * $daysInterval)
-                            ];
+            if ($k > 1) {
+                for ($e = 0; $e < count($orderProducts); $e++) {
+                    if ($e > 0) {
+                        //                 $productGram = $orderProducts[$e]->product_qty;
+                        //                 $productGramPerDay = round($productGram / $orderInfo[0]->remainingDays);
+                        //                 $productGramDays = $remainingDays * $productGramPerDay;
+                        //                 echo 'Gram:' . $productGram . '<br>';
+                        //                 echo 'PerDay:' . $productGramPerDay . '<br>';
+                        //                 echo 'PerDay1:' . $productGramDays . '<br>';
+                        $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
+                        $deliveryInfoProducts2 = [
+                            'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                            'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                            'days_interval'=>$daysInterval,'actual_product_gram' => $orderProducts[$e]->product_qty,
+                            'product_gram' => round($perDayProductQty * $daysInterval)
+                        ];
 
+                        insertQuery('deliveryinfo_products', $deliveryInfoProducts2);
+                        //                 // array_push($totalArray, $deliveryInfoProducts2);
 
-                            //                 // array_push($totalArray, $deliveryInfoProducts2);
-
-                            //                 // echo 'Delivery Info Products Loope-------: ' . $e . ':' . '<br>';
-                            echo 'Remaining Product Start---------------: ' . $k . ':' . '<br>';
-                            print_r($deliveryInfoProducts2);
-                            echo 'Remaining Product End---------------: ' . $k . ':' . '<br><br>';
-                        }
+                        //                 // echo 'Delivery Info Products Loope-------: ' . $e . ':' . '<br>';
+                        echo 'Remaining Product Start---------------: ' . $k . ':' . '<br>';
+                        print_r($deliveryInfoProducts2);
+                        echo 'Remaining Product End---------------: ' . $k . ':' . '<br><br>';
                     }
                 }
+            }
             //     // }
         }
 
@@ -788,6 +807,108 @@ class FrontendController extends Controller
             }
 
 
+            $orderInfo = FHelperController::getPetsOrder($createOrder);
+            $orderProducts = FHelperController::getMyOrderProductsAsc($createOrder);
+            $thisMonthDeliveryDate = $this->CurrentMonthDelivery($orderInfo[0]->delivery_date);
+            $staterProduct = $orderProducts[0];
+            $staterProductTotalQty = $staterProduct->product_qty;
+            $percentage = [10, 25, 50, 75, 100];
+            $finalGram = 0;
+            $finalArray = [];
+            for ($e = 0; $e < 5; $e++) {
+                $updatedQty = $staterProductTotalQty - $finalGram;
+                $actualGram = round(($updatedQty * $percentage[$e]) / 100);
+                array_push($finalArray, $actualGram);
+                $finalGram += $actualGram;
+            }
+            $productsArray = [];
+            foreach ($orderProducts as $k => $products) {
+                if ($k > 0) {
+                    array_push($productsArray, [
+                        'product_id' => $products->product_id, 'actual_qty' => $products->product_qty,
+                        'perday_qty' => round($products->product_qty / $orderInfo[0]->remainingDays)
+                    ]);
+                }
+            }
+            foreach ($thisMonthDeliveryDate['totaldeliveryfromdeliverydate'] as $k => $totalDelivery) {
+
+                $deliveryInfo = [
+                    'order_id' => $orderId, 'user_id' => $orderInfo[0]->order_id, 'perday_meal' => $orderInfo[0]->perDayMeal,
+                    'total_days' => $orderInfo[0]->totalDays, 'total_gram' => $orderInfo[0]->totalGram, 'delivery_date' => $totalDelivery
+                ];
+                $createDeliveryInfo = insertQueryId('deliveryinfo', $deliveryInfo);
+                $timestamp = strtotime($totalDelivery);
+                $day = date('w', $timestamp);
+                $daysInterval = $day == 1 ? 4 : 3;
+                $startupProductProcessedDays = 0;
+                if ($k == 0) {
+                    $start = 1;
+                    $totalGram = $actualGram = 0;
+                    for ($p = 1; $p <= $daysInterval; $p++) {
+                        $totalGram += $finalArray[$p - 1];
+                    }
+                    $startupProductProcessedDays = $daysInterval;
+
+                    $deliveryInfoProducts = [
+                        'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                        'product_id' => $orderProducts[$k]->product_id, 'product_name' => $orderProducts[$k]->product_name,
+                        'days_interval' => $daysInterval, 'actual_product_gram' => $orderProducts[$k]->product_qty,
+                        'product_gram' => round($totalGram)
+                    ];
+                    insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+                }
+                if ($k == 1) {
+                    $limit = $day != 1 ? 3 : 4;
+
+                    $starterInterval =  $day == 1 ? 4 : 5;
+
+                    $other = $day == 1 ? 3 : 4;
+                    $processDays = 5 - $other + 1;
+                    $remainingDays =  $starterInterval - $daysInterval;
+                    $totalGram1 = $actualGram = 0;
+                    for ($p = $starterInterval; $p <= 5; $p++) {
+                        $totalGram1 += $finalArray[$p - 1];
+                    }
+
+                    $deliveryInfoProducts1 = [
+                        'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                        'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,
+                        'days_interval' => $starterInterval == 5 ? 1 : 5 - $starterInterval,'actual_product_gram' => $orderProducts[$k - 1]->product_qty,
+                         'product_gram' => round($totalGram1)
+                    ];
+                    insertQuery('deliveryinfo_products', $deliveryInfoProducts1);
+                    for ($e = 0; $e < count($orderProducts); $e++) {
+                        if ($e > 0) {
+                            $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
+                            $deliveryInfoProducts2 = [
+                                'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                                'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                                'days_interval' => $daysInterval - 1, 'actual_product_gram' => $orderProducts[$e]->product_qty,
+                                'product_gram' => round($perDayProductQty * $remainingDays)
+                            ];
+
+                            insertQuery('deliveryinfo_products', $deliveryInfoProducts2);
+                        }
+                    }
+                }
+
+                if ($k > 1) {
+                    for ($e = 0; $e < count($orderProducts); $e++) {
+                        if ($e > 0) {
+                            $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
+                            $deliveryInfoProducts2 = [
+                                'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                                'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                                'days_interval'=>$daysInterval,'actual_product_gram' => $orderProducts[$e]->product_qty,
+                                'product_gram' => round($perDayProductQty * $daysInterval)
+                            ];
+                            insertQuery('deliveryinfo_products', $deliveryInfoProducts2);
+                        }
+                    }
+                }
+            }
+
+
             $invoiceName = 'invoice_' . $createOrder;
             $pdfName = 'public/order/' . $invoiceName . '.pdf';
 
@@ -806,7 +927,7 @@ class FrontendController extends Controller
             try {
                 Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    // $message->cc(['woof@untame.pet']);
+                    $message->cc(['woof@untame.pet']);
                     $message->attach(storage_path('app/' . $pdfName));
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });

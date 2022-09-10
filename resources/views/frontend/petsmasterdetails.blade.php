@@ -46,11 +46,10 @@
                                     </div>
 
                                     @if ($type != '')
-
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label>Gender <span class="required">*</span></label>
-                                                <select name="breed_gender" class="form-control" required>
+                                                <select name="breed_gender" class="form-control" required onchange="genderChange(this.value)">
                                                     <option value="">Select</option>
                                                     @foreach (petGender() as $k => $gender)
                                                         <option value="{{ $k + 1 }}">{{ $gender }}</option>
@@ -165,11 +164,11 @@
                                             <div class="col-md-6" id="healthcondition"></div>
                                         </div>
 
-                                        <div class="row">
+                                        <div class="row" id="breed_pregnant" style="display:none">
                                             <div class="col-md-6">
                                                 <label>Is your pet pregnant or nursing? <span
                                                         class="required">*</span></label>
-                                                <select name="breed_nursing" class="form-control" required
+                                                <select name="breed_nursing" class="form-control"
                                                     onchange="breedNursing(this.value)">
                                                     <option value="">Select</option>
                                                     @foreach (YesNo() as $k => $activity)
@@ -234,5 +233,20 @@
         </div>
         <!-- /row -->
     </div>
+
+    <script>
+        const genderChange = (val) => {
+            console.log(val)
+            if(val == 2){
+                $('#breed_pregnant').show();
+                $('select[name="breed_nursing"]').attr('required', true);
+            }else{
+                $('#breed_pregnant').hide();
+                $('select[name="breed_nursing"]').attr('required', false).val();
+                $('input[name="breed_nursing_info"]').attr('required', false);
+                $('#breed_nursing').html();
+            }
+        }
+    </script>
 
 @stop
