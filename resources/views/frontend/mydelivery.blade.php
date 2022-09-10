@@ -45,7 +45,7 @@
                                     @endif
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="text-center">No Delivery found</td>
+                                        <td colspan="4" class="text-center">No Delivery found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
