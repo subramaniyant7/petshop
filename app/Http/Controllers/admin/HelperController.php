@@ -75,4 +75,16 @@ class HelperController extends Controller
         if ($id != '') $data->where('order_id', $id);
         return $data->orderBy('order_id', 'desc')->get();
     }
+
+    static function getAllDelivery($id = '')
+    {
+        $data = DB::table("deliveryinfo");
+        if ($id != '') $data->where('deliveryinfo_id', $id);
+        return $data->orderBy('deliveryinfo_id', 'asc')->get();
+    }
+
+    static function getDeliveryProduct($id)
+    {
+        return DB::table("deliveryinfo_products")->where('deliveryinfo_id', $id)->orderBy('deliveryinfo_id', 'desc')->get();
+    }
 }

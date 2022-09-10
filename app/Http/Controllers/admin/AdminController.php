@@ -125,36 +125,14 @@ class AdminController extends Controller
 
     public function ViewOrderDelivery()
     {
-        $allorders = HelperController::getAllOrders();
-        $totalDelivery = [];
-        if (count($allorders)) {
-            foreach ($allorders as $order) {
-                $deliveryDate = $order->delivery_date;
-                $deliveryMonth = date('m', strtotime($deliveryDate));
-                if (date('m') == $deliveryMonth) {
-                    $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
-                    $perDay = $order->totalGramNeedtoBuy / $order->totalDays;
-                    for ($l = 1; $l <= $order->totalDays; $l++) {
-                        $updateDate = date('Y-m-d', strtotime('+' . $l . ' day', strtotime($deliveryDate)));
-                        if ($this->DateDifference($updateDate, $deliveryMonthLastDate) != 1) {
-                            $updateStamp = strtotime($updateDate);
-                            $day = date('w', $updateStamp);
-                            if ($day == 1 || $day == 4) {
-                                $gram = $day == 1 ? $perDay * 3 : $perDay * 4;
-                                array_push($totalDelivery, [
-                                    'delivery' => $updateDate, 'day' => $day, 'gram' => $gram,
-                                    'orderid' => $order->order_inc_id, 'user_id' => $order->user_id
-                                ]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return view('admin.viewupcomingdelivery',compact('totalDelivery'));
-        echo '<pre>';
-        print_r($totalDelivery);
+        $alldelivery = HelperController::getAllDelivery();
+        return view('admin.viewupcomingdelivery',compact('alldelivery'));
+    }
 
+    public function ViewDeliveryProductDetails($id){
+        $deliveryId = decryption($id);
+        $deliveryProducts = HelperController::getDeliveryProduct($deliveryId);
+        return view('admin.viewdeliveryproducts',compact('deliveryProducts'));
     }
 
     public function ViewOrderDetails($id)

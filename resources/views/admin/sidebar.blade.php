@@ -138,6 +138,16 @@
         </li>
 
         <li>
+            <a class="{{ $title == 'View Upcoming Delivery' ? 'active' :'' }}" href="{{ url(ADMINURL.'/vieworderdelivery') }}">
+                <div class="pull-left">
+                    <i class="fa fa-shopping-cart mr-20"></i>
+                    <span class="right-nav-text">Upcoming Delivery</span>
+                </div>
+                <div class="clearfix"></div>
+            </a>
+        </li>
+
+        <li>
             <a  href="{{ url(ADMINURL.'/logout') }}">
                 <div class="pull-left">
                     <i class="fa fa-power-off mr-20"></i>

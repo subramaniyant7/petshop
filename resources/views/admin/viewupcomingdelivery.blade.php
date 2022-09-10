@@ -23,26 +23,34 @@
                                                 <th>S.No</th>
                                                 <th>Order ID</th>
                                                 <th>User</th>
-                                                <th>Gram</th>
+                                                <th>Quantity(Gram)</th>
                                                 <th>Delivery Date</th>
+                                                <th>View Products</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php
-                                                usort($totalDelivery, function ($a, $b) {
-                                                    return strcmp($a['delivery'], $b['delivery']);
-                                                });
-                                            @endphp
-
-                                            @forelse ($totalDelivery as $k => $order)
-                                                <tr>
-                                                    <td>{{ $k + 1 }}</td>
-                                                    <td>{{ $order['orderid'] }}</td>
-                                                    <td>{{ getUser($order['user_id'])[0]->user_email }}</td>
-                                                    <td>{{ $order['gram'] }} Gram</td>
-                                                    <td>{{ date('d-m-Y', strtotime($order['delivery'])) }}</td>
-
-                                                </tr>
+                                            @forelse ($alldelivery as $k => $order)
+                                                @if (strtotime($order->delivery_date) >= strtotime(date('y-m-d')))
+                                                    @php
+                                                        $products = getMyDeliveryProducts($order->deliveryinfo_id);
+                                                        $totalgram = 0;
+                                                        foreach ($products as $product) {
+                                                            $totalgram += $product->product_gram;
+                                                        }
+                                                    @endphp
+                                                    <tr>
+                                                        <td>{{ $k + 1 }}</td>
+                                                        <td>{{ $order->order_id }}</td>
+                                                        <td>{{ getUser($order->user_id)[0]->user_email }}</td>
+                                                        <td>{{ $totalgram }}</td>
+                                                        <td>{{ date('d-m-Y', strtotime($order->delivery_date)) }}</td>
+                                                        <td class="text-nowrap">
+                                                            <a href="{{ url(ADMINURL.'/view_delivery_products/'.encryption($order->deliveryinfo_id)) }}" class="mr-25" data-toggle="tooltip" data-original-title="View">
+                                                                <i class="fa fa-eye text-inverse m-r-10"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endif
                                             @empty
                                                 <tr>
                                                     <td colspan="5" class="text-center">No Delivery found</td>

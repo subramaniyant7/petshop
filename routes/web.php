@@ -89,6 +89,7 @@ Route::middleware(['globalvalidate'])->group(function () {
 
             Route::get('/vieworder', [AdminController::class, 'ViewOrder']);
             Route::get('/vieworderdelivery', [AdminController::class, 'ViewOrderDelivery']);
+            Route::get('/view_delivery_products/{id}', [AdminController::class, 'ViewDeliveryProductDetails']);
             Route::get('/vieworderdetails/{id}', [AdminController::class, 'ViewOrderDetails']);
             Route::get('/orderinvoice/{id}', [AdminController::class, 'OrderInvoiceDownload']);
 
