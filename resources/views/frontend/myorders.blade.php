@@ -31,8 +31,8 @@
                                     <tr>
                                         <td>{{ $k + 1 }}</td>
                                         <td>{{ $orders->order_inc_id }}</td>
-                                        <td>{{ $orders->totalGram }} Gram</td>
-                                        <td>Rs.{{ number_format($orders->totalPrice, 2) }}</td>
+                                        <td>{{ $orders->totalGram/1000 }} KG</td>
+                                        <td>Rs.{{ number_format($orders->grandTotal, 2) }}</td>
                                         <td>{{ $orders->paymentId != '' ? 'Paid' : 'In-Progress' }}</td>
                                         <td>{{ $orders->delivery_date }}</td>
                                         <td><a href="{{ FRONTENDURL.'orderinvoice/'.encryption($orders->order_id)}}">Download</a></td>

@@ -18,7 +18,7 @@
                                 <tr>
                                     <th>S.No</th>
                                     <th>Delivery Date</th>
-                                    <th>Quantity(Gram)</th>
+                                    <th>Quantity(KG)</th>
                                     <th>View Products</th>
                                 </tr>
                             </thead>
@@ -37,7 +37,7 @@
                                         <tr>
                                             <td>{{ $k + 1 }}</td>
                                             <td>{{ date('d-m-Y', strtotime($total->delivery_date)) }}</td>
-                                            <td>{{ $totalgram }}</td>
+                                            <td>{{ $totalgram / 1000 }}</td>
                                             <td><a
                                                     href="{{ FRONTENDURL . 'upcomingdelivery_product/' . encryption($total->deliveryinfo_id) }}">View</a>
                                             </td>

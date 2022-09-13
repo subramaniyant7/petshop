@@ -18,7 +18,7 @@
                                     <th>Image</th>
                                     <th>Product</th>
                                     <th>Price</th>
-                                    <th>Quantity</th>
+                                    <th>Quantity(KG)</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
@@ -34,14 +34,24 @@
                                                 src="{{ URL::asset('uploads/products/' . $image) }}"></td>
                                         <td>{{ $data->product_name }}</td>
                                         <td>Rs.{{ $data->product_price }}/Gram</td>
-                                        <td>{{ $data->product_qty }}</td>
+                                        <td>{{ $data->product_qty/ 1000 }}</td>
                                         <td>Rs.{{ number_format($data->product_price * $data->product_qty,2) }}</td>
                                     </tr>
                                 @endforeach
                                 <tr>
                                     <td colspan="4"></td>
-                                    <td >Total</td>
+                                    <td >Sub Total</td>
                                     <td> Rs.{{ number_format($getOrder[0]->totalPrice,2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td >GST</td>
+                                    <td> Rs.{{ number_format($getOrder[0]->gst,2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td >Grand Total</td>
+                                    <td> Rs.{{ number_format($getOrder[0]->grandTotal,2) }}</td>
                                 </tr>
 
                             </tbody>

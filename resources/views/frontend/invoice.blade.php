@@ -107,10 +107,42 @@
                 <table style="width: 100%;line-height: inherit;text-align: left;">
                     <tr>
                         <td style="vertical-align: top;width:77%;text-align: right">
-                            <strong>Grand-Total</strong>
+                            <strong>Sub-Total</strong>
                         </td>
                         <td style="vertical-align: top;width:23%;text-align: center">
                             Rs. {{ number_format($order[0]->totalPrice,2) }}
+                        </td>
+
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="vertical-align: top;margin-left:20%;padding-top: 10px">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="vertical-align: top;width:77%;text-align: right">
+                            <strong>GST</strong>
+                        </td>
+                        <td style="vertical-align: top;width:23%;text-align: center">
+                            Rs. {{ number_format($order[0]->gst,2) }}
+                        </td>
+
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="vertical-align: top;margin-left:20%;padding-top: 10px">
+                <table style="width: 100%;line-height: inherit;text-align: left;">
+                    <tr>
+                        <td style="vertical-align: top;width:77%;text-align: right">
+                            <strong>Grand-Total</strong>
+                        </td>
+                        <td style="vertical-align: top;width:23%;text-align: center">
+                            Rs. {{ number_format($order[0]->grandTotal,2) }}
                         </td>
 
                     </tr>

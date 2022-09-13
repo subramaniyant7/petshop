@@ -18,7 +18,7 @@
                                                 <th>S.No</th>
                                                 <th>Product</th>
                                                 <th>Price(Gram)</th>
-                                                <th>Quantity</th>
+                                                <th>Quantity(KG)</th>
                                                 <th>Total</th>
                                             </tr>
                                         </thead>
@@ -28,18 +28,36 @@
                                                     <td>{{ $k + 1 }}</td>
                                                     <td>{{ $data->product_name }}</td>
                                                     <td>Rs.{{ $data->product_price }}</td>
-                                                    <td>{{ $data->product_qty }}</td>
+                                                    <td>{{ $data->product_qty / 1000 }}</td>
                                                     <td>{{ number_format($data->product_price * $data->product_qty,2) }}</td>
                                                 </tr>
                                             @endforeach
+                                            @php
+                                                $subTotalAmount = $orderInfo[0]->totalPrice;
+                                                $gst = round(($subTotalAmount * 18) / 100);
+                                                $grandTotal = $subTotalAmount + $gst;
+                                            @endphp
                                             <tr>
                                                 <td colspan="3"></td>
-                                                <td >Total</td>
-                                                <td> Rs.{{ number_format($orderInfo[0]->totalPrice,2) }}</td>
+                                                <td >Sub Total</td>
+                                                <td> Rs.{{ number_format($subTotalAmount,2) }}</td>
                                             </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td >GST</td>
+                                                <td> Rs.{{ number_format($gst,2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td >Grand Total</td>
+                                                <td> Rs.{{ number_format($grandTotal,2) }}</td>
+                                            </tr>
+
                                         </tbody>
                                     </table>
-                                    <input type="hidden" id="total" value="{{ $orderInfo[0]->totalPrice }}">
+                                    <input type="hidden" id="subtotal" value="{{ $subTotalAmount }}">
+                                    <input type="hidden" id="gst" value="{{ $gst }}">
+                                    <input type="hidden" id="total" value="{{ $grandTotal }}">
                                     <input type="hidden" id="order_id" value="{{ encryption($orderInfo[0]->order_id) }}">
                                     <button type="button" style="float:right" value="Pay Now" id="rzp-button1" class="btn btn-primary">Pay
                                         Now</button>
@@ -75,6 +93,8 @@
                                 console.log(response)
                                 if (response.razorpay_payment_id != '') {
                                     $('#preloader').show();
+                                    let subtotal = $('#subtotal').val();
+                                    let gst = $('#gst').val();
                                     $.ajax({
                                         url: `${siteurl}paymentsuccess`,
                                         type: 'post',
@@ -82,6 +102,8 @@
                                         data: {
                                             razorpay_payment_id: response.razorpay_payment_id,
                                             orderId: orderId,
+                                            subtotal: subtotal,
+                                            gst: gst
                                         },
                                         success: function(data) {
                                             $('#preloader').hide();

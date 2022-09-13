@@ -47,8 +47,8 @@
                                                 <td>{{ $order->order_inc_id }}</td>
                                                 <td>{{ getUser($order->user_id)[0]->user_email }}</td>
                                                 <td>{{ $order->order_type == 1 ? 'Partial' : 'Complete' }}</td>
-                                                <td>{{ $order->totalGram }}</td>
-                                                <td>Rs.{{ number_format($order->totalPrice,2) }}</td>
+                                                <td>{{ $order->totalGram / 1000 }} KG</td>
+                                                <td>Rs.{{ number_format($order->grandTotal,2) }}</td>
                                                 <td>{{ $order->delivery_date }}</td>
                                                 <td>{{ $order->paymentId }}</td>
                                                 <td class="text-nowrap">

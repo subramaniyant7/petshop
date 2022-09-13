@@ -34,22 +34,32 @@
                                         @if ($type != '')
                                             <div class="col-md-6">
                                                 <label>Breed Name <span class="required">*</span></label>
-                                                <select name="breed_name" id="breed_name" class="form-control" required>
+                                                <select name="breed_name" id="breed_name" class="form-control" required onchange="breedName(this.value)">
                                                     <option value="">Select</option>
                                                     @foreach ($breeds as $breed)
                                                         <option value="{{ $breed->breed_id }}">{{ $breed->breed_name }}
                                                         </option>
                                                     @endforeach
+                                                    <option value="0">Other</option>
                                                 </select>
                                             </div>
                                         @endif
                                     </div>
 
                                     @if ($type != '')
+
+                                        <div class="row" id="breed_text" style="display:none">
+                                            <div class="col-md-12">
+                                                <label>Breed Name <span class="required">*</span></label>
+                                                <input type="text" name="breed_text" class="form-control input-field" value="">
+                                            </div>
+                                        </div>
+
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label>Gender <span class="required">*</span></label>
-                                                <select name="breed_gender" class="form-control" required onchange="genderChange(this.value)">
+                                                <select name="breed_gender" class="form-control" required
+                                                    onchange="genderChange(this.value)">
                                                     <option value="">Select</option>
                                                     @foreach (petGender() as $k => $gender)
                                                         <option value="{{ $k + 1 }}">{{ $gender }}</option>
@@ -73,22 +83,26 @@
                                                     required value="">
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <label>What’s their activity level? <span class="required">*</span></label>
-                                                <select name="breed_activity_level" class="form-control" required>
-                                                    <option value="">Select</option>
-                                                    @if ($type == '1')
-                                                        @foreach (dogActivity() as $k => $activity)
-                                                            <option value="{{ $k + 1 }}">{{ $activity }}</option>
-                                                        @endforeach
-                                                    @elseif ($type == '2')
-                                                        @foreach (catActivity() as $k => $activity)
-                                                            <option value="{{ $k + 1 }}">{{ $activity }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
+
+                                                <div class="col-md-6">
+                                                    <label>What’s their activity level? <span
+                                                            class="required">*</span></label>
+                                                    <select name="breed_activity_level" class="form-control" required>
+                                                        <option value="">Select</option>
+                                                        @if ($type == '1')
+                                                            @foreach (dogActivity() as $k => $activity)
+                                                                <option value="{{ $k + 1 }}">{{ $activity }}
+                                                                </option>
+                                                            @endforeach
+                                                        @elseif ($type == '2')
+                                                            @foreach (catActivity() as $k => $activity)
+                                                                <option value="{{ $k + 1 }}">{{ $activity }}
+                                                                </option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </div>
+
                                         </div>
 
 
@@ -236,15 +250,24 @@
 
     <script>
         const genderChange = (val) => {
-            console.log(val)
-            if(val == 2){
+            if (val == 2) {
                 $('#breed_pregnant').show();
                 $('select[name="breed_nursing"]').attr('required', true);
-            }else{
+            } else {
                 $('#breed_pregnant').hide();
                 $('select[name="breed_nursing"]').attr('required', false).val();
                 $('input[name="breed_nursing_info"]').attr('required', false);
                 $('#breed_nursing').html();
+            }
+        }
+
+        const breedName = (val) => {
+            if(val == 0){
+                $('#breed_text').show();
+                $('input[name="breed_text"]').attr('required', true);
+            }else{
+                $('#breed_text').hide();
+                $('input[name="breed_text"]').attr('required', false);
             }
         }
     </script>

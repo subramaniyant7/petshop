@@ -1,6 +1,8 @@
 <form method="POST" action="{{ url(FRONTENDURL . 'orderproceed') }}">
     @csrf
-    <p style="text-align:right;font-weight:bold;color:red;">Remaining Quantity to Add : {{ $remainingGramToBuy }} Gram</p>
+    <p style="text-align:right;font-weight:bold;color:red;">Remaining Quantity to Add : <span
+            class="remaining_product">{{ $remainingGramToBuy / 1000 }}</span>
+        KG</p>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -16,25 +18,27 @@
             @csrf
             <tr>
                 <td>1</td>
-                <td><img style="min-height: 100px;max-height:100px;" src="{{ URL::asset('uploads/products/'.$default->product_image)}}"></td>
+                <td><img style="min-height: 100px;max-height:100px;"
+                        src="{{ URL::asset('uploads/products/' . $default->product_image) }}"></td>
                 <td>
                     {{ $default->product_name }} (Starter Product - Mandatory)
                 </td>
                 <td>Rs.{{ $default->product_price }}/Gram</td>
                 <td>
-                    {{ $defaultProductCalc }} Gram
-                    <input type="hidden" name="product_qty[]" value="{{ $defaultProductCalc}}">
+                    {{ $defaultProductCalc / 1000 }} KG
+                    <input type="hidden" name="product_qty[]" value="{{ $defaultProductCalc }}">
                     <input type="hidden" name="product_id[]" value="{{ encryption($default->product_id) }}">
                 </td>
             </tr>
             @foreach ($products as $k => $data)
                 <tr>
                     <td>{{ $k + 2 }}</td>
-                    <td><img style="min-height: 100px;max-height:100px;" src="{{ URL::asset('uploads/products/'.$data->product_image)}}"></td>
+                    <td><img style="min-height: 100px;max-height:100px;"
+                            src="{{ URL::asset('uploads/products/' . $data->product_image) }}"></td>
                     <td>{{ $data->product_name }}</td>
                     <td>Rs.{{ $data->product_price }}/Gram</td>
                     <td>
-                        <input type="number" name="product_qty[]" value="">
+                        <input type="number" name="product_qty[]" step="0.001" value="" onblur="updateBalance(this.value)">
                         <input type="hidden" name="product_id[]" value="{{ encryption($data->product_id) }}">
                     </td>
                 </tr>
@@ -54,5 +58,6 @@
     <input type="hidden" value="{{ $deliveryDate }}" name="delivery_date">
 
     <input type="hidden" value="{{ encryption($petsInfo->pets_master_id) }}" name="pets_master_id">
-    <button type="submit" style="float:right" value="Submit" class="btn btn-primary">Submit</button>
+    <button type="submit" style="float:right" disabled value="Submit"
+        class="btn btn-primary submit_product">Submit</button>
 </form>

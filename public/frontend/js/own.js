@@ -65,6 +65,28 @@ const breedNursing = (allergyValue) => {
 }
 
 
+const updateBalance = (val) => {
+    let remainingGramToBuy = parseFloat($('input[name="remainingGramToBuy"]').val()) / 1000;
+    let k = 0
+    var input = document.getElementsByName('product_qty[]');
+    for (let i = 0; i < input.length; i++) {
+        if (input[i].value != '' && i > 0) {
+            k = parseFloat(k) + parseFloat(input[i].value);
+        }
+    }
+    let remainingToAdd = remainingGramToBuy - k;
+    if(k > remainingGramToBuy){
+        $('.submit_product').attr('disabled', true);
+        toastr.error('You cannot order more than required food');
+    }else{
+       $('.remaining_product').html(remainingToAdd.toFixed(2))
+    }
+
+    if(k == remainingGramToBuy){
+        $('.submit_product').attr('disabled', false);
+    }
+}
+
 
 $('#order_proceed').submit(function(e){
     e.preventDefault();

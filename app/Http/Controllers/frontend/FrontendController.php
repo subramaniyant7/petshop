@@ -235,79 +235,6 @@ class FrontendController extends Controller
     {
         $userId = $request->session()->get('frontenduserid');
         $totalDelivery = FHelperController::getMyDelivery($userId);
-
-        // echo '<pre>';
-        // print_r($totalDelivery);
-        // exit;
-        // $userOrders = FHelperController::getMyOrders($userId);
-        // $totalDelivery = [];
-        // if (count($userOrders)) {
-        //     foreach ($userOrders as $order) {
-        //         $deliveryDate = $order->delivery_date;
-        //         $deliveryMonth = date('m', strtotime($deliveryDate));
-        //         if (date('m') == $deliveryMonth) {
-        //             $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
-        //             $perDay = $order->totalGramNeedtoBuy / $order->totalDays;
-        //             $validate = $this->DateDifference(date('Y-m-d'), $deliveryDate);
-        //             if ($validate != 1) {
-        //                 $updateStamp = strtotime($deliveryDate);
-        //                 $day = date('w', $updateStamp);
-        //                 $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
-        //                 array_push($totalDelivery, [
-        //                     'delivery' => $deliveryDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
-        //                     'order_inc_id' => $order->order_inc_id
-        //                 ]);
-        //             }
-        //             for ($l = 1; $l <= $order->totalDays; $l++) {
-        //                 $updateDate = date('Y-m-d', strtotime('+' . $l . ' day', strtotime($deliveryDate)));
-        //                 if ($this->DateDifference($updateDate, $deliveryMonthLastDate) != 1) {
-        //                     $updateStamp = strtotime($updateDate);
-        //                     $day = date('w', $updateStamp);
-        //                     if ($day == 1 || $day == 5) {
-        //                         $gram = $day == 1 ? $perDay * 4 : $perDay * 3;
-        //                         array_push($totalDelivery, [
-        //                             'delivery' => $updateDate, 'day' => $day, 'gram' => $gram, 'orderid' => $order->order_id,
-        //                             'order_inc_id' => $order->order_inc_id
-        //                         ]);
-        //                     }
-        //                 }
-        //             }
-
-        //             // echo '<pre>';
-        //             // print_r($totalDelivery);
-        //             // echo $perDay . '<br>';
-        //             // echo $order->totalGram . '<br>';
-        //             // echo 'diffff:'.$this->DateDifference('2022-09-30', '2022-09-30').'<br>';
-
-        //             // $diff = 0;
-        //             // if ($day == 1) {
-        //             //     $diff = 3;
-        //             // }
-        //             // if ($day == 6) {
-        //             //     $diff = 2;
-        //             // }
-        //             // if ($day > 1 && $day < 5) {
-        //             //     $diff = 5 - $day;
-        //             // }
-
-        //             // $deliveryDate = date('Y-m-d', strtotime('+' . $diff . ' day', strtotime($date)));
-
-        //             // echo $day.'<br>';
-
-        //             // $deliveryMonth = date('m', strtotime($deliveryDate));
-        //             // if (date('m') == $deliveryMonth) {
-        //             //     $today = date('Y-m-d');
-        //             //     // echo $today . '<br>';
-        //             // }
-        //             // echo date('m', strtotime($deliveryDate)) . '<br>';
-        //             // echo date('m');
-        //         }
-        //     }
-        // }
-
-        // echo '<pre>';
-        // print_r($totalDelivery);
-        // exit;
         return view('frontend.mydelivery', compact('totalDelivery'));
     }
 
@@ -679,6 +606,7 @@ class FrontendController extends Controller
     public function PetsMasterCalculation(Request $request)
     {
         $id = $request->segment(2);
+        // echo '<pre>';
         try {
             $returnData = $this->PetsCollectionInfo(decryption($id));
             if ($request->has('order_type')) {
@@ -706,6 +634,9 @@ class FrontendController extends Controller
                 $returnData['remainingDays'] = $returnData['totalDays'] - 5;
                 $returnData['order_type'] = $request->input('order_type');
             }
+
+            // print_r($returnData);
+            // exit;
             return view('frontend.petmastercalculation', $returnData);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -720,10 +651,13 @@ class FrontendController extends Controller
             $products = [];
             foreach ($formData['product_qty'] as $k => $qty) {
 
-                if ($qty != '') array_push($products, ['id' => $formData['product_id'][$k], 'qty' => $qty]);
+                $qty = $qty;
                 if ($k != 0) {
+                    $qty = $qty * 1000;
                     $totalquantity += $qty;
+
                 }
+                if ($qty != '') array_push($products, ['id' => $formData['product_id'][$k], 'qty' => $qty]);
             }
             if ($totalquantity < $formData['totalGramNeedtoBuy']) {
                 return back()->with('error', 'Added quantity not sufficient with estimated quantity');
@@ -791,8 +725,8 @@ class FrontendController extends Controller
                 'user_id' => $request->session()->get('frontenduserid'), 'order_inc_id' => $orderId, 'order_type' => $orderInfo[0]->order_type,
                 'pets_master_id' => $orderInfo[0]->pets_master_id, 'totalGramNeedtoBuy' => $orderInfo[0]->totalGramNeedtoBuy,
                 'defaultProductCalc' => $orderInfo[0]->defaultProductCalc, 'remainingGramToBuy' => $orderInfo[0]->remainingGramToBuy, 'remainingDays' => $orderInfo[0]->remainingDays,
-                'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice),
-                'paymentId' => $formData['razorpay_payment_id'], 'delivery_date' => $orderInfo[0]->delivery_date, 'perDayMeal' => $orderInfo[0]->perDayMeal
+                'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice),'grandTotal' => $formData['subtotal'] + $formData['gst'],
+                'gst' => $formData['gst'],'paymentId' => $formData['razorpay_payment_id'], 'delivery_date' => $orderInfo[0]->delivery_date, 'perDayMeal' => $orderInfo[0]->perDayMeal
             ];
 
             $createOrder = insertQueryId('order_details', $orderCreateInfo);
