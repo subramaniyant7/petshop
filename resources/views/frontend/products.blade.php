@@ -5,6 +5,9 @@
 .adopt-image{
     border-bottom: none;
 }
+.category-isotope .nav-link{
+    color:#fff !important;
+}
 
 </style>
 

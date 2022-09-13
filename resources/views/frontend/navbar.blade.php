@@ -1,3 +1,8 @@
+<style>
+    .nav-link {
+        color: #539B3C !important;
+    }
+</style>
 <nav id="main-nav" class="navbar-expand-xl fixed-top">
     <div>
         <!-- Start Top Bar -->
@@ -31,7 +36,8 @@
                                 </a>
                             </li>
                             <li class="list-inline-item">
-                                <a target="_blank" title="Whatsapp" href="https://api.whatsapp.com/send/?phone=919150529991&text=Hi+there%21+How+can+we+help+you+today%3F&type=phone_number&app_absent=0">
+                                <a target="_blank" title="Whatsapp"
+                                    href="https://api.whatsapp.com/send/?phone=919150529991&text=Hi+there%21+How+can+we+help+you+today%3F&type=phone_number&app_absent=0">
                                     <i class="fab fa-whatsapp"></i>
                                 </a>
                             </li>
@@ -46,7 +52,7 @@
         </div>
         <!-- End Top bar -->
         <!-- Navbar Starts -->
-        <div class="navbar container-fluid">
+        <div class="navbar container-fluid" style="background: transparent;">
             <div class="container ">
                 <!-- logo -->
                 <a class="nav-brand" href="{{ url(FRONTENDURL) }}">
@@ -67,24 +73,24 @@
                             <a class="nav-link" href="{{ url(FRONTENDURL) }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL.'products') }}">Products</a>
+                            <a class="nav-link" href="{{ url(FRONTENDURL . 'products') }}">Products</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL.'about_us') }}">About Us</a>
+                            <a class="nav-link" href="{{ url(FRONTENDURL . 'about_us') }}">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL.'faq') }}">FAQ</a>
+                            <a class="nav-link" href="{{ url(FRONTENDURL . 'faq') }}">FAQ</a>
                         </li>
-                        @if(session('frontenduserid'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL.'dashboard') }}">Dashboard</a>
-                        </li>
+                        @if (session('frontenduserid'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url(FRONTENDURL . 'dashboard') }}">Dashboard</a>
+                            </li>
                         @else
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url(FRONTENDURL.'register') }}">Register</a>
+                                <a class="nav-link" href="{{ url(FRONTENDURL . 'register') }}">Register</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url(FRONTENDURL.'login') }}">Login</a>
+                                <a class="nav-link" href="{{ url(FRONTENDURL . 'login') }}">Login</a>
                             </li>
                         @endif
 

@@ -3,7 +3,7 @@
 @section('content')
     @include('admin.notification')
 
-    <video loop autoplay muted id="videoId" class="custom_video">
+    <video loop autoplay muted id="videoId" class="custom_video" width="100%">
         <source src="{{ URL::asset('frontend/video/file.mp4') }}" type="video/mp4">
     </video>
 
@@ -45,11 +45,11 @@
 
 
 
-    <section id="feature-section" class="bg-light pattern1">
+    <section id="feature-section" class="bg-light pattern1" style="background-color:rgb(50, 50, 50) !important">
         <div class="container">
             <!-- section heading -->
             <div class="section-heading text-center">
-                <h2>Why Us</h2>
+                <h2 style="color:#fff">Why Us</h2>
             </div>
             <!-- /section-heading -->
             <!-- features -->
@@ -62,8 +62,8 @@
 
                             <img src="{{ URL::asset(FRONTEND . '/img/flowers.webp') }}">
                         </div>
-                        <h5><strong>FRESH</strong></h5>
-                        <p>Our meals are neither frozen nor dry but made fresh on a daily basis with lots of love, scoops of
+                        <h5 style="color:#fff"><strong>FRESH</strong></h5>
+                        <p style="color:#fff">Our meals are neither frozen nor dry but made fresh on a daily basis with lots of love, scoops of
                             nutrition and mounds of utmost care.</p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -76,8 +76,8 @@
                             <!-- icon -->
                             <img src="{{ URL::asset(FRONTEND . '/img/healthy.webp') }}">
                         </div>
-                        <h5><strong>HEALTHY</strong></h5>
-                        <p>Prepared using preservative free ingredients, everything used in your pet's meal is recognizable
+                        <h5 style="color:#fff"><strong>HEALTHY</strong></h5>
+                        <p style="color:#fff">Prepared using preservative free ingredients, everything used in your pet's meal is recognizable
                             and not something out of a chemistry class. This also makes our meals hypoallergenic! </p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -90,8 +90,8 @@
                             <!-- icon -->
                             <img src="{{ URL::asset(FRONTEND . '/img/food.webp') }}">
                         </div>
-                        <h5><strong>DELICIOUS</strong></h5>
-                        <p>Why feed your pooch the same, old and boring? Our meals are guaranteed to stimulate not just
+                        <h5 style="color:#fff"><strong>DELICIOUS</strong></h5>
+                        <p style="color:#fff">Why feed your pooch the same, old and boring? Our meals are guaranteed to stimulate not just
                             their appetite but their senses too with enticing aroma and interesting textures!</p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -104,8 +104,8 @@
                             <!-- icon -->
                             <img src="{{ URL::asset(FRONTEND . '/img/diet.webp') }}">
                         </div>
-                        <h5><strong>HUMAN GRADE</strong></h5>
-                        <p>Our food is made from 100% human grade fresh fruits, vegetables and meat. We do not use store or
+                        <h5 style="color:#fff"><strong>HUMAN GRADE</strong></h5>
+                        <p style="color:#fff">Our food is made from 100% human grade fresh fruits, vegetables and meat. We do not use store or
                             farm waste. We believe our pets deserve high quality nutrition just like we do.</p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -120,8 +120,8 @@
                             <!-- icon -->
                             <img src="{{ URL::asset(FRONTEND . '/img/store.webp') }}">
                         </div>
-                        <h5><strong>LOCAL</strong></h5>
-                        <p>We only use fresh regionally-sourced ingredients from the local markets/farms ensuring best
+                        <h5 style="color:#fff"><strong>LOCAL</strong></h5>
+                        <p style="color:#fff">We only use fresh regionally-sourced ingredients from the local markets/farms ensuring best
                             quality, while also supporting the local businesses.</p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -134,8 +134,8 @@
                             <!-- icon -->
                             <img src="{{ URL::asset(FRONTEND . '/img/customs.webp') }}">
                         </div>
-                        <h5><strong>CUSTOMIZABLE</strong></h5>
-                        <p>Got a kitty with an existing health condition? or a puppy that's still growing? Their nutritional
+                        <h5 style="color:#fff"><strong>CUSTOMIZABLE</strong></h5>
+                        <p style="color:#fff">Got a kitty with an existing health condition? or a puppy that's still growing? Their nutritional
                             needs are different and we can cater to them by customizing our meals to their needs.</p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -148,8 +148,8 @@
                             <!-- icon -->
                             <img src="{{ URL::asset(FRONTEND . '/img/save-money.webp') }}">
                         </div>
-                        <h5><strong>AFFORDABLE</strong></h5>
-                        <p>We strongly believe providing for your pet shouldn't cost you a paw and a claw. We guarantee our
+                        <h5 style="color:#fff"><strong>AFFORDABLE</strong></h5>
+                        <p style="color:#fff">We strongly believe providing for your pet shouldn't cost you a paw and a claw. We guarantee our
                             prices will be affordable at premium quality.</p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -162,8 +162,8 @@
                             <!-- icon -->
                             <img src="{{ URL::asset(FRONTEND . '/img/environmental.webp') }}">
                         </div>
-                        <h5><strong>ECOFRIENDLY</strong></h5>
-                        <p>All our packaging is bio-degradable! And by sourcing everything locally we help reduce emissions
+                        <h5 style="color:#fff"><strong>ECOFRIENDLY</strong></h5>
+                        <p style="color:#fff">All our packaging is bio-degradable! And by sourcing everything locally we help reduce emissions
                             and energy use. Want to help reduce your emissions? Go local! Choose us!</p>
                     </div>
                     <!-- /feature-with-icon-->
@@ -261,11 +261,11 @@
     <!-- /section ends -->
 
     <!-- section-->
-    <section id="contact-home" class="container-fluid">
+    <section id="contact-home" class="container-fluid" style="background-color:rgb(50, 50, 50) !important">
         <!-- section heading -->
         <div class="section-heading text-center">
-            <p class="subtitle">Get in touch</p>
-            <h2>Contact us</h2>
+            <p class="subtitle" style="color:#fff">Get in touch</p>
+            <h2 style="color:#fff">Contact us</h2>
         </div>
         <!-- /section-heading -->
         <div class="container">
@@ -278,7 +278,7 @@
                             <!-- envelope icon-->
                             <i class="fas fa-envelope bg-secondary"></i>
                         </div>
-                        <h4 class="text-center mt-3 text-light">Send us a message</h4>
+                        <h4 class="text-center mt-3 text-light" >Send us a message</h4>
                         <!-- Form Starts -->
                         <div id="contact_form">
                             <form method="POST" action="{{ url(FRONTENDURL.'contactus')}}">
@@ -316,14 +316,14 @@
                 </div>
                 <!-- /col-lg-->
                 <div class="text-center col-lg-5 res-margin">
-                    <h3>Get in Touch</h3>
+                    <h3 style="color:#fff">Get in Touch</h3>
 
                     <!-- contact icons-->
                     <ul class="list-inline mt-3 list-contact colored-icons font-weight-bold">
-                        <li class="list-inline-item"><i class="fa fa-envelope margin-icon"></i><a
-                                href="mailto:woof@untame.pet">woof@untame.pet</a></li>
-                        <li class="list-inline-item"><i class="fa fa-phone margin-icon"></i>+91 9150529991</li>
-                        <li class="list-inline-item"><i class="fa fa-map-marker margin-icon"></i>Chennai</li>
+                        <li class="list-inline-item" style="color:#fff"><i class="fa fa-envelope margin-icon"></i><a
+                                href="mailto:woof@untame.pet" style="color:#fff">woof@untame.pet</a></li>
+                        <li class="list-inline-item" style="color:#fff"><i class="fa fa-phone margin-icon"></i>+91 9150529991</li>
+                        <li class="list-inline-item" style="color:#fff"><i class="fa fa-map-marker margin-icon"></i>Chennai</li>
                     </ul>
                     <!-- /list-->
                     <!--divider-->
