@@ -66,6 +66,12 @@ class FHelperController extends Controller
         return DB::table("order_details_products_temp")->where('order_id', $id)->get();
     }
 
+    static function getProducts($id = '')
+    {
+        $data = DB::table("products");
+        if ($id != '') $data->where('product_id', $id);
+        return $data->orderBy('product_id', 'desc')->get();
+    }
 
     static function getPetsOrder($id=''){
         $data = DB::table("order_details");
