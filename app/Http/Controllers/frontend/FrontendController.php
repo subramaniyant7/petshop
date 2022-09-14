@@ -861,7 +861,7 @@ class FrontendController extends Controller
             try {
                 Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    // $message->cc(['woof@untame.pet']);
+                    $message->cc(['woof@untame.pet']);
                     $message->attach(storage_path('app/' . $pdfName));
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });
@@ -952,7 +952,6 @@ class FrontendController extends Controller
             $subscription = FHelperController::getUserSubscription($actionId);
             if (!count($subscription)) back()->with('error', 'Something went wrong');
             deleteQuery($actionId,'subscription','subscription_id');
-            // updateQuery('subscription','subscription_id',$actionId,['status' => 2]);
             return back()->with('success', 'Unsubscribed successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Something went wrong');
