@@ -7,7 +7,5 @@
     <br><br>
     Email : {{ $email }}
     <br><br>
-    Subject : {{ $subject }}
-    <br><br>
     Message : {{ $content }}
 </div>

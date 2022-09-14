@@ -6,7 +6,7 @@
 <nav id="main-nav" class="navbar-expand-xl fixed-top">
     <div>
         <!-- Start Top Bar -->
-        <div class="container-fluid top-bar">
+        {{-- <div class="container-fluid top-bar">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -49,10 +49,10 @@
                 <!-- /row -->
             </div>
             <!-- /container -->
-        </div>
+        </div> --}}
         <!-- End Top bar -->
         <!-- Navbar Starts -->
-        <div class="navbar container-fluid" style="background: transparent;">
+        <div class="navbar container-fluid" >
             <div class="container ">
                 <!-- logo -->
                 <a class="nav-brand" href="{{ url(FRONTENDURL) }}">
@@ -73,13 +73,14 @@
                             <a class="nav-link" href="{{ url(FRONTENDURL) }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL . 'products') }}">Products</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ url(FRONTENDURL . 'about_us') }}">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url(FRONTENDURL . 'faq') }}">FAQ</a>
+                            <a class="nav-link" href="{{ url(FRONTENDURL . 'products') }}">Recipes</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url(FRONTENDURL . 'faq') }}">FAQs</a>
                         </li>
                         @if (session('frontenduserid'))
                             <li class="nav-item">

@@ -1742,6 +1742,7 @@ Last change:12th February 2019
      top: 0;
      left: 22px;
      z-index: -1;
+     display: none;
 }
  .accordion a:before{
      content: "\f068";
@@ -1757,6 +1758,7 @@ Last change:12th February 2019
      position: absolute;
      top: 0;
      left: -75px;
+     display: none;
 }
  .accordion .card-header a.collapsed:before{
      content: "\f067";

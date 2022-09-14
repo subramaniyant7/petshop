@@ -34,10 +34,10 @@ class FrontendController extends Controller
     public function ContactUs(Request $request)
     {
         $formData = $request->except('_token');
-        if ($formData['name'] == '' || $formData['email'] == '' || $formData['subject'] == '' || $formData['content'] == '') return back()->with('error', 'Please enter all mandatory fields');
+        if ($formData['name'] == '' || $formData['email'] == '' ||  $formData['content'] == '') return back()->with('error', 'Please enter all mandatory fields');
         try {
             Mail::send('frontend.email.contactus', $formData, function ($message) use ($formData) {
-                $message->to('leadgen@untame.pet', 'Admin')->subject('Contact Us');
+                $message->to('leadgen@untame.pet', 'Admin')->subject('Website Enquiry');
                 $message->from(getenv('MAIL_USERNAME'), 'Admin');
             });
             return redirect(FRONTENDURL)->with('success', 'Thanks for Contacting Us. We will contact you soon.');

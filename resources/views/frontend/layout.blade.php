@@ -46,9 +46,9 @@
 
     <script src="https://apps.elfsight.com/p/platform.js" defer></script>
     <div class="elfsight-app-e84407d8-f85e-450f-a5f7-403c0c7cf933"></div>
-
-    <script src="https://apps.elfsight.com/p/platform.js" defer></script>
-    <div class="elfsight-app-68f940dc-120d-4e25-b0ee-53bffb9a8aa6"></div>
+    @yield('footer')
+    {{-- <script src="https://apps.elfsight.com/p/platform.js" defer></script>
+    <div class="elfsight-app-68f940dc-120d-4e25-b0ee-53bffb9a8aa6"></div> --}}
 </body>
 
 </html>

@@ -6,6 +6,7 @@ $.ajaxSetup({
 
 $(document).ready(function () {
     $('#preloader').hide();
+
 });
 
 const getBreeds = (breedType) => {

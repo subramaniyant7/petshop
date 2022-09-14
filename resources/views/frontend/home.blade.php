@@ -9,14 +9,11 @@
 
 
     <!-- section -->
-    <section id="services-home" class="container">
+    {{-- <section id="services-home" class="container">
         <div class="container">
-            <!-- section heading -->
             <div class="section-heading text-center">
-                {{-- <p class="subtitle">what we offer</p> --}}
                 <h2>Who are we</h2>
             </div>
-            <!-- /section heading -->
             <div class="row">
                 <div class="col-lg-7">
 
@@ -41,11 +38,11 @@
             <!-- /row -->
         </div>
         <!-- /container -->
-    </section>
+    </section> --}}
 
 
 
-    <section id="feature-section" class="bg-light pattern1" style="background-color:rgb(50, 50, 50) !important">
+    <section id="feature-section" class="bg-light" style="background-color:rgb(50, 50, 50) !important; margin-top:-1em">
         <div class="container">
             <!-- section heading -->
             <div class="section-heading text-center">
@@ -182,14 +179,13 @@
         <div class="container">
             <!-- section heading -->
             <div class="section-heading text-center" style="margin-bottom: 20px">
-                <p class="subtitle">Get to know us</p>
                 <h2>How its works</h2>
             </div>
             <!-- /section-heading -->
             <div class="row">
                 <!-- Tabs -->
                 <div class="col-md-12">
-                    <img style="width:100%;" src="{{ URL::asset(FRONTEND . '/img/How_it_works_Edited.webp') }}"
+                    <img style="width:100%;object-fit:none;" src="{{ URL::asset(FRONTEND . '/img/How_it_works_Edited.webp') }}"
                         alt="How it's works">
                 </div>
                 <!-- col-md-12 -->
@@ -264,7 +260,6 @@
     <section id="contact-home" class="container-fluid" style="background-color:rgb(50, 50, 50) !important">
         <!-- section heading -->
         <div class="section-heading text-center">
-            <p class="subtitle" style="color:#fff">Get in touch</p>
             <h2 style="color:#fff">Contact us</h2>
         </div>
         <!-- /section-heading -->
@@ -273,6 +268,15 @@
                 @include('admin.notification')
                 <!-- contact box -->
                 <div class="col-lg-5 offset-lg-1 h-100">
+                    <h3 style="color:#fff;text-align:center">Get in Touch</h3>
+
+                    <!-- contact icons-->
+                    <ul class="list-inline mt-3 list-contact colored-icons font-weight-bold" style="text-align:center">
+                        <li class="list-inline-item" style="color:#fff"><i class="fa fa-envelope margin-icon"></i><a
+                                href="mailto:woof@untame.pet" style="color:#fff">woof@untame.pet</a></li>
+                        <li class="list-inline-item" style="color:#fff"><i class="fa fa-phone margin-icon"></i>+91 9150529991</li>
+                        <li class="list-inline-item" style="color:#fff"><i class="fa fa-map-marker margin-icon"></i>Chennai</li>
+                    </ul>
                     <div class="contact-form3 bg-secondary" data-aos="flip-right">
                         <div class="contact-image bg-secondary">
                             <!-- envelope icon-->
@@ -293,10 +297,10 @@
                                             <label>Email address <span class="required">*</span></label>
                                             <input type="email" name="email" class="form-control input-field" required>
                                         </div>
-                                        <div class="col-md-12">
+                                        {{-- <div class="col-md-12">
                                             <label>Subject</label>
                                             <input type="text" name="subject" class="form-control input-field" required>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-12">
                                             <label>Message<span class="required">*</span></label>
                                             <textarea name="content" id="content" class="textarea-field form-control" rows="3" required=""></textarea>
@@ -316,7 +320,7 @@
                 </div>
                 <!-- /col-lg-->
                 <div class="text-center col-lg-5 res-margin">
-                    <h3 style="color:#fff">Get in Touch</h3>
+                    {{-- <h3 style="color:#fff">Get in Touch</h3>
 
                     <!-- contact icons-->
                     <ul class="list-inline mt-3 list-contact colored-icons font-weight-bold">
@@ -328,12 +332,12 @@
                     <!-- /list-->
                     <!--divider-->
                     <hr class="mt-2">
-                    <!-- map-->
+                    <!-- map--> --}}
 
                 </div>
 
                 <!-- image -->
-                <img src="{{ URL::asset(FRONTEND . '/img/about-img.png') }}"
+                <img src="{{ URL::asset(FRONTEND . '/img/personanddog.webp') }}"
                     class="img-fluid contact-home-img hidden-medium-small" alt="">
             </div>
             <!-- /row-->
