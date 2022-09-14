@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="jumbotron jumbotron-fluid" data-center="background-size: 100%;" data-top-bottom="background-size: 110%;">
+    <div class="jumbotron jumbotron-fluid" data-center="background-size: 100%;" data-top-bottom="background-size: 110%;" style="background: rgb(50, 50, 50) !important;padding:0">
         <div class="container">
             <!-- jumbo-heading -->
             <div class="jumbo-heading" data-aos="fade-up">
