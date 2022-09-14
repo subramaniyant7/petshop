@@ -7,6 +7,8 @@
     <br><br>
     Breed Name : {{ $breed_name }}
     <br><br>
+    Pet Name : {{ $pet_name }}
+    <br><br>
     Breed Gender : {{ $breed_gender }}
     <br><br>
     Breed DOB : {{ $breed_dob }}

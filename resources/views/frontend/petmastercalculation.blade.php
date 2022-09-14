@@ -21,6 +21,7 @@
                                     <div style="margin-top: 1em ">
                                         <p>Breed Type: {{ productFor()[$petsInfo->breed_type - 1] }}</p>
                                         <p>Breed Name: {{ $petsInfo->breed_name == 0 ? $petsInfo->breed_text : breedInfoById($petsInfo->breed_name)[0]->breed_name }}</p>
+                                        <p>Pet Name : {{ $petsInfo->pet_name }}</p>
                                         <p>Breed Weight: {{ $petsInfo->breed_weight }} KG</p>
                                         <p>Per Day Meal : {{ $perDayMeal / 1000 }} KG</p>
                                         <p>Total Food need to feed for Month  : {{ request()->order_type ? $totalGramNeedtoBuy / 1000 : $totalGram / 1000 }} KG</p>

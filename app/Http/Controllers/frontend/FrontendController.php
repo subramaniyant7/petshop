@@ -301,7 +301,7 @@ class FrontendController extends Controller
         // print_r($productInfo);
         // exit;
 
-        return view('frontend.mydeliveryproducts',compact('productInfo'));
+        return view('frontend.mydeliveryproducts', compact('productInfo'));
 
 
         $orderInfo = FHelperController::getPetsOrder($orderId);
@@ -395,7 +395,7 @@ class FrontendController extends Controller
                 echo 'Starter Product Start---------------: ' . $k . ':' . '<br>';
                 print_r($deliveryInfoProducts);
                 echo 'Starter Product End---------------: ' . $k . ':' . '<br><br>';
-                        insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+                insertQuery('deliveryinfo_products', $deliveryInfoProducts);
                 //         // break;
             }
             if ($k == 1) {
@@ -446,8 +446,8 @@ class FrontendController extends Controller
                 $deliveryInfoProducts1 = [
                     'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
                     'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,
-                    'days_interval' => $starterInterval == 5 ? 1 : 5 - $starterInterval,'actual_product_gram' => $orderProducts[$k - 1]->product_qty,
-                     'product_gram' => round($totalGram1)
+                    'days_interval' => $starterInterval == 5 ? 1 : 5 - $starterInterval, 'actual_product_gram' => $orderProducts[$k - 1]->product_qty,
+                    'product_gram' => round($totalGram1)
                 ];
                 insertQuery('deliveryinfo_products', $deliveryInfoProducts1);
                 //             echo 'Delivery Info Products Loop: ' . $k . ':' . '<br>';
@@ -509,7 +509,7 @@ class FrontendController extends Controller
                         $deliveryInfoProducts2 = [
                             'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
                             'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
-                            'days_interval'=>$daysInterval,'actual_product_gram' => $orderProducts[$e]->product_qty,
+                            'days_interval' => $daysInterval, 'actual_product_gram' => $orderProducts[$e]->product_qty,
                             'product_gram' => round($perDayProductQty * $daysInterval)
                         ];
 
@@ -576,7 +576,8 @@ class FrontendController extends Controller
             try {
                 $userInfo =  getUser($request->session()->get('frontenduserid'));
                 $formData['breed_type'] = productFor()[$formData['breed_type'] - 1];
-                $formData['breed_name'] = breedInfoById($formData['breed_name'])[0]->breed_name;
+                $formData['breed_name'] = $formData['breed_name'] == 0 ? $formData['breed_text'] : breedInfoById($formData['breed_name'])[0]->breed_name;
+                $formData['pet_name'] = $formData['pet_name'];
                 $formData['breed_gender'] = petGender()[$formData['breed_gender'] - 1];
                 $formData['breed_activity_level'] = $formData['breed_activity_level'] == 1 ? dogActivity()[$formData['breed_activity_level'] - 1] : catActivity()[$formData['breed_activity_level'] - 1];
                 $formData['breed_freedom_level'] = isset($formData['breed_freedom_level']) ? catActivity()[$formData['breed_freedom_level'] - 1] : '';
@@ -655,7 +656,6 @@ class FrontendController extends Controller
                 if ($k != 0) {
                     $qty = $qty * 1000;
                     $totalquantity += $qty;
-
                 }
                 if ($qty != '') array_push($products, ['id' => $formData['product_id'][$k], 'qty' => $qty]);
             }
@@ -719,14 +719,14 @@ class FrontendController extends Controller
 
             $gettotalOrders = FHelperController::getPetsOrder();
             $totalOrderCount = count($gettotalOrders);
-            $orderId = $totalOrderCount == 0 ? 10001  : 10000 + $totalOrderCount;
+            $orderId = $totalOrderCount == 0 ? 10001  : 10001 + $totalOrderCount;
 
             $orderCreateInfo = [
                 'user_id' => $request->session()->get('frontenduserid'), 'order_inc_id' => $orderId, 'order_type' => $orderInfo[0]->order_type,
                 'pets_master_id' => $orderInfo[0]->pets_master_id, 'totalGramNeedtoBuy' => $orderInfo[0]->totalGramNeedtoBuy,
                 'defaultProductCalc' => $orderInfo[0]->defaultProductCalc, 'remainingGramToBuy' => $orderInfo[0]->remainingGramToBuy, 'remainingDays' => $orderInfo[0]->remainingDays,
-                'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice),'grandTotal' => $formData['subtotal'] + $formData['gst'],
-                'gst' => $formData['gst'],'paymentId' => $formData['razorpay_payment_id'], 'delivery_date' => $orderInfo[0]->delivery_date, 'perDayMeal' => $orderInfo[0]->perDayMeal
+                'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice), 'grandTotal' => $formData['subtotal'] + $formData['gst'],
+                'gst' => $formData['gst'], 'paymentId' => $formData['razorpay_payment_id'], 'delivery_date' => $orderInfo[0]->delivery_date, 'perDayMeal' => $orderInfo[0]->perDayMeal
             ];
 
             $createOrder = insertQueryId('order_details', $orderCreateInfo);
@@ -807,8 +807,8 @@ class FrontendController extends Controller
                     $deliveryInfoProducts1 = [
                         'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
                         'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,
-                        'days_interval' => $starterInterval == 5 ? 1 : 5 - $starterInterval,'actual_product_gram' => $orderProducts[$k - 1]->product_qty,
-                         'product_gram' => round($totalGram1)
+                        'days_interval' => $starterInterval == 5 ? 1 : 5 - $starterInterval, 'actual_product_gram' => $orderProducts[$k - 1]->product_qty,
+                        'product_gram' => round($totalGram1)
                     ];
                     insertQuery('deliveryinfo_products', $deliveryInfoProducts1);
                     for ($e = 0; $e < count($orderProducts); $e++) {
@@ -833,7 +833,7 @@ class FrontendController extends Controller
                             $deliveryInfoProducts2 = [
                                 'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
                                 'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
-                                'days_interval'=>$daysInterval,'actual_product_gram' => $orderProducts[$e]->product_qty,
+                                'days_interval' => $daysInterval, 'actual_product_gram' => $orderProducts[$e]->product_qty,
                                 'product_gram' => round($perDayProductQty * $daysInterval)
                             ];
                             insertQuery('deliveryinfo_products', $deliveryInfoProducts2);
@@ -861,12 +861,17 @@ class FrontendController extends Controller
             try {
                 Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    $message->cc(['woof@untame.pet']);
+                    // $message->cc(['woof@untame.pet']);
                     $message->attach(storage_path('app/' . $pdfName));
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });
             } catch (\Exception $e) {
                 $response = ['url' => '', 'status' => false, 'msg' => $e->getMessage()];
+            }
+
+            $subscription = FHelperController::getUserSubscription($request->session()->get('frontenduserid'));
+            if (!count($subscription)) {
+                insertQuery('subscription', ['user_id' => $request->session()->get('frontenduserid')]);
             }
 
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_temp', 'user_id');
@@ -929,11 +934,32 @@ class FrontendController extends Controller
     public function MyOrderProducts(Request $request)
     {
         $orderId = $request->segment(2);
-
         $getOrder = FHelperController::getPetsOrder(decryption($orderId));
         $getOrderProducts = FHelperController::getMyOrderProducts(decryption($orderId));
         return view('frontend.myorderproducts', compact('getOrderProducts', 'getOrder'));
     }
+
+    public function UserSubscription(Request $request)
+    {
+        $subscription = FHelperController::getUserSubscription($request->session()->get('frontenduserid'));
+        return view('frontend.mysubscription', compact('subscription'));
+    }
+
+    public function UpdateSubscription($id)
+    {
+        try {
+            $actionId = decryption($id);
+            $subscription = FHelperController::getUserSubscription($actionId);
+            if (!count($subscription)) back()->with('error', 'Something went wrong');
+            deleteQuery($actionId,'subscription','subscription_id');
+            // updateQuery('subscription','subscription_id',$actionId,['status' => 2]);
+            return back()->with('success', 'Unsubscribed successfully');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Something went wrong');
+        }
+    }
+
+
 
     public function ChangePassword(Request $request)
     {

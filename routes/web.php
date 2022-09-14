@@ -62,6 +62,8 @@ Route::middleware(['globalvalidate'])->group(function () {
         Route::get('/myorders', [FrontendController::class, 'MyOrders']);
         Route::get('/orderinvoice/{id}', [FrontendController::class, 'OrderInvoiceDownload']);
         Route::get('/myorderproducts/{id}', [FrontendController::class, 'MyOrderProducts']);
+        Route::get('/user_subscription', [FrontendController::class, 'UserSubscription']);
+        Route::get('/update_subscription/{id}', [FrontendController::class, 'UpdateSubscription']);
         Route::get('/change_password', [FrontendController::class, 'ChangePassword']);
         Route::post('/save_password', [FrontendController::class, 'UpdateUserPassword']);
         Route::get('/logout', [FrontendController::class, 'UserLogout']);

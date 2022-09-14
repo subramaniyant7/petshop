@@ -100,4 +100,9 @@ class FHelperController extends Controller
     }
 
 
+    static function getUserSubscription($id){
+        return DB::table("subscription")->where('user_id', $id)->get();
+    }
+
+
 }

@@ -56,6 +56,13 @@
                                         </div>
 
                                         <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Pet Name <span class="required">*</span></label>
+                                                <input type="text" name="pet_name" class="form-control input-field" value="" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
                                             <div class="col-md-6">
                                                 <label>Gender <span class="required">*</span></label>
                                                 <select name="breed_gender" class="form-control" required
@@ -107,7 +114,7 @@
 
 
                                         @if ($type == '2')
-                                            <div class="row cat">
+                                            {{-- <div class="row cat">
                                                 <div class="col-md-12">
                                                     <label>What’s their level of freedom? <span
                                                             class="required">*</span></label>
@@ -119,7 +126,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         @endif
 
                                         <div class="row">
