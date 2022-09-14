@@ -86,7 +86,7 @@ const updateBalance = (val) => {
     console.log('remainingGramToBuy', remainingGramToBuy)
     console.log('k', k)
 
-    if(k == remainingGramToBuy){
+    if(k.toFixed(2) == remainingGramToBuy){
         $('.submit_product').attr('disabled', false);
     }
 }
