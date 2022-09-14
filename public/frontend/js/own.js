@@ -83,6 +83,9 @@ const updateBalance = (val) => {
        $('.remaining_product').html(remainingToAdd.toFixed(2))
     }
 
+    console.log('remainingGramToBuy', remainingGramToBuy)
+    console.log('k', k)
+
     if(k == remainingGramToBuy){
         $('.submit_product').attr('disabled', false);
     }
