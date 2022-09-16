@@ -775,16 +775,16 @@ class FrontendController extends Controller
 
     public function PaymentProcessed(Request $request)
     {
-        echo '<pre>';
-        echo 'Session:'.session('frontenduserid').'<br/>';
-        echo 'Session1:'.$request->session()->get('frontenduserid');
+        // echo '<pre>';
+        // echo 'Session:'.session('frontenduserid').'<br/>';
+        // echo 'Session1:'.$request->session()->get('frontenduserid');
 
-        print_r($request->input());
+        // print_r($request->input());
 
 
         $response = $request->input();
         $orderData = explode('-', $response['orderId']);
-        print_r($orderData);
+        // print_r($orderData);
         // exit;
         $request->session()->put('frontenduserid',$orderData[1]);
         try {
