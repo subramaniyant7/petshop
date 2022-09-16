@@ -942,7 +942,7 @@ class FrontendController extends Controller
             try {
                 Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    // $message->cc(['woof@untame.pet']);
+                    $message->cc(['woof@untame.pet']);
                     $message->attach(storage_path('app/' . $pdfName));
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });
