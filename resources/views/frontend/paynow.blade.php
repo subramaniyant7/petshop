@@ -29,7 +29,8 @@
                                                     <td>{{ $data->product_name }}</td>
                                                     <td>Rs.{{ $data->product_price }}</td>
                                                     <td>{{ $data->product_qty / 1000 }}</td>
-                                                    <td>{{ number_format($data->product_price * $data->product_qty,2) }}</td>
+                                                    <td>{{ number_format($data->product_price * $data->product_qty, 2) }}
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                             @php
@@ -39,41 +40,100 @@
                                             @endphp
                                             <tr>
                                                 <td colspan="3"></td>
-                                                <td >Sub Total</td>
-                                                <td> Rs.{{ number_format($subTotalAmount,2) }}</td>
+                                                <td>Sub Total</td>
+                                                <td> Rs.{{ number_format($subTotalAmount, 2) }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3"></td>
-                                                <td >GST</td>
-                                                <td> Rs.{{ number_format($gst,2) }}</td>
+                                                <td>GST</td>
+                                                <td> Rs.{{ number_format($gst, 2) }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3"></td>
-                                                <td >Grand Total</td>
-                                                <td> Rs.{{ number_format($grandTotal,2) }}</td>
+                                                <td>Grand Total</td>
+                                                <td> Rs.{{ number_format($grandTotal, 2) }}</td>
                                             </tr>
 
                                         </tbody>
                                     </table>
-                                    <input type="hidden" id="subtotal" value="{{ $subTotalAmount }}">
-                                    <input type="hidden" id="gst" value="{{ $gst }}">
-                                    <input type="hidden" id="total" value="{{ $grandTotal }}">
-                                    <input type="hidden" id="order_id" value="{{ encryption($orderInfo[0]->order_id) }}">
-                                    <button type="button" style="float:right" value="Pay Now" id="rzp-button1" class="btn btn-primary">Pay
-                                        Now</button>
+                                    <form action="{{ url(FRONTENDURL . 'paymentprocess') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" id="subtotal" name="subtotal" value="{{ $subTotalAmount }}">
+                                        <input type="hidden" id="gst" name="gst" value="{{ $gst }}">
+                                        <input type="hidden" id="total" name="total" value="{{ $grandTotal }}">
+                                        <input type="hidden" id="order_id" name="order_id"
+                                            value="{{ $orderInfo[0]->order_id }}">
+                                        <button type="submit" style="float:right" value="Pay Now"
+                                            class="btn btn-primary" id="rzp-button">Pay
+                                            Now</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <script src="https://sdk.cashfree.com/js/core/1.0.26/bundle.sandbox.js"></script>
                     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                     <script>
                         let total = document.getElementById('total').value;
                         let orderId = document.getElementById('order_id').value;
+
+                        const options = {
+                            onPaymentSuccess: function(data) {
+                                console.log("Success:", data);
+                                /*
+                                {
+                                    order:{
+                                            orderId: "some-orderid",
+                                            orderStatus: "PAID"
+                                    },
+                                    transaction:{
+                                        txStatus: "SUCCESS,
+                                        txMsg: "Transaction Message",
+                                        transactionId: 1232132,
+                                        transactionAmount: 1.00
+                                    }
+                                }
+                                */
+                            },
+                            onPaymentFailure: function(data) {
+                                console.log("Failure:", data);
+                                /*
+                                {
+                                    order:{
+                                            orderId: "some-orderid",
+                                            orderStatus: "ACTIVE"
+                                    },
+                                    transaction:{
+                                        txStatus: "FAILED,
+                                        txMsg: "Transaction Message",
+                                        transactionId: 1232132,
+                                        transactionAmount: 1.00
+                                    }
+                                }
+                                */
+                            },
+                            onError: function(data) {
+                                console.log("Error:", data);
+                                /*
+                                {
+                                    message: "Invalid card number"
+                                    paymentMode: "card"
+                                    type: "input_validation_error"
+                                }
+                                */
+                            },
+                        };
+                        const cfCheckout = Cashfree.initializeApp(options);
+                        document.getElementById('rzp-button').onclick = function(e) {
+                            cfCheckout.open();
+                            e.preventDefault();
+                        }
+
                         // alert(total * 100)
                         var options = {
                             "key": "rzp_test_UUVQTAWGGCty5D", // Enter the Key ID generated from the Dashboard
-                            "amount": total * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "amount": total *
+                                100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                             "currency": "INR",
                             "is_test_mode": true,
                             "name": "Untame Pet",

@@ -16,6 +16,9 @@ use App\Http\Controllers\AjaxController;
 |
 */
 
+Route::post('/paymentprocessed', [FrontendController::class, 'PaymentProcessed']);
+Route::post('/paymentnotify', [FrontendController::class, 'PaymentProcessed']);
+
 Route::middleware(['globalvalidate'])->group(function () {
     Route::get('/', [FrontendController::class, 'Home']);
 
@@ -48,6 +51,12 @@ Route::middleware(['globalvalidate'])->group(function () {
         Route::get('/pets_master/{id}', [FrontendController::class, 'PetsMasterCalculation']);
         Route::post('/orderproceed', [FrontendController::class, 'OrderTypeProcess']);
         Route::get('/payment/{id}', [FrontendController::class, 'PaymentGateway']);
+
+        Route::post('/paymentprocess', [FrontendController::class, 'PaymentProcess']);
+
+
+
+
         Route::post('/paymentsuccess', [FrontendController::class, 'PaymentSuccess']);
 
         Route::post('/getbreed', [AjaxController::class, 'GetBreeds']);

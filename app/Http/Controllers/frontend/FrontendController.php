@@ -708,6 +708,267 @@ class FrontendController extends Controller
         }
     }
 
+    private function getUserDetails()
+    {
+        return array(
+            "customerName" => "subramaniyan",
+            "customerEmail" => "tsubramaniyan2@gmail.com",
+            "customerPhone" => "9789422962"
+        );
+    }
+
+    private function getOrderDetails()
+    {
+        return array(
+            "orderId" => time(),
+            "orderAmount" => "10",
+            "orderNote" => "test order",
+            "orderCurrency" => "INR"
+        );
+    }
+
+    private function generateSignature($postData)
+    {
+        $secretKey = "a559edf54450cd5324cb265b58b3ac28d55b5582";
+        ksort($postData);
+        $signatureData = "";
+        foreach ($postData as $key => $value) {
+            $signatureData .= $key . $value;
+        }
+        $signature = hash_hmac('sha256', $signatureData, $secretKey, true);
+        $signature = base64_encode($signature);
+        return $signature;
+    }
+
+    public function PaymentProcess(Request $request)
+    {
+        $orderId = $request->input('order_id');
+
+        $orderAmount =  $request->input('total');
+        $orderDetails = array();
+        $userDetails = $this->getUserDetails($orderId);
+        $order = $this->getOrderDetails($orderId);
+        $notifyUrl = FRONTENDURL . 'paymentnotify';
+        $returnUrl = FRONTENDURL . 'paymentprocessed';
+        $orderDetails["notifyUrl"] = $notifyUrl;
+        $orderDetails["returnUrl"] = $returnUrl;
+        $orderDetails["customerName"] = $userDetails["customerName"];
+        $orderDetails["customerEmail"] = $userDetails["customerEmail"];
+        $orderDetails["customerPhone"] = $userDetails["customerPhone"];
+
+        $orderDetails["orderId"] = $orderId.'-'.$request->session()->get('frontenduserid').'-'.$request->input('gst').
+            '-'.$request->input('subtotal');
+        $orderDetails["orderAmount"] = $orderAmount;
+        $orderDetails["orderNote"] = $order["orderNote"];
+        $orderDetails["orderCurrency"] = $order["orderCurrency"];
+        $orderDetails['orderTags'] = '123';
+        $orderDetails["appId"] = "22785521e555cb1cbc31e7c7c2558722";
+
+        $orderDetails["signature"] = $this->generateSignature($orderDetails);
+
+        $request->session()->put('frontenduserid',1);
+        $request->session()->put('gst',$request->input('gst'));
+        $request->session()->put('subtotal',$request->input('subtotal'));
+
+        return view('frontend.paymentprocess', compact('orderDetails'));
+    }
+
+    public function PaymentProcessed(Request $request)
+    {
+        echo '<pre>';
+        echo 'Session:'.session('frontenduserid').'<br/>';
+        echo 'Session1:'.$request->session()->get('frontenduserid');
+
+        print_r($request->input());
+
+
+        $response = $request->input();
+        $orderData = explode('-', $response['orderId']);
+        print_r($orderData);
+        // exit;
+        $request->session()->put('frontenduserid',$orderData[1]);
+        try {
+            $orderId = $orderData[0];
+            $orderInfo = FHelperController::getPetsOrderTemp($orderId);
+            $orderProductInfo = FHelperController::getPetsOrderProductsTemp($orderId);
+
+            $gettotalOrders = FHelperController::getPetsOrder();
+            $totalOrderCount = count($gettotalOrders);
+            $orderId = $totalOrderCount == 0 ? 10001  : 10001 + $totalOrderCount;
+
+            $orderCreateInfo = [
+                'user_id' => $request->session()->get('frontenduserid'), 'order_inc_id' => $orderId, 'order_type' => $orderInfo[0]->order_type,
+                'pets_master_id' => $orderInfo[0]->pets_master_id, 'totalGramNeedtoBuy' => $orderInfo[0]->totalGramNeedtoBuy,
+                'defaultProductCalc' => $orderInfo[0]->defaultProductCalc, 'remainingGramToBuy' => $orderInfo[0]->remainingGramToBuy, 'remainingDays' => $orderInfo[0]->remainingDays,
+                'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice),
+                'grandTotal' => $orderData[3] + $orderData[2],'gst' => $orderData[2],
+                'paymentId' => $response['referenceId'], 'delivery_date' => $orderInfo[0]->delivery_date, 'perDayMeal' => $orderInfo[0]->perDayMeal
+            ];
+
+            $createOrder = insertQueryId('order_details', $orderCreateInfo);
+
+            $request->session()->forget('gst');
+            $request->session()->forget('subtotal');
+            $response['orderId'] = $createOrder;
+            insertQueryId('payment_details', $response);
+
+            foreach ($orderProductInfo as $product) {
+                $orderProducts = [
+                    'order_id' => $createOrder, 'user_id' => $request->session()->get('frontenduserid'),
+                    'product_id' => $product->product_id, 'product_name' => $product->product_name,
+                    'product_price' => $product->product_price, 'product_qty' => $product->product_qty
+                ];
+                insertQuery('order_details_products', $orderProducts);
+            }
+
+
+            $orderInfo = FHelperController::getPetsOrder($createOrder);
+            $orderProducts = FHelperController::getMyOrderProductsAsc($createOrder);
+            $thisMonthDeliveryDate = $this->CurrentMonthDelivery($orderInfo[0]->delivery_date);
+            $staterProduct = $orderProducts[0];
+            $staterProductTotalQty = $staterProduct->product_qty;
+            $percentage = [10, 25, 50, 75, 100];
+            $finalGram = 0;
+            $finalArray = [];
+            for ($e = 0; $e < 5; $e++) {
+                $updatedQty = $staterProductTotalQty - $finalGram;
+                $actualGram = round(($updatedQty * $percentage[$e]) / 100);
+                array_push($finalArray, $actualGram);
+                $finalGram += $actualGram;
+            }
+            $productsArray = [];
+            foreach ($orderProducts as $k => $products) {
+                if ($k > 0) {
+                    array_push($productsArray, [
+                        'product_id' => $products->product_id, 'actual_qty' => $products->product_qty,
+                        'perday_qty' => round($products->product_qty / $orderInfo[0]->remainingDays)
+                    ]);
+                }
+            }
+            foreach ($thisMonthDeliveryDate['totaldeliveryfromdeliverydate'] as $k => $totalDelivery) {
+
+                $deliveryInfo = [
+                    'order_id' => $orderId, 'user_id' => $orderInfo[0]->order_id, 'perday_meal' => $orderInfo[0]->perDayMeal,
+                    'total_days' => $orderInfo[0]->totalDays, 'total_gram' => $orderInfo[0]->totalGram, 'delivery_date' => $totalDelivery
+                ];
+                $createDeliveryInfo = insertQueryId('deliveryinfo', $deliveryInfo);
+                $timestamp = strtotime($totalDelivery);
+                $day = date('w', $timestamp);
+                $daysInterval = $day == 1 ? 4 : 3;
+                $startupProductProcessedDays = 0;
+                if ($k == 0) {
+                    $start = 1;
+                    $totalGram = $actualGram = 0;
+                    for ($p = 1; $p <= $daysInterval; $p++) {
+                        $totalGram += $finalArray[$p - 1];
+                    }
+                    $startupProductProcessedDays = $daysInterval;
+
+                    $deliveryInfoProducts = [
+                        'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                        'product_id' => $orderProducts[$k]->product_id, 'product_name' => $orderProducts[$k]->product_name,
+                        'days_interval' => $daysInterval, 'actual_product_gram' => $orderProducts[$k]->product_qty,
+                        'product_gram' => round($totalGram)
+                    ];
+                    insertQuery('deliveryinfo_products', $deliveryInfoProducts);
+                }
+                if ($k == 1) {
+                    $limit = $day != 1 ? 3 : 4;
+
+                    $starterInterval =  $day == 1 ? 4 : 5;
+
+                    $other = $day == 1 ? 3 : 4;
+                    $processDays = 5 - $other + 1;
+                    $remainingDays =  $starterInterval - $daysInterval;
+                    $totalGram1 = $actualGram = 0;
+                    for ($p = $starterInterval; $p <= 5; $p++) {
+                        $totalGram1 += $finalArray[$p - 1];
+                    }
+
+                    $deliveryInfoProducts1 = [
+                        'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                        'product_id' => $orderProducts[$k - 1]->product_id, 'product_name' => $orderProducts[$k - 1]->product_name,
+                        'days_interval' => $starterInterval == 5 ? 1 : 5 - $starterInterval, 'actual_product_gram' => $orderProducts[$k - 1]->product_qty,
+                        'product_gram' => round($totalGram1)
+                    ];
+                    insertQuery('deliveryinfo_products', $deliveryInfoProducts1);
+                    for ($e = 0; $e < count($orderProducts); $e++) {
+                        if ($e > 0) {
+                            $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
+                            $deliveryInfoProducts2 = [
+                                'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                                'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                                'days_interval' => $daysInterval - 1, 'actual_product_gram' => $orderProducts[$e]->product_qty,
+                                'product_gram' => round($perDayProductQty * $remainingDays)
+                            ];
+
+                            insertQuery('deliveryinfo_products', $deliveryInfoProducts2);
+                        }
+                    }
+                }
+
+                if ($k > 1) {
+                    for ($e = 0; $e < count($orderProducts); $e++) {
+                        if ($e > 0) {
+                            $perDayProductQty = $orderProducts[$e]->product_qty / $orderInfo[0]->remainingDays;
+                            $deliveryInfoProducts2 = [
+                                'deliveryinfo_id' => $createDeliveryInfo, 'user_id' => $orderInfo[0]->order_id,
+                                'product_id' => $orderProducts[$e]->product_id, 'product_name' => $orderProducts[$e]->product_name,
+                                'days_interval' => $daysInterval, 'actual_product_gram' => $orderProducts[$e]->product_qty,
+                                'product_gram' => round($perDayProductQty * $daysInterval)
+                            ];
+                            insertQuery('deliveryinfo_products', $deliveryInfoProducts2);
+                        }
+                    }
+                }
+            }
+
+
+            $invoiceName = 'invoice_' . $createOrder;
+            $pdfName = 'public/order/' . $invoiceName . '.pdf';
+
+            $orders = HelperController::getAllOrders($createOrder);
+            $orderProducts = HelperController::getOrderProducts($createOrder);
+            $address = getAddress($orders[0]->user_id);
+
+            $userInfo = HelperController::getUsers($orders[0]->user_id);
+
+            $data = ['address' => $address, 'order' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email];
+
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', $data)->setPaper('a4', 'potrait');
+
+            Storage::put($pdfName, $pdf->output());
+
+            try {
+                Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
+                    $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
+                    // $message->cc(['woof@untame.pet']);
+                    $message->attach(storage_path('app/' . $pdfName));
+                    $message->from(getenv('MAIL_USERNAME'), 'Sales');
+                });
+            } catch (\Exception $e) {
+               return redirect(FRONTENDURL.'myorders')->with('error',$e->getMessage());
+            }
+
+            $subscription = FHelperController::getUserSubscription($request->session()->get('frontenduserid'));
+            if (!count($subscription)) {
+                insertQuery('subscription', ['user_id' => $request->session()->get('frontenduserid')]);
+            }
+
+            deleteQuery($request->session()->get('frontenduserid'), 'order_details_temp', 'user_id');
+            deleteQuery($request->session()->get('frontenduserid'), 'order_details_products_temp', 'user_id');
+
+            return redirect(FRONTENDURL.'myorders')->with('success','Order Created Successfully');
+        } catch (\Exception $e) {
+            return redirect(FRONTENDURL.'myorders')->with('error',$e->getMessage());
+        }
+
+
+
+
+    }
+
+
     public function PaymentSuccess(Request $request)
     {
         $formData = $request->input();
@@ -951,7 +1212,7 @@ class FrontendController extends Controller
             $actionId = decryption($id);
             $subscription = FHelperController::getUserSubscription($actionId);
             if (!count($subscription)) back()->with('error', 'Something went wrong');
-            deleteQuery($actionId,'subscription','subscription_id');
+            deleteQuery($actionId, 'subscription', 'subscription_id');
             return back()->with('success', 'Unsubscribed successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Something went wrong');
