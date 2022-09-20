@@ -1,4 +1,4 @@
-<form id="redirectForm" method="post" action="https://test.cashfree.com/billpay/checkout/post/submit">
+<form id="redirectForm" method="post" action="{{ env('PAYMENR_LIVE_ENV') }}">
     <input type="hidden" name="appId" value="<?php echo $orderDetails["appId"] ?>"/>
     <input type="hidden" name="orderId" value="<?php echo $orderDetails["orderId"] ?>"/>
     <input type="hidden" name="orderAmount" value="<?php echo $orderDetails["orderAmount"] ?>"/>

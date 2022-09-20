@@ -708,28 +708,27 @@ class FrontendController extends Controller
         }
     }
 
-    private function getUserDetails()
+    private function getUserDetails($userId)
     {
+        $userInfo = FHelperController::getUserDetails($userId);
         return array(
-            "customerName" => "subramaniyan",
-            "customerEmail" => "tsubramaniyan2@gmail.com",
-            "customerPhone" => "9789422962"
+            "customerName" => $userInfo[0]->user_firstname,
+            "customerEmail" => $userInfo[0]->user_email,
+            "customerPhone" => $userInfo[0]->user_mobile
         );
     }
 
     private function getOrderDetails()
     {
         return array(
-            "orderId" => time(),
-            "orderAmount" => "10",
-            "orderNote" => "test order",
+            "orderNote" => "Final Order",
             "orderCurrency" => "INR"
         );
     }
 
     private function generateSignature($postData)
     {
-        $secretKey = "a559edf54450cd5324cb265b58b3ac28d55b5582";
+        $secretKey = env('PAYMENT_LIVE_APP_KEY');
         ksort($postData);
         $signatureData = "";
         foreach ($postData as $key => $value) {
@@ -746,8 +745,8 @@ class FrontendController extends Controller
 
         $orderAmount =  $request->input('total');
         $orderDetails = array();
-        $userDetails = $this->getUserDetails($orderId);
-        $order = $this->getOrderDetails($orderId);
+        $userDetails = $this->getUserDetails($request->session()->get('frontenduserid'));
+        $order = $this->getOrderDetails();
         $notifyUrl = FRONTENDURL . 'paymentnotify';
         $returnUrl = FRONTENDURL . 'paymentprocessed';
         $orderDetails["notifyUrl"] = $notifyUrl;
@@ -756,19 +755,19 @@ class FrontendController extends Controller
         $orderDetails["customerEmail"] = $userDetails["customerEmail"];
         $orderDetails["customerPhone"] = $userDetails["customerPhone"];
 
-        $orderDetails["orderId"] = $orderId.'-'.$request->session()->get('frontenduserid').'-'.$request->input('gst').
-            '-'.$request->input('subtotal');
+        $orderDetails["orderId"] = $orderId . '-' . $request->session()->get('frontenduserid') . '-' . $request->input('gst') .
+            '-' . $request->input('subtotal');
         $orderDetails["orderAmount"] = $orderAmount;
         $orderDetails["orderNote"] = $order["orderNote"];
         $orderDetails["orderCurrency"] = $order["orderCurrency"];
         $orderDetails['orderTags'] = '123';
-        $orderDetails["appId"] = "22785521e555cb1cbc31e7c7c2558722";
+        $orderDetails["appId"] = env('PAYMENT_LIVE_APP_ID');
 
         $orderDetails["signature"] = $this->generateSignature($orderDetails);
 
-        $request->session()->put('frontenduserid',1);
-        $request->session()->put('gst',$request->input('gst'));
-        $request->session()->put('subtotal',$request->input('subtotal'));
+        $request->session()->put('frontenduserid', 1);
+        $request->session()->put('gst', $request->input('gst'));
+        $request->session()->put('subtotal', $request->input('subtotal'));
 
         return view('frontend.paymentprocess', compact('orderDetails'));
     }
@@ -784,9 +783,19 @@ class FrontendController extends Controller
 
         $response = $request->input();
         $orderData = explode('-', $response['orderId']);
+        // print_r($response);
         // print_r($orderData);
+
+
+
+
+
+        $request->session()->put('frontenduserid', $orderData[1]);
+        if($response['referenceId'] == 'N/A' || $response['paymentMode'] == 'N/A' || $response['txStatus'] == 'CANCELLED' || $response['txMsg'] == 'Cancelled by user'){
+            return redirect(FRONTENDURL.'payment/'.encryption($orderData[0]))->with('error','Something went wrong. Please try again');
+        }
+
         // exit;
-        $request->session()->put('frontenduserid',$orderData[1]);
         try {
             $orderId = $orderData[0];
             $orderInfo = FHelperController::getPetsOrderTemp($orderId);
@@ -801,7 +810,7 @@ class FrontendController extends Controller
                 'pets_master_id' => $orderInfo[0]->pets_master_id, 'totalGramNeedtoBuy' => $orderInfo[0]->totalGramNeedtoBuy,
                 'defaultProductCalc' => $orderInfo[0]->defaultProductCalc, 'remainingGramToBuy' => $orderInfo[0]->remainingGramToBuy, 'remainingDays' => $orderInfo[0]->remainingDays,
                 'totalGram' => $orderInfo[0]->totalGram, 'totalDays' => $orderInfo[0]->totalDays, 'totalPrice' => round($orderInfo[0]->totalPrice),
-                'grandTotal' => $orderData[3] + $orderData[2],'gst' => $orderData[2],
+                'grandTotal' => $orderData[3] + $orderData[2], 'gst' => $orderData[2],
                 'paymentId' => $response['referenceId'], 'delivery_date' => $orderInfo[0]->delivery_date, 'perDayMeal' => $orderInfo[0]->perDayMeal
             ];
 
@@ -942,12 +951,12 @@ class FrontendController extends Controller
             try {
                 Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    $message->cc(['woof@untame.pet']);
+                    // $message->cc(['woof@untame.pet']);
                     $message->attach(storage_path('app/' . $pdfName));
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });
             } catch (\Exception $e) {
-               return redirect(FRONTENDURL.'myorders')->with('error',$e->getMessage());
+                return redirect(FRONTENDURL . 'myorders')->with('error', $e->getMessage());
             }
 
             $subscription = FHelperController::getUserSubscription($request->session()->get('frontenduserid'));
@@ -958,14 +967,10 @@ class FrontendController extends Controller
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_temp', 'user_id');
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_products_temp', 'user_id');
 
-            return redirect(FRONTENDURL.'myorders')->with('success','Order Created Successfully');
+            return redirect(FRONTENDURL . 'myorders')->with('success', 'Order Created Successfully');
         } catch (\Exception $e) {
-            return redirect(FRONTENDURL.'myorders')->with('error',$e->getMessage());
+            return redirect(FRONTENDURL . 'myorders')->with('error', $e->getMessage());
         }
-
-
-
-
     }
 
 
