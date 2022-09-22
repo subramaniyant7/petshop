@@ -643,7 +643,7 @@
             $('.page-with-sidebar').fadeIn();
             $(".dogclick").trigger("click");
             $('#preloader').hide();
-        }, 5000);
+        }, 7000);
     </script>
 
 @stop
