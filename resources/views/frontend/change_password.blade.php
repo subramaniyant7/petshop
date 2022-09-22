@@ -41,7 +41,7 @@
                                     <button type="submit" id="submit_btn" value="Submit"
                                         class="btn btn-primary">Submit</button><br/><br/>
 
-                                        <span>Note : Once you changed the password it will logout automatically</span>
+                                        <span>Note : Please note that once the password is changed, you need login again</span>
                                 </div>
                             </form>
                             <!-- /form-group-->

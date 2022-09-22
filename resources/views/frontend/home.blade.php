@@ -7,6 +7,17 @@
         <source src="{{ URL::asset('frontend/video/file.mp4') }}" type="video/mp4">
     </video>
 
+    <div class="video_content">
+        <h1>A BETTER CHOICE IS HERE! </h1>
+        <h4>Serving up delicious, fresh and healthy pet food at your doorstep across Chennai </h4>
+
+        <div class="join_content">
+            <h5>Turn a new page in your pet's nutrition.. </h5>
+            <a href="{{ url(FRONTENDURL.'register') }}" class="btn btn-primary mt-4">Join Us!</a>
+            {{-- <a href="">Join Us! </a> --}}
+        </div>
+    </div>
+
 
     <!-- section -->
     {{-- <section id="services-home" class="container">

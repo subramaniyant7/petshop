@@ -1108,7 +1108,7 @@ Last change:12th February 2019
 .contact-home-img{
      position:absolute;
      margin-left: -400px;
-     right:0;
+     right:10%;
 }
 
 /*=========================== Blog Pages ============================ */
@@ -1983,6 +1983,7 @@ Last change:12th February 2019
      position: absolute;
      max-width: 50%;
      text-align: left;
+     top:25%;
 }
  .jumbo-heading h1{
      color:#fff;
@@ -2147,6 +2148,34 @@ Last change:12th February 2019
 
 .page.container{
     padding-top: 180px;
+}
+
+.video_content{
+    position: absolute;
+    top: 45%;
+    left: 23%;
+    color: #fff;
+    text-align: center;
+}
+
+.video_content h1, h4{
+    color: #fff
+}
+
+.join_content{
+    margin-top:10rem;
+}
+
+.join_content h5{
+    color:#fff;
+}
+
+.join_content a{
+    margin-top: 0 !important;
+}
+
+a:hover{
+    color: #044B16;
 }
 
 /*=========================== Media queries ============================ */
@@ -2475,7 +2504,7 @@ Last change:12th February 2019
 
 	/* jumbotron */
 	 .jumbotron{
-		 border-top: 148px solid #fff;
+		 border-top: 114px solid #fff;
 		 height:360px;
 	}
 	/* navigation */

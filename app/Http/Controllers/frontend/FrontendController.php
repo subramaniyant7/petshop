@@ -40,7 +40,7 @@ class FrontendController extends Controller
                 $message->to('leadgen@untame.pet', 'Admin')->subject('Website Enquiry');
                 $message->from(getenv('MAIL_USERNAME'), 'Admin');
             });
-            return redirect(FRONTENDURL)->with('success', 'Thanks for Contacting Us. We will contact you soon.');
+            return redirect(FRONTENDURL)->with('success', "Thank you for contacting us, we'll get back to you soon!");
         } catch (\Exception $e) {
             return redirect(FRONTENDURL)->with('error', $e->getMessage());
         }
@@ -105,7 +105,7 @@ class FrontendController extends Controller
             } catch (\Exception $e) {
                 return back()->with('error', $e->getMessage());
             }
-            return redirect(FRONTENDURL . 'email_otp_verify?action=' . encryption($formData['user_email']));
+            return redirect(FRONTENDURL . 'email_otp_verify?action=' . encryption($formData['user_email']))->with('success', 'We have Sent OTP to registered email.Please check and enter OTP here. Note: Please check spam and junk folder');
         } catch (\Exception $e) {
             return back()->with('error', 'Something went wrong. Please try again');
         }
@@ -207,7 +207,8 @@ class FrontendController extends Controller
         // echo $date.'<br>';
         // print_r($days);
         // exit;
-        $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']) - 1;
+        // $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']) - 1;
+        $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']);
 
         if ($totalDays <= 5) {
             $nextMonthDate = date('Y-m-d', strtotime('+1 months', strtotime($days['deliveryMonthLastDate'])));
@@ -549,6 +550,9 @@ class FrontendController extends Controller
 
     public function PetsMasterDetails(Request $request)
     {
+
+        $userAddress = FHelperController::getUserAddressDetails($request->session()->get('frontenduserid'));
+        if (!count($userAddress)) return redirect(FRONTENDURL . 'dashboard')->with('error', 'Please add shipping address');
         $breeds = [];
         $type = '';
         if ($request->input('type') != '') {
@@ -791,8 +795,8 @@ class FrontendController extends Controller
 
 
         $request->session()->put('frontenduserid', $orderData[1]);
-        if($response['referenceId'] == 'N/A' || $response['paymentMode'] == 'N/A' || $response['txStatus'] == 'CANCELLED' || $response['txMsg'] == 'Cancelled by user'){
-            return redirect(FRONTENDURL.'payment/'.encryption($orderData[0]))->with('error','Something went wrong. Please try again');
+        if ($response['referenceId'] == 'N/A' || $response['paymentMode'] == 'N/A' || $response['txStatus'] == 'CANCELLED' || $response['txMsg'] == 'Cancelled by user') {
+            return redirect(FRONTENDURL . 'payment/' . encryption($orderData[0]))->with('error', 'Something went wrong. Please try again');
         }
 
         // exit;
@@ -959,10 +963,10 @@ class FrontendController extends Controller
                 return redirect(FRONTENDURL . 'myorders')->with('error', $e->getMessage());
             }
 
-            $subscription = FHelperController::getUserSubscription($request->session()->get('frontenduserid'));
-            if (!count($subscription)) {
-                insertQuery('subscription', ['user_id' => $request->session()->get('frontenduserid')]);
-            }
+            // $subscription = FHelperController::getUserSubscription($request->session()->get('frontenduserid'));
+            // if (!count($subscription)) {
+            insertQuery('subscription', ['user_id' => $request->session()->get('frontenduserid'), 'order_id' => $createOrder]);
+            // }
 
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_temp', 'user_id');
             deleteQuery($request->session()->get('frontenduserid'), 'order_details_products_temp', 'user_id');
@@ -1149,6 +1153,42 @@ class FrontendController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function InvoiceTemplateView()
+    {
+        $createOrder = 1;
+        $orders = HelperController::getAllOrders($createOrder);
+        $orderProducts = HelperController::getOrderProducts($createOrder);
+        $address = getAddress($orders[0]->user_id);
+
+        $userInfo = HelperController::getUsers($orders[0]->user_id);
+
+        $data = ['address' => $address, 'order' => $orders, 'orderProducts' => $orderProducts, 'user_email' => 'tsubramaniyan2@gmail.com'];
+
+
+        $invoiceName = 'invoice_' . $createOrder;
+        $pdfName = 'public/order/' . $invoiceName . '.pdf';
+
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.email.invoice_template', $data)->setPaper('a4', 'potrait');
+
+        Storage::put($pdfName, $pdf->output());
+
+        // try {
+        //     Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
+        //         $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
+        //         // $message->cc(['woof@untame.pet']);
+        //         $message->attach(storage_path('app/' . $pdfName));
+        //         $message->from(getenv('MAIL_USERNAME'), 'Sales');
+        //     });
+        // } catch (\Exception $e) {
+        //     return redirect(FRONTENDURL . 'myorders')->with('error', $e->getMessage());
+        // }
+
+        echo 'Email sent';
+
+
+        // return view('frontend.email.invoice_template',$data);
     }
 
     public function OrderInvoiceDownload($id)

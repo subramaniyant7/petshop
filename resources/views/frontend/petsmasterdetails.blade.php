@@ -20,7 +20,7 @@
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <label>Breed Type <span class="required">*</span></label>
+                                            <label>What pet do you have? <span class="required">*</span></label>
                                             <select name="breed_type" class="form-control" required
                                                 onchange="getBreeds(this.value)">
                                                 <option value="">Select</option>
@@ -84,7 +84,7 @@
 
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>How much does your pet weight? <span
+                                                <label>How much does your pet weight?  (kg) <span
                                                         class="required">*</span></label>
                                                 <input type="number" name="breed_weight" class="form-control input-field"
                                                     required value="">

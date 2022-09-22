@@ -1,6 +1,9 @@
 <style>
     .nav-link {
-        color: #539B3C !important;
+        color: #044B16 !important;
+    }
+    .nav-brand img{
+        max-height: 100px;
     }
 </style>
 <nav id="main-nav" class="navbar-expand-xl fixed-top">

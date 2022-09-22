@@ -61,3 +61,17 @@
     <button type="submit" style="float:right" disabled value="Submit"
         class="btn btn-primary submit_product">Submit</button>
 </form>
+
+<p style="padding-top: 5em;font-weight: bold;">
+
+        **A starter pack that will help your pet accustom to the change in diet will
+        automatically be calculated and added to your cart. It will constitute food for
+        the first five days in the following proportion
+
+        10% - day 1, 25% - day 2, 50% - day 3, 75% - day 4, 100% - day 5.
+    <br/>
+        This is only for the first month and will not be a part of the monthly food
+        requirement shown above as it’s a default selected option*
+
+
+</p>

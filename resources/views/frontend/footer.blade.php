@@ -1,3 +1,9 @@
+<style>
+    .list-unstyled li{
+        font-weight: bold;
+        color: #044B16;
+    }
+</style>
 <footer class="bg-light pattern1">
     <div class="container">
         <div class="row">
@@ -29,7 +35,7 @@
                 <!--divider -->
                 <hr class="small-divider left" />
                 <ul class="list-unstyled mt-3">
-                    {{-- <li class="mb-1"><i class="fas fa-phone margin-icon "></i>+91 9150529991</li> --}}
+                    <li class="mb-1"><i class="fas fa-phone margin-icon "></i>+91 9150529991</li>
                     <li class="mb-1"><i class="fas fa-envelope margin-icon"></i><a
                             href="mailto:woof@untame.pet">woof@untame.pet</a></li>
                     <li><i class="fas fa-map-marker margin-icon"></i>Chennai </li>
@@ -52,12 +58,13 @@
                 <!--divider -->
                 <hr class="small-divider left" />
                 <ul class="list-unstyled mt-3">
-                    <li class="mb-1"><a href="{{ url(FRONTENDURL . 'privacy_policy') }}">Privacy Policy</a></li>
                     <li class="mb-1"><a href="{{ url(FRONTENDURL . 'about_us') }}">About Us</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL . 'terms_conditions') }}">Terms and Conditions</a></li>
                     <li class="mb-1"><a href="{{ url(FRONTENDURL . 'disclaimer') }}">Disclaimer</a></li>
+                    <li class="mb-1"><a href="{{ url(FRONTENDURL . 'privacy_policy') }}">Privacy Policy</a></li>
                     <li class="mb-1"><a href="{{ url(FRONTENDURL . 'return_refund') }}">Return and Refund</a></li>
                     <li class="mb-1"><a href="{{ url(FRONTENDURL . 'shipping_policy') }}">Shipping Policy</a></li>
-                    <li class="mb-1"><a href="{{ url(FRONTENDURL . 'terms_conditions') }}">Terms and Conditions</a></li>
+
                 </ul>
                 <!--/ul -->
             </div>

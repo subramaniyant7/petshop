@@ -1,13 +1,12 @@
 @extends('frontend.layout')
 <style>
-    .container {
-        margin: 2em 0 5em;
-    }
+
 </style>
 
 @section('content')
 
-    <div class="jumbotron jumbotron-fluid" data-center="background-size: 100%;" data-top-bottom="background-size: 110%;" style="background: rgb(50, 50, 50) !important;padding:0">
+    <div class="jumbotron jumbotron-fluid" data-center="background-size: 100%;" data-top-bottom="background-size: 110%;"
+    style="background: rgb(50, 50, 50) !important;padding:0">
         <div class="container">
             <!-- jumbo-heading -->
             <div class="jumbo-heading" data-aos="fade-up">
@@ -62,7 +61,7 @@
                         <div class="row">
                             <div class="col-lg-7">
                                 <h2>Species Appropriate Nutrition</h2>
-                                <p class="mt-4">
+                                <p class="mt-8">
                                     Animals can eat any food and barely survive, but to truly thrive, they must eat a diet
                                     that its species
                                     has evolved to
@@ -97,13 +96,13 @@
                         <div class="row">
                             <!-- /col-lg -->
                             <div class="col-lg-5 res-margin">
-                                <img style="height:350px;" src="{{ URL::asset(FRONTEND . '/img/Transparency.jpeg') }}"
+                                <img style="height:350px;" src="{{ URL::asset(FRONTEND . '/img/Transperancy.png') }}"
                                     alt="" class="rounded img-fluid">
                             </div>
                             <!-- /col-lg -->
                             <div class="col-lg-7">
                                 <h2>Transparency</h2>
-                                <p class="mt-4">
+                                <p class="mt-8">
                                     You will not find any proprietary blends or secret ingredients in our products. If
                                     you're considering
                                     feeding our
@@ -128,7 +127,7 @@
                         <div class="row">
                             <div class="col-lg-7">
                                 <h2>One world, one home!</h2>
-                                <p class="mt-4">
+                                <p class="mt-8">
                                     It is no secret that we share this world with countless organisms. We want to do our
                                     best to preserve
                                     this world for not just our future generations but for all living things that need it.
@@ -141,7 +140,7 @@
                             </div>
                             <!-- /col-lg -->
                             <div class="col-lg-5 res-margin">
-                                <img style="height:350px;" src="{{ URL::asset(FRONTEND . '/img/One_world_one_home.jpeg') }}"
+                                <img style="height:350px;" src="{{ URL::asset(FRONTEND . '/img/OneWorldOneHome-removebg-preview.png') }}"
                                     alt="" class="rounded img-fluid">
                             </div>
                             <!-- /col-lg -->

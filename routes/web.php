@@ -19,6 +19,10 @@ use App\Http\Controllers\AjaxController;
 Route::post('/paymentprocessed', [FrontendController::class, 'PaymentProcessed']);
 Route::post('/paymentnotify', [FrontendController::class, 'PaymentProcessed']);
 
+Route::get('/invoicetemplate', [FrontendController::class, 'InvoiceTemplateView']);
+
+
+
 Route::middleware(['globalvalidate'])->group(function () {
     Route::get('/', [FrontendController::class, 'Home']);
 
