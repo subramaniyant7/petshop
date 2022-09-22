@@ -622,7 +622,7 @@
         setTimeout(() => {
             $('.page-with-sidebar').fadeIn();
             $(".dogclick").trigger("click");
-        }, 4000);
+        }, 7000);
     </script>
 
 @stop
