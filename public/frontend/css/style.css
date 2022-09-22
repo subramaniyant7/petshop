@@ -27,7 +27,8 @@ Last change:12th February 2019
 
 /*=========================== General and Typography ============================ */
  body {
-     font-family: 'Roboto', sans-serif;
+     /* font-family: 'Roboto', sans-serif; */
+     font-family: 'Montserrat', sans-serif;
      color:#6f6f6f;
      font-size: 16px;
      line-height:1.6;
