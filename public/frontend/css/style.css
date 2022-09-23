@@ -2292,6 +2292,28 @@ a:hover{
 }
 /* Medium/small devices (767px) */
  @media (max-width: 767px) {
+    .video_content{
+        left: 10%;
+        top: 13%;
+        font-size: 6px;
+    }
+
+    .join_content{
+        margin-top: 1rem;
+    }
+
+    .join_content h5{
+        margin-bottom: 5px;
+    }
+
+    .join_content a{
+        padding: 7px;
+        font-size: 6px;
+    }
+
+    .how_it_works{
+        object-fit: contain !important;
+    }
 
      .adoption-header {
          margin-top: 0px;

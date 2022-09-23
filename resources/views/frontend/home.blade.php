@@ -196,7 +196,7 @@
             <div class="row">
                 <!-- Tabs -->
                 <div class="col-md-12">
-                    <img style="width:100%;object-fit:none;" src="{{ URL::asset(FRONTEND . '/img/How_it_works_Edited.webp') }}"
+                    <img style="width:100%;object-fit:none;" class="how_it_works" src="{{ URL::asset(FRONTEND . '/img/How_it_works_Edited.webp') }}"
                         alt="How it's works">
                 </div>
                 <!-- col-md-12 -->
