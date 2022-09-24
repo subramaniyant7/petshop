@@ -172,4 +172,17 @@ function getMyDeliveryProducts($id){
     return DB::table("deliveryinfo_products")->where('deliveryinfo_id', $id)->get();
 }
 
+function getPetMaster($id){
+    return DB::table("pets_master_details")->where('pets_master_id', $id)->get();
+}
+
+function getOrderDueByUser($id){
+    return DB::table("order_due")->where('user_id', $id)->get();
+}
+
+function getOrderById($id){
+    return DB::table("order_details")->where('order_id', $id)->get();
+}
+
+
 ?>

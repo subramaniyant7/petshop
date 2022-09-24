@@ -17,6 +17,7 @@
                             <thead>
                                 <tr>
                                     <th>S.No</th>
+                                    <th>Order Id</th>
                                     <th>Subscribed On</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -24,8 +25,13 @@
                             </thead>
                             <tbody>
                                 @forelse ($subscription as $k => $subscription)
+                                @php
+                                    $orderInfo = getOrderById($subscription->order_id);
+                                    $orderId = count($orderInfo) ? $orderInfo[0]->order_inc_id : '';
+                                @endphp
                                     <tr>
                                         <td>{{ $k + 1 }}</td>
+                                        <td>{{ $orderId }}</td>
                                         <td>{{ date('d-m-Y', strtotime($subscription->created_at)) }}</td>
                                         <td>{{ $subscription->status == 1 ? 'Subscribed' : 'Unsubscribed' }} </td>
                                         <td>

@@ -49,7 +49,7 @@ Route::middleware(['globalvalidate'])->group(function () {
 
     Route::middleware(['frontendloggedin'])->group(function () {
         Route::get('/dashboard', [FrontendController::class, 'Dashboard']);
-        Route::get('/upcoming_delivery', [FrontendController::class, 'UpcomingDelivery']);
+
         Route::get('/upcomingdelivery_product/{id}', [FrontendController::class, 'UpcomingDeliveryProduct']);
         Route::get('/pets_master', [FrontendController::class, 'PetsMasterDetails']);
         Route::get('/pets_master/{id}', [FrontendController::class, 'PetsMasterCalculation']);
@@ -58,15 +58,14 @@ Route::middleware(['globalvalidate'])->group(function () {
 
         Route::post('/paymentprocess', [FrontendController::class, 'PaymentProcess']);
 
-
-
-
         Route::post('/paymentsuccess', [FrontendController::class, 'PaymentSuccess']);
 
         Route::post('/getbreed', [AjaxController::class, 'GetBreeds']);
         Route::post('/getorderproducts', [AjaxController::class, 'GetOrderProducts']);
 
         Route::post('/savepetsmaster', [FrontendController::class, 'SavePetsMaster']);
+
+        Route::get('/ordertesting', [FrontendController::class, 'OrderTesting']);
 
 
         Route::get('/addshippingaddress', [FrontendController::class, 'AddShippingAddress']);
@@ -75,6 +74,9 @@ Route::middleware(['globalvalidate'])->group(function () {
         Route::get('/myorders', [FrontendController::class, 'MyOrders']);
         Route::get('/orderinvoice/{id}', [FrontendController::class, 'OrderInvoiceDownload']);
         Route::get('/myorderproducts/{id}', [FrontendController::class, 'MyOrderProducts']);
+        Route::get('/upcoming_delivery', [FrontendController::class, 'UpcomingDelivery']);
+        Route::get('/upcoming_due', [FrontendController::class, 'UpcomingDue']);
+        Route::post('/upcoming_due', [FrontendController::class, 'ProcessDue']);
         Route::get('/user_subscription', [FrontendController::class, 'UserSubscription']);
         Route::get('/update_subscription/{id}', [FrontendController::class, 'UpdateSubscription']);
         Route::get('/change_password', [FrontendController::class, 'ChangePassword']);

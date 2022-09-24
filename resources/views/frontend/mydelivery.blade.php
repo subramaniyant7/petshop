@@ -8,7 +8,7 @@
             <div class="col-lg-9 page-with-sidebar">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>Upcoming Delivery </h2>
+                        <h2>My Upcoming Delivery </h2>
                     </div>
                     <!-- /col-lg-->
                     @include('admin.notification')

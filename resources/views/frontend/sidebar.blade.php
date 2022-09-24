@@ -9,6 +9,7 @@
 
             <a href="{{url(FRONTENDURL.'myorders')}}" class="list-group-item list-group-item-action {{request()->segment(1) == 'myorders' ? 'active' : ''}}">My Orders</a>
             <a href="{{url(FRONTENDURL.'upcoming_delivery')}}" class="list-group-item list-group-item-action {{request()->segment(1) == 'upcoming_delivery' ? 'active' : ''}}">Upcoming Delivery</a>
+            <a href="{{url(FRONTENDURL.'upcoming_due')}}" class="list-group-item list-group-item-action {{request()->segment(1) == 'upcoming_due' ? 'active' : ''}}">Upcoming Due</a>
             <a href="{{url(FRONTENDURL.'user_subscription')}}" class="list-group-item list-group-item-action {{request()->segment(1) == 'user_subscription' ? 'active' : ''}}">My Subscription</a>
 
             <a href="{{url(FRONTENDURL.'change_password')}}" class="list-group-item list-group-item-action {{request()->segment(1) == 'change_password' ? 'active' : ''}}">Change Password</a>

@@ -99,10 +99,27 @@ class FHelperController extends Controller
         return DB::table("deliveryinfo_products")->where('deliveryinfo_id', $id)->get();
     }
 
-
     static function getUserSubscription($id){
         return DB::table("subscription")->where('user_id', $id)->get();
     }
+
+    static function getUserSubscriptionById($id){
+        return DB::table("subscription")->where('subscription_id', $id)->get();
+    }
+
+    static function getUpcomingDue($userId){
+        $fetchData = DB::table("order_details")
+        ->join('subscription', 'order_details.order_id', '=', 'subscription.order_id')
+        ->select('order_details.*','subscription.user_id');
+        return $fetchData->where([['order_details.user_id',$userId],['order_details.orderProcessType',1],['subscription.user_id', $userId],['subscription.status',1]])->orderBy('order_details.order_id','desc')->get();
+
+    }
+
+    static function getOverDueByUser($userid){
+        return DB::table("order_due")->where('user_id', $userid)->get();
+    }
+
+
 
 
 }
