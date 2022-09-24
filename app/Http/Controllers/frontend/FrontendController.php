@@ -640,7 +640,7 @@ class FrontendController extends Controller
         $totalDays = 0;
         $userOrders = [];
         $dueOrders = [];
-        if (date('d') > 2) {
+        if (date('d') > 25) {
             $userOrders = FHelperController::getUpcomingDue($request->session()->get('frontenduserid'));
             $nextMonthDate = date('Y-m-d', strtotime('+1 months', strtotime(date('Y-m-d'))));
             $startDate = date("Y-m-01", strtotime($nextMonthDate));
