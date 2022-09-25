@@ -157,9 +157,12 @@
                                                                 <tr>
                                                                     <td style="padding-right: 0px;padding-left: 0px;"
                                                                         align="center">
-                                                                        <a href="https://www.untame.pet"
+                                                                        <a href="{{ url(FRONTENDURL) }}"
                                                                             target="_blank">
-
+                                                                            <img align="center" border="0" src="{{ URL::asset(FRONTEND.'/img/Final_Logo_UntamePets_01.webp') }}" alt="U N T A M E PETS" title="U N T A M E PETS"
+                                                                            style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;
+                                                                            border: none;height: auto;
+                                                                            float: none;width: 100%;max-width: 300px;" width="300"/>
                                                                         </a>
                                                                     </td>
                                                                 </tr>
@@ -374,7 +377,7 @@
                                                                     {{ $order[0]->order_inc_id }}
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 140%;">Order
-                                                                    Date: {{ date('d/m/y') }}</p>
+                                                                    Date: {{ date('d/m/y', strtotime($order[0]->created_at)) }}</p>
                                                                 <p style="font-size: 14px; line-height: 140%;">Order
                                                                     Total: {{ number_format($order[0]->grandTotal,2) }}</p>
                                                                 <p style="font-size: 14px; line-height: 140%;">Delivery
@@ -488,7 +491,7 @@
                                 style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
                                  <div class="u-col u-col-25"
                                     style="max-width: 320px;min-width: 150px;display: table-cell;vertical-align: top;">
-                                    <div style="background-color: #0b6008;height: 100%;width: 100% !important;">
+                                    <div style="background-color: #0b6008 !important;height: 100%;width: 100% !important;">
 
                                         <div
                                             style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">
@@ -503,7 +506,7 @@
 
                                                             <div
                                                                 style="color: #ffffff; line-height: 120%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 120%;">PRODUCTS
+                                                                <p style="font-size: 14px; line-height: 120%;background: #0b6008 ">PRODUCTS
                                                                 </p>
                                                             </div>
 
@@ -922,7 +925,7 @@
                                                                 style="line-height: 120%; text-align: left; word-wrap: break-word;">
                                                                 <p
                                                                     style="font-size: 14px; line-height: 120%; text-align: left;">
-                                                                    ₹ 2,700.00</p>
+                                                                    ₹ {{ number_format($order[0]->totalPrice,2) }}</p>
                                                             </div>
 
                                                         </td>
@@ -941,7 +944,7 @@
                                                                 style="line-height: 120%; text-align: left; word-wrap: break-word;">
                                                                 <p
                                                                     style="font-size: 14px; line-height: 120%; text-align: left;">
-                                                                    ₹ 486.00</p>
+                                                                    ₹ {{ number_format($order[0]->gst,2) }}</p>
                                                             </div>
 
                                                         </td>
@@ -960,7 +963,7 @@
                                                                 style="line-height: 120%; text-align: left; word-wrap: break-word;">
                                                                 <p
                                                                     style="font-size: 14px; line-height: 120%; text-align: left;">
-                                                                    ₹ 3,186.00</p>
+                                                                    ₹ {{ number_format($order[0]->grandTotal,2) }}</p>
                                                             </div>
 
                                                         </td>

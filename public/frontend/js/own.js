@@ -76,23 +76,23 @@ const updateBalance = (val) => {
         }
     }
     let remainingToAdd = remainingGramToBuy - k;
-    if(k > remainingGramToBuy){
+    if (k > remainingGramToBuy) {
         $('.submit_product').attr('disabled', true);
         toastr.error('You cannot order more than required food');
-    }else{
-       $('.remaining_product').html(remainingToAdd.toFixed(2))
+    } else {
+        $('.remaining_product').html(remainingToAdd.toFixed(2))
     }
 
     console.log('remainingGramToBuy', remainingGramToBuy)
     console.log('k', k)
 
-    if(k.toFixed(2) == remainingGramToBuy){
+    if (k.toFixed(2) == remainingGramToBuy) {
         $('.submit_product').attr('disabled', false);
     }
 }
 
 
-$('#order_proceed').submit(function(e){
+$('#order_proceed').submit(function (e) {
     e.preventDefault();
     console.log('submit')
 
@@ -124,3 +124,36 @@ $('#order_proceed').submit(function(e){
 
 })
 
+
+const DownloadInvoice = (orderId) => {
+    console.log(orderId)
+
+    if (orderId != '') {
+        $.ajax({
+            type: 'post',
+            url: `${siteurl}getorderdata`,
+            data: { orderId : orderId},
+            dataType: 'json',
+            success: function (response) {
+                console.log(response)
+                // return false
+                if (response.status) {
+                    $('.print').html(response.html);
+                    let printContents = response.html;
+                    let originalContents = document.body.innerHTML;
+                    document.body.innerHTML = printContents;
+                    window.print();
+                    document.body.innerHTML = originalContents;
+                } else {
+                    toastr.error('Something went wrong. Please try again');
+                }
+            },
+            error: function (data) {
+                toastr.error('Something went wrong. Please try again');
+            },
+            complete: function () {
+                $('#preloader').hide();
+            }
+        });
+    }
+}

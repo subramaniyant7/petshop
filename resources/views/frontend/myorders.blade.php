@@ -35,7 +35,8 @@
                                         <td>Rs.{{ number_format($orders->grandTotal, 2) }}</td>
                                         <td>{{ $orders->paymentId != '' ? 'Paid' : 'In-Progress' }}</td>
                                         <td>{{ $orders->delivery_date }}</td>
-                                        <td><a href="{{ FRONTENDURL.'orderinvoice/'.encryption($orders->order_id)}}">Download</a></td>
+                                        <td><a href="javascript:void(0)" onclick="DownloadInvoice({{$orders->order_id}})"> Download </a></td>
+                                        {{-- <td><a href="{{ FRONTENDURL.'orderinvoice/'.encryption($orders->order_id)}}">Download</a></td> --}}
                                         <td><a href="{{ FRONTENDURL.'myorderproducts/'.encryption($orders->order_id)}}">View</a></td>
 
                                     </tr>
@@ -54,7 +55,7 @@
         </div>
         <!-- /page-with-sidebar -->
 
-
+        <div class="print" style="display:none"></div>
 
     </div>
     <!-- /row -->

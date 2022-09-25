@@ -98,7 +98,8 @@ class FrontendController extends Controller
             $insertUserInfo = insertQueryId('user_details', $formData);
             try {
                 $emailContent = ['email' => $formData['user_email'], 'name' => $formData['user_firstname'], 'otp' => $otp];
-                Mail::send('frontend.email.registration_otp', $emailContent, function ($message) use ($emailContent) {
+                // Mail::send('frontend.email.registration_otp', $emailContent, function ($message) use ($emailContent) {
+                Mail::send('frontend.email.otp_template', $emailContent, function ($message) use ($emailContent) {
                     $message->to($emailContent['email'], 'Registration - OTP Email')->subject('Regitration - OTP Email');
                     $message->from(getenv('MAIL_USERNAME'), 'Admin');
                 });
@@ -155,6 +156,18 @@ class FrontendController extends Controller
             $formData = ['user_verified' => 1];
             updateQuery('user_details', 'user_email', $email, $formData);
             deleteQuery($email, 'user_otp', 'user_email');
+
+            try {
+                $emailContent = ['email' => $email];
+                // Mail::send('frontend.email.registration_otp', $emailContent, function ($message) use ($emailContent) {
+                Mail::send('frontend.email.accountcreation_success', $emailContent, function ($message) use ($emailContent) {
+                    $message->to($emailContent['email'], 'Account Creation')->subject('Registration Success');
+                    $message->from(getenv('MAIL_USERNAME'), 'Admin');
+                });
+            } catch (\Exception $e) {
+                return back()->with('error', $e->getMessage());
+            }
+
             return redirect(FRONTENDURL . 'login');
         }
         return back()->with('error', 'Please enter valid OTP');
@@ -207,30 +220,28 @@ class FrontendController extends Controller
 
         // echo '<pre>';
         $monthEnd = false;
-        if($diff <= 2){
+        if ($diff <= 2) {
             $deliveryData = $this->CurrentMonthAllDelivery();
             $totalDelivery = count($deliveryData);
             $nextDelivery = '';
-            foreach($deliveryData as $k => $delivery){
-                if(($delivery == $days['deliveryDate']) && ($k+1 == $totalDelivery)){
+            foreach ($deliveryData as $k => $delivery) {
+                if (($delivery == $days['deliveryDate']) && ($k + 1 == $totalDelivery)) {
                     $monthEnd = true;
                 }
-                if(($delivery == $days['deliveryDate']) && ($k+1 != $totalDelivery)){
+                if (($delivery == $days['deliveryDate']) && ($k + 1 != $totalDelivery)) {
                     // echo 'Index:'.$k.'<br>';
-                    $nextDelivery = $deliveryData[$k+1];
+                    $nextDelivery = $deliveryData[$k + 1];
                     break;
                 }
             }
 
-            if($nextDelivery != ''){
+            if ($nextDelivery != '') {
                 $totalDays = $this->DateDifference($nextDelivery, $days['deliveryMonthLastDate']);
-                if($totalDays <=5){
+                if ($totalDays <= 5) {
                     $monthEnd = true;
                 }
                 // echo 'totalDays:'.$totalDays.'<br>';
             }
-
-
         }
 
 
@@ -684,7 +695,7 @@ class FrontendController extends Controller
         // print_r($totalDays);
         // print_r($dueOrders);
         // exit;
-        return view('frontend.myupcomingdue', compact('userOrders', 'totalDays','dueOrders'));
+        return view('frontend.myupcomingdue', compact('userOrders', 'totalDays', 'dueOrders'));
     }
 
     public function ProcessDue(Request $request)
@@ -730,7 +741,6 @@ class FrontendController extends Controller
                 'product_price' => $getproduct[0]->product_price, 'product_qty' => $product['productQty']
             ];
             insertQuery('order_details_products_temp', $orderProducts);
-
         }
         // updateQuery('order_details_temp', 'order_id', $createTempOrder, ['totalPrice' => $totalPrice]);
         return redirect(FRONTENDURL . 'payment/' . encryption($createTempOrder));
@@ -805,7 +815,7 @@ class FrontendController extends Controller
                         'defaultProductCalc' => $formData['defaultProductCalc'], 'remainingGramToBuy' => $formData['remainingGramToBuy'],
                         'remainingDays' => $formData['remainingDays'], 'totalGram' => $formData['totalGram'], 'totalDays' => $formData['totalDays'],
                         'totalPrice' => round($totalPrice), 'delivery_date' => $formData['delivery_date'], 'perDayMeal' => $formData['perDayMeal'],
-                        'parent_id'=> 0
+                        'parent_id' => 0
                     ];
                     $createTempOrder = insertQueryId('order_details_temp', $orderInfo);
                     foreach ($products as $product) {
@@ -906,13 +916,6 @@ class FrontendController extends Controller
 
     public function PaymentProcessed(Request $request)
     {
-        // echo '<pre>';
-        // echo 'Session:'.session('frontenduserid').'<br/>';
-        // echo 'Session1:'.$request->session()->get('frontenduserid');
-
-        // print_r($request->input());
-
-
         $response = $request->input();
         $orderData = explode('-', $response['orderId']);
 
@@ -1081,20 +1084,31 @@ class FrontendController extends Controller
 
             $data = ['address' => $address, 'order' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email];
 
-            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', $data)->setPaper('a4', 'potrait');
+            // $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.invoice', $data)->setPaper('a4', 'potrait');
 
-            Storage::put($pdfName, $pdf->output());
+            // Storage::put($pdfName, $pdf->output());
+
+            // try {
+            //     Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
+            //         $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
+            //         $message->cc(['woof@untame.pet']);
+            //         $message->attach(storage_path('app/' . $pdfName));
+            //         $message->from(getenv('MAIL_USERNAME'), 'Sales');
+            //     });
+            // } catch (\Exception $e) {
+            //     return redirect(FRONTENDURL . 'myorders')->with('error', $e->getMessage());
+            // }
 
             try {
-                Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
+                Mail::send('frontend.email.invoice_template', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    $message->cc(['woof@untame.pet']);
-                    $message->attach(storage_path('app/' . $pdfName));
+                    // $message->cc(['woof@untame.pet']);
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });
             } catch (\Exception $e) {
                 return redirect(FRONTENDURL . 'myorders')->with('error', $e->getMessage());
             }
+
 
             // $subscription = FHelperController::getUserSubscription($request->session()->get('frontenduserid'));
             // if (!count($subscription)) {
@@ -1102,7 +1116,7 @@ class FrontendController extends Controller
                 insertQuery('subscription', ['user_id' => $request->session()->get('frontenduserid'), 'order_id' => $createOrder]);
             }
 
-            if($orderInfo[0]->orderProcessType == 2){
+            if ($orderInfo[0]->orderProcessType == 2) {
 
                 $userOverDue = FHelperController::getOverDueByUser($request->session()->get('frontenduserid'));
                 $totalRecord = count($userOverDue);
@@ -1111,8 +1125,10 @@ class FrontendController extends Controller
                 $nextMonthDate = date('Y-m-d', strtotime('+' . $month . ' months', strtotime(date('Y-m-d'))));
                 $startDate = date("Y-m-01", strtotime($nextMonthDate));
 
-                $data = ['user_id' => $orders[0]->user_id,'parent_order_id' =>$orders[0]->parent_id , 'order_id' => $createOrder,'transactionMonth' => $startDate,
-                        'paymentId' =>$orders[0]->paymentId];
+                $data = [
+                    'user_id' => $orders[0]->user_id, 'parent_order_id' => $orders[0]->parent_id, 'order_id' => $createOrder, 'transactionMonth' => $startDate,
+                    'paymentId' => $orders[0]->paymentId
+                ];
                 insertQuery('order_due', $data);
             }
 
@@ -1452,9 +1468,17 @@ class FrontendController extends Controller
         $invoiceName = 'invoice_' . $createOrder;
         $pdfName = 'public/order/' . $invoiceName . '.pdf';
 
-        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('frontend.email.invoice_template', $data)->setPaper('a4', 'potrait');
+        // return view('frontend.email.invoice_template', $data);
 
-        Storage::put($pdfName, $pdf->output());
+        // $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+        // ->loadView('frontend.email.invoice_template', $data)->setPaper('a4', 'potrait');
+
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+            ->loadView('frontend.email.orderinvoice', $data)->setPaper('a4', 'potrait');
+
+
+        return $pdf->stream();
+        // Storage::put($pdfName, $pdf->output());
 
         // try {
         //     Mail::send('frontend.email.orderconfirmation', $data, function ($message) use ($data, $pdfName) {
@@ -1517,6 +1541,26 @@ class FrontendController extends Controller
     {
         $getOrders = FHelperController::getMyOrders($request->session()->get('frontenduserid'));
         return view('frontend.myorders', compact('getOrders'));
+    }
+
+    public function MyOrdersInvoiceDownload(Request $request)
+    {
+        $status = false;
+        $createOrder = $request->input('orderId');
+        $orders = HelperController::getAllOrders($createOrder);
+        $orderProducts = HelperController::getOrderProducts($createOrder);
+        $address = getAddress($orders[0]->user_id);
+        $html = '';
+        $userInfo = HelperController::getUsers($orders[0]->user_id);
+
+        $data = ['address' => $address, 'order' => $orders, 'orderProducts' => $orderProducts, 'user_email' => $userInfo[0]->user_email];
+
+        if (count($orders)) {
+            $status = true;
+            $html = view('frontend.email.invoice_template', $data)->render();
+        }
+
+        return response()->json(['html' => $html, 'status' =>  $status]);
     }
 
     public function MyOrderProducts(Request $request)

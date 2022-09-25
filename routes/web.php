@@ -72,6 +72,10 @@ Route::middleware(['globalvalidate'])->group(function () {
         Route::get('/editshippingaddress/{id}', [FrontendController::class, 'EditShippingAddress']);
         Route::post('/saveshippingaddress', [FrontendController::class, 'SaveShippingAddress']);
         Route::get('/myorders', [FrontendController::class, 'MyOrders']);
+        Route::post('/getorderdata', [FrontendController::class, 'MyOrdersInvoiceDownload']);
+
+
+
         Route::get('/orderinvoice/{id}', [FrontendController::class, 'OrderInvoiceDownload']);
         Route::get('/myorderproducts/{id}', [FrontendController::class, 'MyOrderProducts']);
         Route::get('/upcoming_delivery', [FrontendController::class, 'UpcomingDelivery']);
