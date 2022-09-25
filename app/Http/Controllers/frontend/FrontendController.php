@@ -203,20 +203,50 @@ class FrontendController extends Controller
         $date = date('Y-m-d');
         $days = $this->FindDays($date);
 
+        $diff = $this->DateDifference($date, $days['deliveryDate']) - 1;
+
         // echo '<pre>';
-        // echo $date.'<br>';
-        // print_r($days);
-        // exit;
+        $monthEnd = false;
+        if($diff <= 2){
+            $deliveryData = $this->CurrentMonthAllDelivery();
+            $totalDelivery = count($deliveryData);
+            $nextDelivery = '';
+            foreach($deliveryData as $k => $delivery){
+                if(($delivery == $days['deliveryDate']) && ($k+1 == $totalDelivery)){
+                    $monthEnd = true;
+                }
+                if(($delivery == $days['deliveryDate']) && ($k+1 != $totalDelivery)){
+                    // echo 'Index:'.$k.'<br>';
+                    $nextDelivery = $deliveryData[$k+1];
+                    break;
+                }
+            }
+
+            if($nextDelivery != ''){
+                $totalDays = $this->DateDifference($nextDelivery, $days['deliveryMonthLastDate']);
+                if($totalDays <=5){
+                    $monthEnd = true;
+                }
+                // echo 'totalDays:'.$totalDays.'<br>';
+            }
+
+
+        }
+
+
+
         // $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']) - 1;
         $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']);
 
-        if ($totalDays <= 5) {
+        if ($totalDays <= 5 || $monthEnd) {
             $nextMonthDate = date('Y-m-d', strtotime('+1 months', strtotime($days['deliveryMonthLastDate'])));
             $startDate = date("Y-m-01", strtotime($nextMonthDate));
             $endDate = date("Y-m-t", strtotime($nextMonthDate));
             $days = $this->FindDays($startDate);
             $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']);
         }
+
+
         $weight =  DB::table("pets_master_calculation")->where([
             ['category_id', $petsInfo[0]->breed_type], ['activity_level', $petsInfo[0]->breed_activity_level], ['neuter', $petsInfo[0]->breed_neutered],
             ['goal', $petsInfo[0]->breed_weight_motive]
@@ -249,7 +279,7 @@ class FrontendController extends Controller
             $updateDate = date('Y-m-d', strtotime('+' . $t . ' day', strtotime($currentMonthStartDate)));
 
 
-            if ($this->DateDifference($updateDate, $deliveryMonthLastDate) > 4) {
+            if ($this->DateDifference($updateDate, $deliveryMonthLastDate)) {
                 $updateStamp = strtotime($updateDate);
                 $day = date('w', $updateStamp);
                 if ($day == 1 || $day == 5) {
