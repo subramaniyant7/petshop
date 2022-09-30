@@ -44,6 +44,8 @@ Route::middleware(['globalvalidate'])->group(function () {
         Route::get('/email_otp_verify', [FrontendController::class, 'OTPVerification']);
         Route::post('/verify_otp_verify', [FrontendController::class, 'VerifyOTP']);
         Route::get('/login', [FrontendController::class, 'Login']);
+        Route::get('/forgot_password', [FrontendController::class, 'ForgotPassword']);
+        Route::post('/forgot_password', [FrontendController::class, 'HandleForgotPassword']);
         Route::post('/loginvalidate', [FrontendController::class, 'LoginValidate']);
     });
 

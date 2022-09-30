@@ -117,6 +117,45 @@ class FrontendController extends Controller
         return view('frontend.login');
     }
 
+    public function ForgotPassword(){
+        return view('frontend.forgot_password');
+    }
+
+    private function CreateRandomPassword()
+    {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array();
+        $alphaLength = strlen($alphabet) - 1;
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass);
+    }
+
+    public function HandleForgotPassword(Request $request){
+        if($request->input('user_email') != ''){
+            $checkUserExist = FHelperController::getUserByEmail($request->input('user_email'));
+            if(count($checkUserExist)){
+                $newPassword = $this->CreateRandomPassword();
+                try{
+                    $emailContent = ['email' => $checkUserExist[0]->user_email, 'password' => $newPassword];
+                    Mail::send('frontend.email.forgot_password', $emailContent, function ($message) use ($emailContent) {
+                        $message->to($emailContent['email'], 'Account - New Password')->subject('Account - New Password');
+                        $message->from(getenv('MAIL_USERNAME'), 'Admin');
+                    });
+                }
+                catch(\Exception $e){
+                    return back()->with('error','Something went wrong');
+                }
+                updateQuery('user_details','user_id',$checkUserExist[0]->user_id,['user_password' => md5($newPassword)]);
+                return redirect(FRONTENDURL.'login')->with('success','We have sent new password to your email. Please check your email and Junk/Spam folder also');
+            }
+            return back()->with('error', 'Invalid Email');
+        }
+        return back()->with('error', 'Invalid action');
+    }
+
     public function LoginValidate(Request $request)
     {
         $formData = $request->only(['user_email', 'user_password']);
@@ -184,18 +223,15 @@ class FrontendController extends Controller
         $timestamp = strtotime($date);
         $day = date('w', $timestamp);
         $diff = 0;
-
         if ($day == 0) {
-            $diff = 1;
+            $diff = 2;
         }
         if ($day == 6) {
-            $diff = 2;
+            $diff = 3;
         }
         if ($day > 1 && $day < 5) {
             $diff = 5 - $day;
         }
-        // echo 'Days:'.$day.'<br>';
-        // echo 'Diff:'.$diff.'<br>';
         $deliveryDate = date('Y-m-d', strtotime('+' . $diff . ' day', strtotime($date)));
         $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
         return ['deliveryDate' => $deliveryDate, 'deliveryMonthLastDate' => $deliveryMonthLastDate];
@@ -293,7 +329,7 @@ class FrontendController extends Controller
             if ($this->DateDifference($updateDate, $deliveryMonthLastDate)) {
                 $updateStamp = strtotime($updateDate);
                 $day = date('w', $updateStamp);
-                if ($day == 1 || $day == 5) {
+                if ($day == 2 || $day == 5) {
                     array_push($totalDeliveryofMonth, $updateDate);
                 }
             }
@@ -317,14 +353,14 @@ class FrontendController extends Controller
                 if (strtotime($updateDate) >= strtotime($deliveryDate)) {
                     $updateStamp = strtotime($updateDate);
                     $day = date('w', $updateStamp);
-                    if ($day == 1 || $day == 5) {
+                    if ($day == 2 || $day == 5) {
                         array_push($totalDeliveryofMonthFromDelivery, $updateDate);
                     }
                 }
                 if (strtotime($updateDate) >= strtotime(date('Y-m-d'))) {
                     $updateStamp = strtotime($updateDate);
                     $day = date('w', $updateStamp);
-                    if ($day == 1 || $day == 5) {
+                    if ($day == 2 || $day == 5) {
                         array_push($totalDeliveryofMonth, $updateDate);
                     }
                 }
@@ -350,7 +386,7 @@ class FrontendController extends Controller
                 if (strtotime($updateDate) >= strtotime(date('Y-m-d'))) {
                     $updateStamp = strtotime($updateDate);
                     $day = date('w', $updateStamp);
-                    if ($day == 1 || $day == 5) {
+                    if ($day == 2 || $day == 5) {
                         array_push($totalDeliveryofMonth, $updateDate);
                     }
                 }
@@ -424,7 +460,7 @@ class FrontendController extends Controller
             //     // foreach ($orderProducts as $products) {
             $timestamp = strtotime($totalDelivery);
             $day = date('w', $timestamp);
-            $daysInterval = $day == 1 ? 4 : 3;
+            $daysInterval = $day == 2 ? 4 : 3;
             $startupProductProcessedDays = 0;
             // echo 'Delivery Day:' . $day . '<br>';
             if ($k == 0) {
@@ -467,11 +503,11 @@ class FrontendController extends Controller
                 //         // break;
             }
             if ($k == 1) {
-                $limit = $day != 1 ? 3 : 4;
+                $limit = $day != 2 ? 3 : 4;
 
-                $starterInterval =  $day == 1 ? 4 : 5;
+                $starterInterval =  $day == 2 ? 4 : 5;
 
-                $other = $day == 1 ? 3 : 4;
+                $other = $day == 2 ? 3 : 4;
                 $processDays = 5 - $other + 1;
                 $remainingDays =  $starterInterval - $daysInterval;
                 $totalGram1 = $actualGram = 0;
@@ -752,6 +788,7 @@ class FrontendController extends Controller
         // echo '<pre>';
         try {
             $returnData = $this->PetsCollectionInfo(decryption($id));
+            // print_r($returnData);
             if ($request->has('order_type')) {
                 $default =  DB::table("products")->where([['product_for', $returnData['petsInfo']->breed_type], ['product_default', 1]])->get();
                 if (!count($default)) return back()->with('error', 'Default Product not available please contact administratior');
@@ -778,7 +815,7 @@ class FrontendController extends Controller
                 $returnData['order_type'] = $request->input('order_type');
             }
 
-            // print_r($returnData);
+
             // exit;
             return view('frontend.petmastercalculation', $returnData);
         } catch (\Exception $e) {
@@ -918,6 +955,9 @@ class FrontendController extends Controller
     {
         $response = $request->input();
         $orderData = explode('-', $response['orderId']);
+        // echo '<pre>';
+        // print_r($orderData);
+        // exit;
 
         $request->session()->put('frontenduserid', $orderData[1]);
         if ($response['referenceId'] == 'N/A' || $response['paymentMode'] == 'N/A' || $response['txStatus'] == 'CANCELLED' || $response['txMsg'] == 'Cancelled by user') {
@@ -1102,7 +1142,7 @@ class FrontendController extends Controller
             try {
                 Mail::send('frontend.email.invoice_template', $data, function ($message) use ($data, $pdfName) {
                     $message->to($data['user_email'], 'Order Confirmation')->subject('Order Confirmation');
-                    // $message->cc(['woof@untame.pet']);
+                    $message->cc(['woof@untame.pet']);
                     $message->from(getenv('MAIL_USERNAME'), 'Sales');
                 });
             } catch (\Exception $e) {
@@ -1584,6 +1624,22 @@ class FrontendController extends Controller
             $subscription = FHelperController::getUserSubscriptionById($actionId);
             if (!count($subscription)) back()->with('error', 'Something went wrong');
             $subscribe = $subscription[0]->status == 1 ? 2 : 1;
+            if ($subscribe == 2) {
+                $orderInfo = getOrderById($subscription[0]->order_id);
+                $orderId = count($orderInfo) ? $orderInfo[0]->order_inc_id : '';
+                $userInfo = getUser($subscription[0]->user_id);
+                $email = count($userInfo) ? $userInfo[0]->user_email : '';
+                $data = ['user_email' => $email,'order_id' => $orderId];
+                try {
+                    Mail::send('frontend.email.unsubscribe', $data, function ($message) use ($data) {
+                        $message->to('woof@untame.pet', 'Order UnSubscription')->subject('Order UnSubscription');
+                        // $message->cc(['woof@untame.pet']);
+                        $message->from(getenv('MAIL_USERNAME'), 'Sales');
+                    });
+                } catch (\Exception $e) {
+                    return redirect(FRONTENDURL . 'user_subscription')->with('error', $e->getMessage());
+                }
+            }
             updateQuery('subscription', 'subscription_id', $actionId, ['status' => $subscribe]);
             // deleteQuery($actionId, 'subscription', 'subscription_id');
             return back()->with('success', 'Unsubscribed successfully');

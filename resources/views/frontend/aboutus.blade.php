@@ -60,8 +60,9 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-7">
-                                <h2>Species Appropriate Nutrition</h2>
-                                <p class="mt-8">
+                                <div class="row">
+                                <h2 style="width: 100%;text-align: center;">Species Appropriate Nutrition</h2>
+                                <p class="mt-4">
                                     Animals can eat any food and barely survive, but to truly thrive, they must eat a diet
                                     that its species
                                     has evolved to
@@ -70,6 +71,7 @@
                                     provide sustenance,
                                     but a species appropriate nutrition.
                                 </p>
+                                </div>
                                 <!-- Button -->
                             </div>
                             <!-- /col-lg -->
@@ -101,8 +103,9 @@
                             </div>
                             <!-- /col-lg -->
                             <div class="col-lg-7">
-                                <h2>Transparency</h2>
-                                <p class="mt-8">
+                                <div class="row">
+                                <h2 style="width: 100%;text-align: center;">Transparency</h2>
+                                <p class="mt-4">
                                     You will not find any proprietary blends or secret ingredients in our products. If
                                     you're considering
                                     feeding our
@@ -110,6 +113,7 @@
                                     it
                                     costs.
                                 </p>
+                                </div>
                                 <!-- Button -->
                             </div>
 
@@ -126,8 +130,9 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-7">
-                                <h2>One world, one home!</h2>
-                                <p class="mt-8">
+                                <div class="row">
+                                <h2 style="width: 100%;text-align: center;">One world, one home!</h2>
+                                <p class="mt-4">
                                     It is no secret that we share this world with countless organisms. We want to do our
                                     best to preserve
                                     this world for not just our future generations but for all living things that need it.
@@ -136,6 +141,7 @@
                                     better ways to
                                     achieve it.
                                 </p>
+                                </div>
                                 <!-- Button -->
                             </div>
                             <!-- /col-lg -->

@@ -8,14 +8,14 @@
             <div class="col-lg-9 page-with-sidebar">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>Login </h2>
+                        <h2>Forgot Password </h2>
                     </div>
                     <!-- /col-lg-->
                     @include('admin.notification')
                     <div class="contact-info col-lg-12 mt-5 res-margin">
                         <!-- Form Starts -->
                         <div id="contact_form">
-                            <form method="post" action="{{ url(FRONTENDURL . 'loginvalidate') }}" autocomplete="off">
+                            <form method="post" action="{{ url(FRONTENDURL . 'forgot_password') }}" autocomplete="off">
                                 @csrf
                                 <div class="form-group">
                                     <div class="row">
@@ -25,17 +25,10 @@
                                                 required="">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <label>Password</label>
-                                            <input autocomplete="new-password" type="password" name="user_password" class="form-control input-field">
-                                        </div>
-                                    </div>
-                                    <button type="submit" id="submit_btn" value="Submit"
+                                    <button type="submit" value="Submit"
                                         class="btn btn-primary">Submit</button>
                                 </div>
                             </form>
-                            <a href="{{ url(FRONTENDURL.'forgot_password') }}">Forgot Password</a>
                             <!-- /form-group-->
                         </div>
                     </div>
