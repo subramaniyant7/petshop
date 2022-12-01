@@ -71,7 +71,6 @@ class FrontendController extends Controller
         return view('frontend.disclaimer');
     }
 
-
     public function Register()
     {
         return view('frontend.registration');
@@ -220,6 +219,7 @@ class FrontendController extends Controller
 
     private function FindDays($date)
     {
+
         $timestamp = strtotime($date);
         $day = date('w', $timestamp);
         $diff = 0;
@@ -232,6 +232,18 @@ class FrontendController extends Controller
         if ($day > 1 && $day < 5) {
             $diff = 5 - $day;
         }
+        if($day == 1){
+            $diff = 4;
+        }
+        if($day == 4){
+            $diff = 5;
+        }
+        if($day == 5){
+            $diff = 4;
+        }
+        // echo 'date'.$date.'<br>';
+        // echo 'diff'.$diff.'<br>';
+        // echo 'day'.$day;
         $deliveryDate = date('Y-m-d', strtotime('+' . $diff . ' day', strtotime($date)));
         $deliveryMonthLastDate = date("Y-m-t", strtotime($deliveryDate));
         return ['deliveryDate' => $deliveryDate, 'deliveryMonthLastDate' => $deliveryMonthLastDate];
@@ -250,6 +262,7 @@ class FrontendController extends Controller
     {
         $petsInfo = FHelperController::getPetsMaster($id);
         $date = date('Y-m-d');
+        // $date = '2022-12-08';
         $days = $this->FindDays($date);
 
         $diff = $this->DateDifference($date, $days['deliveryDate']) - 1;
@@ -285,7 +298,12 @@ class FrontendController extends Controller
         // $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']) - 1;
         $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']);
 
+        // echo '<pre>';
+        // print_r($days);
+        // exit;
         if ($totalDays <= 5 || $monthEnd) {
+
+
             $nextMonthDate = date('Y-m-d', strtotime('+1 months', strtotime($days['deliveryMonthLastDate'])));
             $startDate = date("Y-m-01", strtotime($nextMonthDate));
             $endDate = date("Y-m-t", strtotime($nextMonthDate));
@@ -293,7 +311,7 @@ class FrontendController extends Controller
             $totalDays = $this->DateDifference($days['deliveryDate'], $days['deliveryMonthLastDate']);
         }
 
-
+        // exit;
         $weight =  DB::table("pets_master_calculation")->where([
             ['category_id', $petsInfo[0]->breed_type], ['activity_level', $petsInfo[0]->breed_activity_level], ['neuter', $petsInfo[0]->breed_neutered],
             ['goal', $petsInfo[0]->breed_weight_motive]
@@ -368,7 +386,6 @@ class FrontendController extends Controller
         }
         return ['totaldeliveryfromdeliverydate' => $totalDeliveryofMonthFromDelivery, 'totaldeliveryfromtoday' => $totalDeliveryofMonth];
     }
-
 
     private function TotalDelivery($startdate)
     {
@@ -815,7 +832,9 @@ class FrontendController extends Controller
                 $returnData['order_type'] = $request->input('order_type');
             }
 
-
+            // echo '<pre>';
+            // print_r($returnData);
+            // exit;
             // exit;
             return view('frontend.petmastercalculation', $returnData);
         } catch (\Exception $e) {
@@ -1180,7 +1199,6 @@ class FrontendController extends Controller
             return redirect(FRONTENDURL . 'myorders')->with('error', $e->getMessage());
         }
     }
-
 
     public function OrderTesting()
     {
